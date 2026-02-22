@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Management</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<script>
+if (!sessionStorage.getItem("loggedInUser")) {
+    window.location.href = "login.html";
+}
+</script>
+
+<header>
+    <div class="header-left">
+        👑 Management
+    </div>
+    <div class="header-right">
+        <span id="welcomeUser"></span>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+</header>
+
+<section class="dashboard">
+
+    <div class="big-panel">
+        <h3>Neuen Account erstellen</h3>
+
+        <input type="text" id="newUsername" placeholder="Benutzername">
+        <input type="password" id="newPassword" placeholder="4-stelliges Passwort" maxlength="4">
+
+        <button class="create-btn" onclick="createAccount()">Account erstellen</button>
+    </div>
+
+</section>
+
+<script>
+let user = sessionStorage.getItem("loggedInUser");
+document.getElementById("welcomeUser").innerText = user;
+
+function logout() {
+    sessionStorage.removeItem("loggedInUser");
+    window.location.href = "login.html";
+}
+
+function createAccount() {
+    let username = document.getElementById("newUsername").value.trim();
+    let password = document.getElementById("newPassword").value.trim();
+
+    if (!username) {
+        alert("Benutzername fehlt.");
+        return;
+    }
+
+    if (password.length !== 4) {
+        alert("Passwort muss 4-stellig sein.");
+        return;
+    }
+
+    let accounts = JSON.parse(localStorage.getItem("accounts")) || {};
+
+    if (accounts[username]) {
+        alert("Account existiert bereits.");
+        return;
+    }
+
+    accounts[username] = password;
+
+    localStorage.setItem("accounts", JSON.stringify(accounts));
+
+    alert("Account erfolgreich erstellt.");
+}
+</script>
+
+</body>
+</html>
