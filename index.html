@@ -7,17 +7,10 @@
 </head>
 <body>
 
-<script>
-if (!sessionStorage.getItem("loggedInUser")) {
-    window.location.href = "login.html";
-}
-</script>
-
 <header>
     <div class="header-left">
         <a href="index.html" class="brand-link">🍔 Burgershot Intern</a>
     </div>
-
     <div class="header-right">
         <span id="welcomeUser"></span>
         <button class="logout-btn" onclick="logout()">Logout</button>
@@ -26,16 +19,40 @@ if (!sessionStorage.getItem("loggedInUser")) {
 
 <section class="dashboard">
 
-    <div class="big-panel">
-        <h3>📢 Business Management</h3>
-        <p>Ankündigungen, Events & Unternehmenskommunikation verwalten.</p>
-    </div>
+    <div class="panel-grid">
 
-    <div class="big-panel gold">
-        <h3>👑 Management Center</h3>
-        <p><a href="management.html" style="color:white; text-decoration:none;">
-        Mitarbeiterverwaltung & Führungsentscheidungen.
-        </a></p>
+        <div class="panel">
+            📢 Business Announcements
+        </div>
+
+        <div class="panel" id="managementPanel">
+            👑 <a href="management.html">Management Center</a>
+        </div>
+
+        <div class="panel">
+            👕 <a href="kleiderordnung.html">Kleiderordnung</a>
+        </div>
+
+        <div class="panel">
+            🎵 Musik
+        </div>
+
+        <div class="panel">
+            📅 Abmeldungen
+        </div>
+
+        <div class="panel">
+            👥 Mitarbeiter
+        </div>
+
+        <div class="panel">
+            📝 Bewerber
+        </div>
+
+        <div class="panel">
+            📦 Einkäufe
+        </div>
+
     </div>
 
 </section>
@@ -44,13 +61,13 @@ if (!sessionStorage.getItem("loggedInUser")) {
     Burgershot Internal System © 2026
 </footer>
 
+<script src="script.js"></script>
 <script>
-const user = sessionStorage.getItem("loggedInUser");
-document.getElementById("welcomeUser").innerText = "Eingeloggt als: " + user;
+requireLogin();
+setHeaderUser();
 
-function logout() {
-    sessionStorage.removeItem("loggedInUser");
-    window.location.href = "login.html";
+if (!isAdmin()) {
+    document.getElementById("managementPanel").style.display = "none";
 }
 </script>
 
