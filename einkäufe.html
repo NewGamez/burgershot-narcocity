@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Business Announcements</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+    <div class="header-left">
+        <a href="index.html" class="brand-link">← Zurück</a>
+    </div>
+    <div class="header-right">
+        <span id="welcomeUser"></span>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+</header>
+
+<section class="dashboard">
+
+    <div class="panel big">
+        <h2>📢 Business Announcements</h2>
+        <p>Hier werden offizielle Mitteilungen veröffentlicht.</p>
+    </div>
+
+</section>
+
+<footer>
+    Burgershot Internal System © 2026
+</footer>
+
+<script src="script.js"></script>
+<script>
+requireLogin();
+setHeaderUser();
+</script>
+
+</body>
+</html>
