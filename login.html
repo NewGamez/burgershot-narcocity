@@ -98,6 +98,28 @@
         }
 
     </style>
+    <script src="script.js"></script> <script>
+function login() {
+    let username = document.getElementById("username").value.trim();
+    let password = document.getElementById("password").value.trim();
+
+    // Jetzt kennt der Browser getAccounts(), weil script.js geladen ist
+    let accounts = getAccounts(); 
+
+    if (!accounts[username]) {
+        alert("Account existiert nicht.");
+        return;
+    }
+
+    if (accounts[username].password !== password) {
+        alert("Falsches Passwort.");
+        return;
+    }
+
+    sessionStorage.setItem("loggedInUser", username);
+    window.location.href = "index.html";
+}
+</script>
 </head>
 <body>
 
