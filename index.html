@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>Burgershot | Mitarbeiterbereich</title>
+    <title>Burgershot Admin</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -13,72 +13,68 @@
     }
 </script>
 
-<header>
-    <h1>🍔 BURGERSHOT INTERN</h1>
-    <div class="header-right">
-        <span id="welcomeUser"></span>
-        <button onclick="logout()">Logout</button>
-    </div>
-</header>
+<div class="admin-container">
 
-<section class="hero">
-    <h2>Willkommen im internen System</h2>
-    <p>Professionelle Verwaltung für Burgershot Narco City</p>
-</section>
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="logo">
+            🍔 <span>BURGERSHOT</span>
+        </div>
 
-<section class="dashboard">
+        <nav>
+            <a href="#" class="active">📊 Dashboard</a>
+            <a href="#">👕 Kleiderordnung</a>
+            <a href="#">⚖ Sanktionen</a>
+            <a href="#">📢 Business</a>
+            <a href="#">📅 Abmeldungen</a>
+            <a href="#">📦 Einkäufe</a>
+            <a href="#">📝 Bewerbungen</a>
+            <a href="#" class="gold">👑 Management</a>
+        </nav>
 
-    <h2>Interne Bereiche</h2>
+        <div class="logout-area">
+            <span id="welcomeUser"></span>
+            <button onclick="logout()">Logout</button>
+        </div>
+    </aside>
 
-    <!-- GROSSE PANELS -->
-    <div class="main-panels">
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
 
-        <a href="#" class="big-panel">
-            <div class="big-content">
-                <h3>📢 Business Management</h3>
-                <p>Verwalte Ankündigungen, Events und Unternehmenskommunikation.</p>
+        <h1>Dashboard</h1>
+
+        <div class="cards">
+
+            <div class="card large">
+                <h2>📢 Business Management</h2>
+                <p>Verwalte Ankündigungen & Events.</p>
             </div>
-        </a>
 
-        <a href="#" class="big-panel gold">
-            <div class="big-content">
-                <h3>👑 Management Center</h3>
-                <p>Führungsebene, Mitarbeiterverwaltung & Entscheidungen.</p>
+            <div class="card large gold">
+                <h2>👑 Management Center</h2>
+                <p>Mitarbeiterverwaltung & Entscheidungen.</p>
             </div>
-        </a>
 
-    </div>
+            <div class="card">
+                <h3>👥 43</h3>
+                <p>Mitarbeiter</p>
+            </div>
 
-    <!-- KLEINE PANELS -->
-    <div class="small-panels">
+            <div class="card">
+                <h3>📦 5</h3>
+                <p>Lagerartikel</p>
+            </div>
 
-        <a href="#" class="small-panel">
-            <h4>👕 Kleiderordnung</h4>
-        </a>
+            <div class="card">
+                <h3>📝 2</h3>
+                <p>Offene Bewerbungen</p>
+            </div>
 
-        <a href="#" class="small-panel">
-            <h4>⚖ Sanktionen</h4>
-        </a>
+        </div>
 
-        <a href="#" class="small-panel">
-            <h4>📅 Abmeldungen</h4>
-        </a>
+    </main>
 
-        <a href="#" class="small-panel">
-            <h4>📦 Einkäufe</h4>
-        </a>
-
-        <a href="#" class="small-panel">
-            <h4>📝 Bewerbungen</h4>
-        </a>
-
-    </div>
-
-</section>
-
-<footer>
-    Burgershot Internal System © 2026
-</footer>
+</div>
 
 <script>
     let user = localStorage.getItem("loggedInUser");
