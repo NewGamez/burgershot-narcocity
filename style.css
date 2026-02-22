@@ -14,7 +14,6 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    position: relative;
     overflow-x: hidden;
 }
 
@@ -27,7 +26,7 @@ body::before {
     position: fixed;
     inset: 0;
     background: url("assets/burgershot-bg.png") center/cover no-repeat;
-    filter: brightness(0.75);
+    filter: brightness(0.65);
     z-index: -1;
     animation: slowZoom 25s ease-in-out infinite alternate;
 }
@@ -42,7 +41,7 @@ header {
     align-items: center;
     padding: 18px 40px;
     background: rgba(0, 0, 0, 0.55);
-    backdrop-filter: blur(6px);
+    backdrop-filter: blur(8px);
 }
 
 .brand-link {
@@ -92,26 +91,66 @@ header {
 }
 
 /* ============================= */
+/* PANEL GRID (INDEX) */
+/* ============================= */
+
+.main-panels {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-bottom: 50px;
+}
+
+.small-panels {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+/* ============================= */
 /* PANELS */
 /* ============================= */
 
 .big-panel {
-    background: rgba(30, 32, 40, 0.7);
-    backdrop-filter: blur(14px);
-    padding: 40px;
-    border-radius: 20px;
+    background: rgba(30, 32, 40, 0.75);
+    backdrop-filter: blur(16px);
+    padding: 45px;
+    border-radius: 22px;
     border: 1px solid rgba(255,255,255,0.08);
-    margin-bottom: 40px;
     transition: 0.3s ease;
+    text-decoration: none;
+    color: white;
+}
+
+.big-panel:hover {
+    transform: translateY(-4px);
 }
 
 .big-panel.gold {
     border: 1px solid rgba(250,204,21,0.7);
+    box-shadow: 0 0 30px rgba(250,204,21,0.2);
 }
 
 .big-panel h3 {
-    margin-bottom: 25px;
-    font-size: 20px;
+    margin-bottom: 20px;
+    font-size: 22px;
+}
+
+.big-panel p {
+    opacity: 0.85;
+}
+
+.small-panel {
+    background: rgba(30,32,40,0.75);
+    backdrop-filter: blur(14px);
+    padding: 20px;
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.08);
+    transition: 0.2s ease;
+}
+
+.small-panel:hover {
+    background: rgba(40,42,50,0.9);
 }
 
 /* ============================= */
@@ -122,6 +161,7 @@ header {
     display: flex;
     justify-content: flex-end;
     margin-bottom: 15px;
+    gap: 10px;
 }
 
 /* ============================= */
@@ -131,11 +171,12 @@ header {
 .employee-table {
     width: 100%;
     border-collapse: collapse;
+    margin-top: 15px;
 }
 
 .employee-table th,
 .employee-table td {
-    padding: 12px;
+    padding: 14px;
     border-bottom: 1px solid rgba(255,255,255,0.08);
     font-size: 0.85rem;
     text-align: left;
@@ -167,6 +208,7 @@ header {
     cursor: pointer;
     font-size: 0.8rem;
     transition: 0.2s ease;
+    color: black;
 }
 
 .btn-primary:hover {
@@ -180,6 +222,7 @@ header {
     border-radius: 10px;
     cursor: pointer;
     transition: 0.2s ease;
+    color: white;
 }
 
 .btn-secondary:hover {
@@ -193,10 +236,28 @@ header {
     border-radius: 10px;
     cursor: pointer;
     transition: 0.2s ease;
+    color: white;
 }
 
 .btn-danger:hover {
     background: rgba(220,60,60,0.8);
+}
+
+/* ============================= */
+/* FORM ELEMENTS */
+/* ============================= */
+
+input, select {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: white;
+    padding: 8px 10px;
+    border-radius: 8px;
+    width: 100%;
+}
+
+select option {
+    color: black;
 }
 
 /* ============================= */
@@ -206,7 +267,7 @@ header {
 .modal-backdrop {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.6);
+    background: rgba(0,0,0,0.65);
     display: none;
     align-items: center;
     justify-content: center;
@@ -215,13 +276,13 @@ header {
 
 .modal {
     background: rgba(30,32,40,0.95);
-    backdrop-filter: blur(15px);
+    backdrop-filter: blur(20px);
     padding: 20px;
-    border-radius: 16px;
-    width: 600px;
+    border-radius: 20px;
+    width: 650px;
     max-width: 95%;
     border: 1px solid rgba(250,204,21,0.7);
-    box-shadow: 0 25px 60px rgba(0,0,0,0.7);
+    box-shadow: 0 30px 70px rgba(0,0,0,0.8);
 }
 
 .modal-head {
@@ -246,16 +307,6 @@ header {
     font-size: 0.75rem;
     opacity: 0.7;
     margin-bottom: 4px;
-}
-
-.field input,
-.field select {
-    width: 100%;
-    padding: 8px;
-    border-radius: 8px;
-    border: none;
-    background: rgba(255,255,255,0.08);
-    color: white;
 }
 
 .modal-footer {
@@ -292,6 +343,14 @@ footer {
 
 @media (max-width: 900px) {
 
+    .main-panels {
+        grid-template-columns: 1fr;
+    }
+
+    .small-panels {
+        grid-template-columns: 1fr;
+    }
+
     .grid {
         grid-template-columns: 1fr;
     }
@@ -305,5 +364,4 @@ footer {
     .employee-table td {
         font-size: 0.75rem;
     }
-
 }
