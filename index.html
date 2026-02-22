@@ -1,16 +1,14 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="UTF-8">
-<title>Burgershot Intern</title>
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <title>Burgershot Intern - Dashboard</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <header>
-    <div class="header-left">
-        <a href="index.html" class="brand-link">🍔 Burgershot Intern</a>
-    </div>
+    <div class="header-left"><a href="index.html" class="brand-link">🍔 Burgershot Intern</a></div>
     <div class="header-right">
         <span id="welcomeUser"></span>
         <button class="logout-btn" onclick="logout()">Logout</button>
@@ -18,113 +16,55 @@
 </header>
 
 <section class="dashboard">
-
-    <!-- TOP PANELS -->
-    <div class="top-panels">
-
-        <div class="panel big">
-            📢 Business Announcements
-        </div>
-
-        <div class="panel big gold" id="managementPanel" onclick="openManagement()">
-            👑 Management Center
-        </div>
-
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+        <div class="panel" onclick="window.location.href='service.html'">📋 Service-Übersicht</div>
+        <div class="panel" onclick="window.location.href='orders.html'">🍔 Bestellungen</div>
+        <div class="panel" id="adminPanel" style="display:none; border: 1px solid #faac15;" onclick="window.location.href='management.html'">⭐ Management Center</div>
     </div>
-
-    <!-- SECOND ROW -->
-    <div class="middle-panels">
-
-        <div class="panel small">👕 Kleiderordnung</div>
-        <div class="panel small">🎵 Musik</div>
-        <div class="panel small">📅 Abmeldungen</div>
-
-    </div>
-
-    <!-- THIRD ROW -->
-    <div class="middle-panels">
-
-        <div class="panel small">👥 Mitarbeiter</div>
-        <div class="panel small">📝 Bewerber</div>
-        <div class="panel small">📦 Einkäufe</div>
-
-    </div>
-
 </section>
-    
-    <div class="modal-backdrop" id="changePassModal" style="display:none;">
+
+<div class="modal-backdrop" id="firstLoginModal" style="display:none;">
     <div class="modal">
-        <h2>Sicherheitsschub</h2>
-        <p>Da dies dein erster Login ist, musst du dein 4-stelliges Passwort ändern.</p>
-        <input type="password" id="newPassInput" placeholder="Neue 4-stellige PIN" maxlength="4" 
-               style="width:80%; padding:10px; margin-bottom:20px; border-radius:10px; border:none; background:rgba(255,255,255,0.1); color:white; text-align:center;">
+        <h2>🔒 Passwort ändern</h2>
+        <p>Bitte lege eine eigene 4-stellige PIN fest.</p>
+        <input type="password" id="newPinInput" maxlength="4" style="margin: 20px 0; padding: 10px; text-align: center; font-size: 20px; width: 100px; border-radius: 8px; border: 1px solid #faac15; background: #000; color: #fff;">
         <br>
-        <button onclick="updatePassword()">Passwort speichern</button>
-    </div>
-</div>
-
-<footer>
-    Burgershot Internal System © 2026
-</footer>
-
-<!-- MODAL -->
-<div class="modal-backdrop" id="noAccessModal">
-    <div class="modal">
-        <h2>Keine Berechtigung</h2>
-        <p>Du hast nicht die nötige Rolle, um das Management Center zu betreten.</p>
-        <button onclick="closeModal()">Verstanden</button>
+        <button class="add-btn" style="height: 40px;" onclick="saveNewPassword()">Speichern</button>
     </div>
 </div>
 
 <script src="script.js"></script>
-
 <script>
-requireLogin();
-setHeaderUser();
+    requireLogin();
+    setHeaderUser();
 
-function openManagement() {
     if (isAdmin()) {
-        window.location.href = "management.html";
-    } else {
-        document.getElementById("noAccessModal").style.display = "flex";
-    }
-}
-
-function closeModal() {
-    document.getElementById("noAccessModal").style.display = "none";
-}
-
-    function checkFirstLogin() {
-    const username = sessionStorage.getItem("loggedInUser");
-    const accounts = getAccounts();
-    const user = accounts[username];
-
-    if (user && user.isFirstLogin) {
-        document.getElementById("changePassModal").style.display = "flex";
-    }
-}
-
-function updatePassword() {
-    const newPass = document.getElementById("newPassInput").value.trim();
-    const username = sessionStorage.getItem("loggedInUser");
-    const accounts = getAccounts();
-
-    if (newPass.length !== 4 || isNaN(newPass)) {
-        alert("Das Passwort muss aus genau 4 Zahlen bestehen.");
-        return;
+        document.getElementById("adminPanel").style.display = "block";
     }
 
-    accounts[username].password = newPass;
-    accounts[username].isFirstLogin = false; // Status auf erledigt setzen
-    saveAccounts(accounts);
-    
-    document.getElementById("changePassModal").style.display = "none";
-    alert("Passwort erfolgreich gesetzt!");
-}
+    function checkPasswordStatus() {
+        const username = sessionStorage.getItem("loggedInUser");
+        const accounts = getAccounts();
+        if (accounts[username] && accounts[username].isFirstLogin) {
+            document.getElementById("firstLoginModal").style.display = "flex";
+        }
+    }
 
-// Beim Laden der Seite prüfen
-checkFirstLogin();
+    function saveNewPassword() {
+        const pin = document.getElementById("newPinInput").value;
+        const user = sessionStorage.getItem("loggedInUser");
+        const accounts = getAccounts();
+        if (pin.length === 4 && !isNaN(pin) && pin !== "0000") {
+            accounts[user].password = pin;
+            accounts[user].isFirstLogin = false;
+            saveAccounts(accounts);
+            document.getElementById("firstLoginModal").style.display = "none";
+        } else {
+            alert("Ungültige PIN (4 Zahlen erforderlich, nicht 0000)");
+        }
+    }
+
+    window.onload = checkPasswordStatus;
 </script>
-
 </body>
 </html>
