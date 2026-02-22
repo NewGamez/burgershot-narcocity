@@ -1,5 +1,5 @@
 /* ===================================== */
-/* BURGERSHOT INTERN – FULL BUILD */
+/* BURGERSHOT INTERN – COMPLETE STYLE */
 /* ===================================== */
 
 * {
@@ -86,7 +86,7 @@ header {
 
 .dashboard {
     flex: 1;
-    max-width: 1100px;
+    max-width: 1200px;
     margin: 80px auto;
     padding: 0 20px;
 }
@@ -96,124 +96,172 @@ header {
 /* ============================= */
 
 .big-panel {
-    background: rgba(30, 32, 40, 0.65);
-    backdrop-filter: blur(12px);
-    padding: 50px;
+    background: rgba(30, 32, 40, 0.7);
+    backdrop-filter: blur(14px);
+    padding: 40px;
     border-radius: 20px;
     border: 1px solid rgba(255,255,255,0.08);
-    transition: 0.3s ease;
     margin-bottom: 40px;
+    transition: 0.3s ease;
 }
 
 .big-panel.gold {
-    border: 1px solid rgba(250,204,21,0.6);
+    border: 1px solid rgba(250,204,21,0.7);
 }
 
 .big-panel h3 {
-    font-size: 22px;
     margin-bottom: 25px;
-    text-align: center;
+    font-size: 20px;
 }
 
 /* ============================= */
-/* FORM */
+/* TOOLBAR */
 /* ============================= */
 
-.form-group {
+.toolbar {
     display: flex;
-    gap: 15px;
-    justify-content: center;
-    margin-bottom: 25px;
-    flex-wrap: wrap;
+    justify-content: flex-end;
+    margin-bottom: 15px;
 }
 
-.form-group input {
+/* ============================= */
+/* TABLE */
+/* ============================= */
+
+.employee-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.employee-table th,
+.employee-table td {
     padding: 12px;
-    border-radius: 12px;
-    border: none;
-    background: rgba(255,255,255,0.1);
-    color: white;
-    width: 220px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    font-size: 0.85rem;
+    text-align: left;
 }
 
-.form-group input::placeholder {
-    color: #ccc;
+.employee-table th {
+    opacity: 0.7;
 }
 
-.create-btn {
-    display: block;
-    margin: auto;
-    padding: 10px 22px;
-    border-radius: 999px;
-    border: none;
-    background: rgba(255,255,255,0.2);
-    color: white;
-    cursor: pointer;
-    transition: 0.2s ease;
-}
-
-.create-btn:hover {
-    background: rgba(255,255,255,0.3);
-}
-
-/* ============================= */
-/* ACCOUNT LIST (BURGERSHOT STYLE) */
-/* ============================= */
-
-.account-table {
-    margin-top: 25px;
-}
-
-.account-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
-    padding: 15px 20px;
-    border-radius: 14px;
+.employee-table tr:hover {
     background: rgba(255,255,255,0.05);
-    margin-bottom: 12px;
+}
+
+.actions {
+    display: flex;
+    gap: 6px;
+    justify-content: flex-end;
+}
+
+/* ============================= */
+/* BUTTONS */
+/* ============================= */
+
+.btn-primary {
+    background: rgba(250,204,21,0.85);
+    border: none;
+    padding: 8px 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 0.8rem;
     transition: 0.2s ease;
 }
 
-.account-row:hover {
-    background: rgba(255,255,255,0.08);
+.btn-primary:hover {
+    background: rgba(250,204,21,1);
 }
 
-.account-name {
-    font-weight: 500;
-    flex: 1;
-}
-
-/* ROLE DROPDOWN */
-
-.role-select {
+.btn-secondary {
+    background: rgba(255,255,255,0.12);
+    border: none;
     padding: 6px 12px;
     border-radius: 10px;
-    border: none;
-    background: rgba(255,255,255,0.1);
-    color: white;
-    min-width: 150px;
-}
-
-.role-select option {
-    color: black;
-}
-
-/* DELETE BUTTON */
-
-.delete-btn {
-    padding: 6px 16px;
-    border-radius: 999px;
-    border: none;
-    background: rgba(255,80,80,0.2);
-    color: white;
     cursor: pointer;
     transition: 0.2s ease;
 }
 
-.delete-btn:hover {
-    background: rgba(255,80,80,0.4);
+.btn-secondary:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+.btn-danger {
+    background: rgba(200,60,60,0.6);
+    border: none;
+    padding: 6px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.btn-danger:hover {
+    background: rgba(220,60,60,0.8);
+}
+
+/* ============================= */
+/* MODAL */
+/* ============================= */
+
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+}
+
+.modal {
+    background: rgba(30,32,40,0.95);
+    backdrop-filter: blur(15px);
+    padding: 20px;
+    border-radius: 16px;
+    width: 600px;
+    max-width: 95%;
+    border: 1px solid rgba(250,204,21,0.7);
+    box-shadow: 0 25px 60px rgba(0,0,0,0.7);
+}
+
+.modal-head {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.modal-body {
+    margin-bottom: 15px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.field label {
+    display: block;
+    font-size: 0.75rem;
+    opacity: 0.7;
+    margin-bottom: 4px;
+}
+
+.field input,
+.field select {
+    width: 100%;
+    padding: 8px;
+    border-radius: 8px;
+    border: none;
+    background: rgba(255,255,255,0.08);
+    color: white;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
 }
 
 /* ============================= */
@@ -222,10 +270,10 @@ header {
 
 footer {
     text-align: center;
-    padding: 25px;
+    padding: 20px;
     background: rgba(0,0,0,0.6);
     backdrop-filter: blur(6px);
-    font-size: 14px;
+    font-size: 13px;
     color: #d1d5db;
 }
 
@@ -244,16 +292,18 @@ footer {
 
 @media (max-width: 900px) {
 
-    .account-row {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+
+    .actions {
         flex-direction: column;
         align-items: flex-start;
     }
 
-    .role-select {
-        width: 100%;
+    .employee-table th,
+    .employee-table td {
+        font-size: 0.75rem;
     }
 
-    .delete-btn {
-        width: 100%;
-    }
 }
