@@ -19,26 +19,30 @@
 
 <section class="dashboard">
 
-<div class="panel large management-container">
-    <h2>🍔 Personalverwaltung</h2>
+<section class="dashboard">
+    <div class="panel large management-container">
+        <h2>🍔 Personalverwaltung</h2>
 
-    <div class="hiring-bar">
-        <input type="text" id="newUsername" placeholder="Name des Mitarbeiters">
-        <select id="newRole">
-            <option>Mitarbeiter_in</option>
-            <option>Management</option>
-            <option>Cheffe</option>
-        </select>
-        <button class="add-btn" onclick="createAccount()">Einstellen</button>
-    </div>
+        <div class="hiring-bar">
+            <input type="text" id="newUsername" placeholder="Name des Mitarbeiters">
+            <select id="newRole">
+                <option>Mitarbeiter_in</option>
+                <option>Management</option>
+                <option>Cheffe</option>
+            </select>
+            <button class="add-btn" onclick="createAccount()">Einstellen</button>
+        </div>
 
-    <div class="account-table-header">
-        <span>Name</span>
-        <span>Position</span>
-        <span style="text-align: right;">Aktion</span>
+        <div class="account-table-header">
+            <span>Name</span>
+            <span>Position</span>
+            <span style="text-align: right;">Aktion</span>
+        </div>
+
+        <div id="accountList" class="account-list-container">
+            </div>
     </div>
-    <div id="accountList" class="account-list-container"></div>
-</div>
+</section>
     
 <div class="panel large">
 
