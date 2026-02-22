@@ -25,8 +25,8 @@
             📢 Business Announcements
         </div>
 
-        <div class="panel" id="managementPanel">
-            👑 <a href="management.html">Management Center</a>
+        <div class="panel" id="managementPanel" onclick="openManagement()">
+            👑 Management Center
         </div>
 
         <div class="panel">
@@ -61,13 +61,30 @@
     Burgershot Internal System © 2026
 </footer>
 
+<!-- MODAL -->
+<div class="modal-backdrop" id="noAccessModal">
+    <div class="modal">
+        <h2>Keine Berechtigung</h2>
+        <p>Du hast nicht die nötige Rolle, um das Management Center zu betreten.</p>
+        <button onclick="closeModal()">Verstanden</button>
+    </div>
+</div>
+
 <script src="script.js"></script>
 <script>
 requireLogin();
 setHeaderUser();
 
-if (!isAdmin()) {
-    document.getElementById("managementPanel").style.display = "none";
+function openManagement() {
+    if (isAdmin()) {
+        window.location.href = "management.html";
+    } else {
+        document.getElementById("noAccessModal").style.display = "flex";
+    }
+}
+
+function closeModal() {
+    document.getElementById("noAccessModal").style.display = "none";
 }
 </script>
 
