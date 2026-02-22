@@ -46,3 +46,13 @@ function isAdmin() {
 
     return accounts[user].role === "Admin";
 }
+
+// Initialer Setup-Check (Falls noch gar keine Accounts existieren)
+(function initializeSystem() {
+    const accounts = getAccounts();
+    if (Object.keys(accounts).length === 0) {
+        console.log("System leer. Erstelle Standard-Admin...");
+        accounts["Admin"] = { password: "0000", role: "Admin" };
+        saveAccounts(accounts);
+    }
+})();
