@@ -5,165 +5,123 @@
 }
 
 body {
-    font-family: 'Segoe UI', sans-serif;
-    background: #0e0e0e;
+    font-family: system-ui, -apple-system, Segoe UI, sans-serif;
+    background: #1c1f26;
     color: white;
-}
-
-/* ============================= */
-/* LAYOUT */
-/* ============================= */
-
-.admin-container {
-    display: flex;
     min-height: 100vh;
-}
-
-/* ============================= */
-/* SIDEBAR */
-/* ============================= */
-
-.sidebar {
-    width: 260px;
-    background: #111;
-    border-right: 1px solid rgba(255,0,0,0.2);
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+}
+
+/* HEADER */
+
+header {
     padding: 25px;
+    text-align: center;
+    font-size: 22px;
+    font-weight: 600;
+    background: #16181d;
+    border-bottom: 2px solid #e11d48;
 }
 
-.logo {
-    font-size: 18px;
-    font-weight: bold;
-    color: #ff2c2c;
-    margin-bottom: 40px;
-}
+/* DASHBOARD */
 
-.logo span {
-    margin-left: 8px;
-}
-
-.sidebar nav {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.sidebar nav a {
-    text-decoration: none;
-    color: #ccc;
-    padding: 10px 12px;
-    border-radius: 8px;
-    transition: 0.2s;
-}
-
-.sidebar nav a:hover {
-    background: rgba(255,0,0,0.15);
-    color: #ff2c2c;
-}
-
-.sidebar nav a.active {
-    background: rgba(255,0,0,0.2);
-    color: #ff2c2c;
-}
-
-.sidebar nav a.gold {
-    color: gold;
-}
-
-.logout-area {
-    margin-top: 40px;
-}
-
-.logout-area span {
-    display: block;
-    font-size: 12px;
-    color: #777;
-    margin-bottom: 10px;
-}
-
-.logout-area button {
-    width: 100%;
-    padding: 8px;
-    background: #C1121F;
-    border: none;
-    border-radius: 6px;
-    color: white;
-    cursor: pointer;
-}
-
-.logout-area button:hover {
-    background: #900;
-}
-
-/* ============================= */
-/* MAIN CONTENT */
-/* ============================= */
-
-.main-content {
+.dashboard {
     flex: 1;
-    padding: 50px;
+    max-width: 1100px;
+    margin: 80px auto;
+    padding: 0 20px;
+    text-align: center;
 }
 
-.main-content h1 {
-    margin-bottom: 40px;
+.dashboard h2 {
+    margin-bottom: 50px;
     font-size: 28px;
-    color: #ff2c2c;
+    color: #f43f5e;
 }
 
-/* ============================= */
-/* CARDS */
-/* ============================= */
+/* BIG PANELS */
 
-.cards {
+.main-panels {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 25px;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-bottom: 60px;
 }
 
-.card {
-    background: #161616;
-    padding: 25px;
-    border-radius: 14px;
-    border: 1px solid rgba(255,0,0,0.2);
+.big-panel {
+    background: #242731;
+    padding: 60px;
+    border-radius: 18px;
     transition: 0.3s;
+    border: 1px solid #2f333d;
 }
 
-.card:hover {
-    border-color: #ff2c2c;
-    box-shadow: 0 0 25px rgba(255,0,0,0.5);
+.big-panel:hover {
+    transform: translateY(-6px);
+    border-color: #f43f5e;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+
+.big-panel h3 {
+    font-size: 22px;
+    margin-bottom: 15px;
+}
+
+.big-panel p {
+    color: #9ca3af;
+}
+
+.big-panel.gold {
+    border: 1px solid #facc15;
+}
+
+.big-panel.gold:hover {
+    border-color: #facc15;
+    box-shadow: 0 10px 30px rgba(250,204,21,0.2);
+}
+
+/* SMALL PANELS */
+
+.small-panels {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 20px;
+}
+
+.small-panel {
+    background: #242731;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid #2f333d;
+    transition: 0.3s;
+    font-weight: 500;
+}
+
+.small-panel:hover {
+    border-color: #f43f5e;
     transform: translateY(-4px);
 }
 
-.card.large {
-    grid-column: span 2;
-    padding: 40px;
+/* FOOTER */
+
+footer {
+    text-align: center;
+    padding: 25px;
+    background: #16181d;
+    border-top: 1px solid #2f333d;
+    font-size: 14px;
+    color: #9ca3af;
 }
 
-.card.large h2 {
-    margin-bottom: 10px;
-}
-
-.card.gold {
-    border: 1px solid gold;
-}
-
-.card.gold:hover {
-    box-shadow: 0 0 35px gold;
-}
-
-/* ============================= */
 /* RESPONSIVE */
-/* ============================= */
 
 @media (max-width: 900px) {
-
-    .sidebar {
-        width: 200px;
+    .main-panels {
+        grid-template-columns: 1fr;
     }
 
-    .card.large {
-        grid-column: span 1;
+    .big-panel {
+        padding: 40px;
     }
 }
