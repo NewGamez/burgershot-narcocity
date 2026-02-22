@@ -55,17 +55,20 @@ if (!isAdmin()) {
 }
 
 function createAccount() {
-    const username = document.getElementById("newUsername").value.trim();
-    const password = document.getElementById("newPassword").value.trim();
-    const role = document.getElementById("newRole").value;
+    const userEl = document.getElementById("newUsername");
+    const passEl = document.getElementById("newPassword");
+    const roleEl = document.getElementById("newRole");
+
+    const username = userEl.value.trim();
+    const password = passEl.value.trim();
+    const role = roleEl.value;
 
     if (!username || password.length !== 4) {
-        alert("Ungültige Eingabe.");
+        alert("Benutzername fehlt oder Passwort ist nicht 4-stellig.");
         return;
     }
 
     const accounts = getAccounts();
-
     if (accounts[username]) {
         alert("Account existiert bereits.");
         return;
@@ -73,7 +76,12 @@ function createAccount() {
 
     accounts[username] = { password, role };
     saveAccounts(accounts);
-    loadAccounts();
+    
+    // Felder leeren
+    userEl.value = "";
+    passEl.value = "";
+    
+    loadAccounts(); // Liste aktualisieren
 }
 
 function deleteAccount(username) {
