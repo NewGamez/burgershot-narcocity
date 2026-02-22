@@ -101,26 +101,27 @@ function loadAccounts() {
     const list = document.getElementById("accountList");
     list.innerHTML = "";
 
-    Object.keys(accounts).sort().forEach(username => {
-        const role = accounts[username].role;
-        let badgeStyle = "";
+    // Sortieren, damit Cheffe oben steht
+    const sortedUsernames = Object.keys(accounts).sort();
 
-        // Farb-Logik für verschiedene Ränge
-        if (role === "Admin") {
-            badgeStyle = "background: rgba(255, 70, 70, 0.2); color: #ff4646; border-color: rgba(255, 70, 70, 0.4);";
-        } else if (role === "Management") {
-            badgeStyle = "background: rgba(250, 172, 21, 0.2); color: #faac15; border-color: rgba(250, 172, 21, 0.4);";
-        } else {
-            badgeStyle = "background: rgba(255, 255, 255, 0.1); color: #ddd; border-color: rgba(255, 255, 255, 0.2);";
-        }
-
+    sortedUsernames.forEach(username => {
+        const user = accounts[username];
         const div = document.createElement("div");
         div.className = "account-row";
+
+        // Badge-Klasse bestimmen
+        let badgeClass = "badge-mitarbeiter";
+        if (user.role === "Cheffe") badgeClass = "badge-cheffe";
+        if (user.role === "Management") badgeClass = "badge-management";
+
         div.innerHTML = `
-            <span style="font-weight: 500; color: white;">${username}</span>
-            <span><span class="role-badge" style="${badgeStyle}">${role}</span></span>
-            <button class="delete-btn" onclick="deleteAccount('${username}')">Kündigen</button>
+            <span style="color: white; font-weight: 500;">${username}</span>
+            <span><span class="role-badge ${badgeClass}">${user.role}</span></span>
+            <div style="text-align: right;">
+                <button class="delete-btn" onclick="deleteAccount('${username}')">Kündigen</button>
+            </div>
         `;
+
         list.appendChild(div);
     });
 }
