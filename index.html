@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>Burgershot Admin</title>
+    <title>Burgershot Intern</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -13,60 +13,60 @@
     }
 </script>
 
-<div class="admin-container">
+<div class="layout">
 
-    <!-- SIDEBAR -->
     <aside class="sidebar">
-        <div class="logo">
-            🍔 <span>BURGERSHOT</span>
+        <div class="brand">
+            🍔 Burgershot
         </div>
 
         <nav>
-            <a href="#" class="active">📊 Dashboard</a>
-            <a href="#">👕 Kleiderordnung</a>
-            <a href="#">⚖ Sanktionen</a>
-            <a href="#">📢 Business</a>
-            <a href="#">📅 Abmeldungen</a>
-            <a href="#">📦 Einkäufe</a>
-            <a href="#">📝 Bewerbungen</a>
-            <a href="#" class="gold">👑 Management</a>
+            <a class="active">Dashboard</a>
+            <a>Kleiderordnung</a>
+            <a>Sanktionen</a>
+            <a>Business</a>
+            <a>Abmeldungen</a>
+            <a>Einkäufe</a>
+            <a>Bewerbungen</a>
+            <a class="management">Management</a>
         </nav>
 
-        <div class="logout-area">
+        <div class="user">
             <span id="welcomeUser"></span>
             <button onclick="logout()">Logout</button>
         </div>
     </aside>
 
-    <!-- MAIN CONTENT -->
-    <main class="main-content">
+    <main class="content">
 
-        <h1>Dashboard</h1>
+        <div class="topbar">
+            <h1>Dashboard</h1>
+        </div>
 
-        <div class="cards">
+        <div class="grid">
 
             <div class="card large">
-                <h2>📢 Business Management</h2>
-                <p>Verwalte Ankündigungen & Events.</p>
+                <h2>Business Management</h2>
+                <p>Verwalte Ankündigungen und Events.</p>
             </div>
 
-            <div class="card large gold">
-                <h2>👑 Management Center</h2>
-                <p>Mitarbeiterverwaltung & Entscheidungen.</p>
+            <div class="card large management-card">
+                <h2>Management Center</h2>
+                <p>Mitarbeiter & Unternehmensführung.</p>
             </div>
 
-            <div class="card">
-                <h3>👥 43</h3>
+            <div class="card small">
+                <h3>43</h3>
                 <p>Mitarbeiter</p>
             </div>
 
-            <div class="card">
-                <h3>📦 5</h3>
+            <div class="card small">
+                <h3>5</h3>
                 <p>Lagerartikel</p>
             </div>
 
-            <div class="card">
-                <h3>📝 2</h3>
+            <div class="card small">
+                <h3>2</h3>
                 <p>Offene Bewerbungen</p>
             </div>
 
