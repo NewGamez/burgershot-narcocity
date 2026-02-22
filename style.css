@@ -1,5 +1,5 @@
 /* ===================================== */
-/* BURGERSHOT INTERN – FULL BUILD */
+/* BURGERSHOT INTERN – COMPLETE STYLE */
 /* ===================================== */
 
 * {
@@ -91,19 +91,27 @@ header {
 
 .dashboard {
     flex: 1;
-    max-width: 1200px;
-    margin: 80px auto;
-    padding: 0 20px;
+    max-width: 1300px;
+    margin: 100px auto;
+    padding: 0 40px;
 }
 
 /* ============================= */
-/* PANEL GRID */
+/* DASHBOARD LAYOUT */
 /* ============================= */
 
-.panel-grid {
+.top-panels {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    grid-template-columns: 1fr 1fr;
+    gap: 35px;
+    margin-bottom: 45px;
+}
+
+.middle-panels {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
     gap: 25px;
+    margin-bottom: 30px;
 }
 
 /* ============================= */
@@ -111,43 +119,55 @@ header {
 /* ============================= */
 
 .panel {
-    background: rgba(30,32,40,0.65);
-    backdrop-filter: blur(14px);
-    padding: 30px;
-    border-radius: 20px;
+    background: linear-gradient(
+        145deg,
+        rgba(40,42,55,0.75),
+        rgba(25,27,35,0.75)
+    );
+    backdrop-filter: blur(18px);
+    border-radius: 22px;
+    padding: 35px;
     text-align: center;
-    font-size: 16px;
+    border: 1px solid rgba(255,255,255,0.08);
     transition: 0.25s ease;
     cursor: pointer;
-    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
 }
 
 .panel:hover {
-    transform: translateY(-5px);
-    background: rgba(40,42,50,0.85);
+    transform: translateY(-8px);
+    box-shadow: 0 20px 45px rgba(0,0,0,0.6);
+    border: 1px solid rgba(255,255,255,0.15);
 }
 
-.panel a {
-    text-decoration: none;
-    color: white;
+.panel.big {
+    padding: 65px;
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.panel.small {
+    min-height: 110px;
+    font-size: 15px;
+}
+
+/* GOLD MANAGEMENT PANEL */
+
+.panel.gold {
+    border: 1px solid rgba(250,204,21,0.7);
+    box-shadow: 0 0 20px rgba(250,204,21,0.2);
+}
+
+.panel.gold:hover {
+    box-shadow: 0 0 35px rgba(250,204,21,0.4);
 }
 
 /* ============================= */
-/* LARGE PANELS (Management Page) */
-/* ============================= */
-
-.panel.large {
-    padding: 50px;
-    margin-bottom: 40px;
-}
-
-.panel.large h2 {
-    margin-bottom: 25px;
-    text-align: center;
-}
-
-/* ============================= */
-/* FORM */
+/* FORM (Management Page) */
 /* ============================= */
 
 .panel input,
@@ -285,7 +305,16 @@ footer {
 @media (max-width: 900px) {
 
     .dashboard {
-        margin-top: 50px;
+        margin-top: 60px;
+        padding: 0 20px;
+    }
+
+    .top-panels {
+        grid-template-columns: 1fr;
+    }
+
+    .middle-panels {
+        grid-template-columns: 1fr;
     }
 
     .account-row {
