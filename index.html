@@ -2,18 +2,13 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>Startseite</title>
+<title>Burgershot Intern</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <script>
-let user = sessionStorage.getItem("loggedInUser");
-
-document.getElementById("welcomeUser").innerText = "Eingeloggt als: " + user;
-
-function logout() {
-    sessionStorage.removeItem("loggedInUser");
+if (!sessionStorage.getItem("loggedInUser")) {
     window.location.href = "login.html";
 }
 </script>
@@ -22,7 +17,6 @@ function logout() {
     <div class="header-left">
         <a href="index.html" class="brand-link">🍔 Burgershot Intern</a>
     </div>
-
     <div class="header-right">
         <span id="welcomeUser"></span>
         <button class="logout-btn" onclick="logout()">Logout</button>
@@ -35,23 +29,13 @@ function logout() {
 
         <div class="big-panel">
             <h3>📢 Business Management</h3>
-            <p>Ankündigungen, Events & Unternehmenskommunikation verwalten.</p>
+            <p>Ankündigungen & Unternehmenskommunikation.</p>
         </div>
 
-        <a href="management.html" class="big-panel gold">
+        <a href="management.html" class="big-panel gold" id="managementPanel">
             <h3>👑 Management Center</h3>
-            <p>Mitarbeiterverwaltung & Führungsentscheidungen.</p>
+            <p>Mitarbeiterverwaltung & Rollen.</p>
         </a>
-
-    </div>
-
-    <div class="small-panels">
-
-        <div class="small-panel">👕 Kleiderordnung</div>
-        <div class="small-panel">⚖ Sanktionen</div>
-        <div class="small-panel">📅 Abmeldungen</div>
-        <div class="small-panel">📦 Einkäufe</div>
-        <div class="small-panel">📝 Bewerbungen</div>
 
     </div>
 
@@ -62,13 +46,21 @@ function logout() {
 </footer>
 
 <script>
-    let user = sessionStorage.getItem("loggedInUser");
-    document.getElementById("welcomeUser").innerText = user;
+let user = sessionStorage.getItem("loggedInUser");
+document.getElementById("welcomeUser").innerText = "Eingeloggt als: " + user;
 
-    function logout() {
-        sessionStorage.removeItem("loggedInUser");
-        window.location.href = "login.html";
-    }
+function logout() {
+    sessionStorage.removeItem("loggedInUser");
+    window.location.href = "login.html";
+}
+
+let employees = JSON.parse(localStorage.getItem("bs_employees")) || {};
+
+let current = employees[user];
+
+if (!current || (current.rang !== "Cheffe" && current.rang !== "Management")) {
+    document.getElementById("managementPanel").style.display = "none";
+}
 </script>
 
 </body>
