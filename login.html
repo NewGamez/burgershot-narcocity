@@ -119,14 +119,16 @@ function login() {
     let username = document.getElementById("username").value.trim();
     let password = document.getElementById("password").value.trim();
 
-    let accounts = JSON.parse(localStorage.getItem("accounts")) || {};
+    // Wir nutzen die Funktion aus der script.js, um konsistent zu bleiben
+    let accounts = getAccounts(); 
 
     if (!accounts[username]) {
         alert("Account existiert nicht.");
         return;
     }
 
-    if (accounts[username] !== password) {
+    // WICHTIG: .password hinzufügen, da accounts[username] ein Objekt {password, role} ist
+    if (accounts[username].password !== password) {
         alert("Falsches Passwort.");
         return;
     }
