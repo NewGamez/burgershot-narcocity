@@ -8,12 +8,7 @@
 <body>
 
 <script>
-let user = sessionStorage.getItem("loggedInUser");
-
-document.getElementById("welcomeUser").innerText = "Eingeloggt als: " + user;
-
-function logout() {
-    sessionStorage.removeItem("loggedInUser");
+if (!sessionStorage.getItem("loggedInUser")) {
     window.location.href = "login.html";
 }
 </script>
@@ -30,20 +25,34 @@ function logout() {
 
 <section class="dashboard">
 
-    <div class="big-panel">
+    <!-- ACCOUNT ERSTELLEN -->
+    <div class="big-panel gold">
+
         <h3>Neuen Account erstellen</h3>
 
-        <input type="text" id="newUsername" placeholder="Benutzername">
-        <input type="password" id="newPassword" placeholder="4-stelliges Passwort" maxlength="4">
+        <div class="form-group">
+            <input type="text" id="newUsername" placeholder="Benutzername">
+            <input type="password" id="newPassword" placeholder="4-stelliges Passwort" maxlength="4">
+        </div>
 
         <button class="create-btn" onclick="createAccount()">Account erstellen</button>
+
+    </div>
+
+    <!-- ACCOUNT LISTE -->
+    <div class="big-panel account-list">
+
+        <h3>Erstellte Accounts</h3>
+
+        <ul id="accountList"></ul>
+
     </div>
 
 </section>
 
 <script>
 let user = sessionStorage.getItem("loggedInUser");
-document.getElementById("welcomeUser").innerText = user;
+document.getElementById("welcomeUser").innerText = "Eingeloggt als: " + user;
 
 function logout() {
     sessionStorage.removeItem("loggedInUser");
@@ -72,11 +81,24 @@ function createAccount() {
     }
 
     accounts[username] = password;
-
     localStorage.setItem("accounts", JSON.stringify(accounts));
 
-    alert("Account erfolgreich erstellt.");
+    loadAccounts();
 }
+
+function loadAccounts() {
+    let accounts = JSON.parse(localStorage.getItem("accounts")) || {};
+    let list = document.getElementById("accountList");
+    list.innerHTML = "";
+
+    Object.keys(accounts).forEach(username => {
+        let li = document.createElement("li");
+        li.innerText = username;
+        list.appendChild(li);
+    });
+}
+
+loadAccounts();
 </script>
 
 </body>
