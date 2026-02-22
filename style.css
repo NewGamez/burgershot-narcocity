@@ -199,6 +199,65 @@ header {
     background: rgba(255,255,255,0.35);
 }
 
+/* Container-Fix */
+.management-container {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch !important;
+    padding: 30px !important;
+}
+
+/* Hiring-Bar Layout */
+.hiring-bar {
+    display: grid;
+    grid-template-columns: 2fr 1.5fr auto;
+    gap: 15px;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 30px;
+}
+
+/* Tabellen-Optik */
+.account-table-header {
+    display: grid;
+    grid-template-columns: 2fr 1.5fr 1fr;
+    padding: 10px 20px;
+    border-bottom: 2px solid rgba(250, 172, 21, 0.5); /* Burgershot Gold Linie */
+    font-weight: bold;
+    color: #faac15;
+    font-size: 14px;
+}
+
+.account-list-container {
+    margin-top: 5px;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 0 0 12px 12px;
+}
+
+.account-row {
+    display: grid;
+    grid-template-columns: 2fr 1.5fr 1fr;
+    align-items: center;
+    padding: 12px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.account-row:last-child { border-bottom: none; }
+
+/* Badges für die neuen Ränge */
+.role-badge {
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: uppercase;
+    display: inline-block;
+}
+
+.badge-cheffe { background: rgba(255, 70, 70, 0.2); color: #ff4646; border: 1px solid #ff4646; }
+.badge-management { background: rgba(250, 172, 21, 0.2); color: #faac15; border: 1px solid #faac15; }
+.badge-mitarbeiter { background: rgba(255, 255, 255, 0.1); color: #ddd; border: 1px solid #777; }
 /* ============================= */
 /* ACCOUNT LIST */
 /* ============================= */
