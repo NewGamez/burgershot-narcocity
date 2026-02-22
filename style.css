@@ -230,6 +230,39 @@ header {
     background: rgba(255,80,80,0.4);
 }
 
+/* Die Hiring-Bar wie im PD-System */
+.hiring-bar {
+    display: grid;
+    grid-template-columns: 2fr 1.5fr auto;
+    gap: 10px;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+}
+
+.add-btn {
+    background: #faac15 !important;
+    color: black !important;
+    font-weight: bold !important;
+    padding: 0 20px !important;
+    height: 40px;
+}
+
+/* Ränge-Farben */
+.role-badge {
+    padding: 5px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+/* Spezifische Farben für Burgershot */
+.role-cheffe { background: rgba(255, 70, 70, 0.2); color: #ff4646; border: 1px solid #ff4646; }
+.role-management { background: rgba(250, 172, 21, 0.2); color: #faac15; border: 1px solid #faac15; }
+.role-mitarbeiter { background: rgba(255, 255, 255, 0.1); color: #ccc; border: 1px solid #555; }
+
 /* ============================= */
 /* MODAL */
 /* ============================= */
