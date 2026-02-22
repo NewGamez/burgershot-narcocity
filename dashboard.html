@@ -2,13 +2,79 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>Dashboard</title>
+<title>Burgershot Dashboard</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<h1>Willkommen im Mitarbeiterbereich</h1>
-<button onclick="logout()">Logout</button>
+<script>
+if (!sessionStorage.getItem("loggedInUser")) {
+    window.location.href = "login.html";
+}
+</script>
+
+<header>
+    <div class="header-left">
+        <a href="dashboard.html" class="brand-link">🍔 Burgershot Intern</a>
+    </div>
+
+    <div class="header-right">
+        <span id="welcomeUser"></span>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+</header>
+
+<section class="dashboard">
+
+    <!-- ===== TOP PANELS ===== -->
+    <div class="panel-grid-top">
+
+        <a href="business.html" class="big-panel clickable">
+            <h3>📢 Business Announcements</h3>
+            <p>Unternehmensankündigungen & wichtige Mitteilungen.</p>
+        </a>
+
+        <a href="management.html" class="big-panel gold clickable" id="managementPanel">
+            <h3>👑 Management Center</h3>
+            <p>Mitarbeiterverwaltung & Führungsentscheidungen.</p>
+        </a>
+
+    </div>
+
+    <!-- ===== SECOND GRID ===== -->
+    <div class="panel-grid">
+
+        <a href="kleiderordnung.html" class="small-panel clickable">
+            👕 Kleiderordnung
+        </a>
+
+        <a href="musik.html" class="small-panel clickable">
+            🎵 Musik
+        </a>
+
+        <a href="abmeldungen.html" class="small-panel clickable">
+            📅 Abmeldungen
+        </a>
+
+        <a href="mitarbeiter.html" class="small-panel clickable">
+            👥 Mitarbeiter
+        </a>
+
+        <a href="bewerber.html" class="small-panel clickable">
+            📝 Bewerber
+        </a>
+
+        <a href="einkaeufe.html" class="small-panel clickable">
+            📦 Einkäufe
+        </a>
+
+    </div>
+
+</section>
+
+<footer>
+    Burgershot Internal System © 2026 - Made by Anton Horvath
+</footer>
 
 <script src="script.js"></script>
 
