@@ -51,6 +51,17 @@
     </div>
 
 </section>
+    
+    <div class="modal-backdrop" id="changePassModal" style="display:none;">
+    <div class="modal">
+        <h2>Sicherheitsschub</h2>
+        <p>Da dies dein erster Login ist, musst du dein 4-stelliges Passwort ändern.</p>
+        <input type="password" id="newPassInput" placeholder="Neue 4-stellige PIN" maxlength="4" 
+               style="width:80%; padding:10px; margin-bottom:20px; border-radius:10px; border:none; background:rgba(255,255,255,0.1); color:white; text-align:center;">
+        <br>
+        <button onclick="updatePassword()">Passwort speichern</button>
+    </div>
+</div>
 
 <footer>
     Burgershot Internal System © 2026
@@ -82,6 +93,37 @@ function openManagement() {
 function closeModal() {
     document.getElementById("noAccessModal").style.display = "none";
 }
+
+    function checkFirstLogin() {
+    const username = sessionStorage.getItem("loggedInUser");
+    const accounts = getAccounts();
+    const user = accounts[username];
+
+    if (user && user.isFirstLogin) {
+        document.getElementById("changePassModal").style.display = "flex";
+    }
+}
+
+function updatePassword() {
+    const newPass = document.getElementById("newPassInput").value.trim();
+    const username = sessionStorage.getItem("loggedInUser");
+    const accounts = getAccounts();
+
+    if (newPass.length !== 4 || isNaN(newPass)) {
+        alert("Das Passwort muss aus genau 4 Zahlen bestehen.");
+        return;
+    }
+
+    accounts[username].password = newPass;
+    accounts[username].isFirstLogin = false; // Status auf erledigt setzen
+    saveAccounts(accounts);
+    
+    document.getElementById("changePassModal").style.display = "none";
+    alert("Passwort erfolgreich gesetzt!");
+}
+
+// Beim Laden der Seite prüfen
+checkFirstLogin();
 </script>
 
 </body>
