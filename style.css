@@ -6,25 +6,54 @@
 
 body {
     font-family: system-ui, -apple-system, Segoe UI, sans-serif;
-    background: #1c1f26;
     color: white;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    position: relative;
+    overflow-x: hidden;
 }
 
+/* ============================= */
+/* BACKGROUND IMAGE */
+/* ============================= */
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: url("assets/burgershot-bg.png") center/cover no-repeat;
+    filter: brightness(0.5);
+    transform: scale(1.05);
+    z-index: -2;
+    animation: slowZoom 25s ease-in-out infinite alternate;
+}
+
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: rgba(28,31,38,0.85);
+    z-index: -1;
+}
+
+/* ============================= */
 /* HEADER */
+/* ============================= */
 
 header {
     padding: 25px;
     text-align: center;
     font-size: 22px;
     font-weight: 600;
-    background: #16181d;
+    background: rgba(22,24,29,0.9);
     border-bottom: 2px solid #e11d48;
+    backdrop-filter: blur(8px);
 }
 
+/* ============================= */
 /* DASHBOARD */
+/* ============================= */
 
 .dashboard {
     flex: 1;
@@ -32,6 +61,7 @@ header {
     margin: 80px auto;
     padding: 0 20px;
     text-align: center;
+    animation: fadeIn 1s ease;
 }
 
 .dashboard h2 {
@@ -40,7 +70,9 @@ header {
     color: #f43f5e;
 }
 
+/* ============================= */
 /* BIG PANELS */
+/* ============================= */
 
 .main-panels {
     display: grid;
@@ -50,17 +82,19 @@ header {
 }
 
 .big-panel {
-    background: #242731;
+    background: rgba(36,39,49,0.95);
     padding: 60px;
     border-radius: 18px;
     transition: 0.3s;
     border: 1px solid #2f333d;
+    backdrop-filter: blur(6px);
+    animation: slideUp 0.8s ease;
 }
 
 .big-panel:hover {
     transform: translateY(-6px);
     border-color: #f43f5e;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.5);
 }
 
 .big-panel h3 {
@@ -77,11 +111,12 @@ header {
 }
 
 .big-panel.gold:hover {
-    border-color: #facc15;
-    box-shadow: 0 10px 30px rgba(250,204,21,0.2);
+    box-shadow: 0 15px 40px rgba(250,204,21,0.2);
 }
 
+/* ============================= */
 /* SMALL PANELS */
+/* ============================= */
 
 .small-panels {
     display: grid;
@@ -90,12 +125,13 @@ header {
 }
 
 .small-panel {
-    background: #242731;
+    background: rgba(36,39,49,0.95);
     padding: 20px;
     border-radius: 12px;
     border: 1px solid #2f333d;
     transition: 0.3s;
     font-weight: 500;
+    animation: fadeIn 1.2s ease;
 }
 
 .small-panel:hover {
@@ -103,18 +139,57 @@ header {
     transform: translateY(-4px);
 }
 
+/* ============================= */
 /* FOOTER */
+/* ============================= */
 
 footer {
     text-align: center;
     padding: 25px;
-    background: #16181d;
+    background: rgba(22,24,29,0.9);
     border-top: 1px solid #2f333d;
     font-size: 14px;
     color: #9ca3af;
 }
 
+/* ============================= */
+/* ANIMATIONS */
+/* ============================= */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slowZoom {
+    from {
+        transform: scale(1.05);
+    }
+    to {
+        transform: scale(1.1);
+    }
+}
+
+/* ============================= */
 /* RESPONSIVE */
+/* ============================= */
 
 @media (max-width: 900px) {
     .main-panels {
