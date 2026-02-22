@@ -1,69 +1,160 @@
+/* =========================
+   BURGERSHOT CORPORATE STYLE
+   ========================= */
+
 body {
     margin: 0;
-    font-family: Arial, sans-serif;
+    padding: 0;
+    font-family: 'Segoe UI', Arial, sans-serif;
     background-color: #111;
-    color: white;
+    color: #ffffff;
 }
+
+/* =========================
+   HEADER
+   ========================= */
 
 header {
     background: #C1121F;
     padding: 20px;
     text-align: center;
+    position: relative;
 }
 
-nav a {
+header h1 {
+    margin: 0;
+    font-size: 28px;
+    letter-spacing: 2px;
+}
+
+header button {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+}
+
+/* =========================
+   BUTTONS
+   ========================= */
+
+button {
+    padding: 10px 18px;
+    background: #C1121F;
+    border: none;
     color: white;
-    text-decoration: none;
-    margin: 0 15px;
     font-weight: bold;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: 0.3s ease;
 }
 
-nav a:hover {
-    color: #000;
+button:hover {
+    background: #900;
+    transform: scale(1.05);
 }
 
-.hero {
-    background: #222;
-    padding: 80px 20px;
-    text-align: center;
-}
+/* =========================
+   CONTENT AREA
+   ========================= */
 
 .content {
     padding: 40px;
+    max-width: 900px;
+    margin: auto;
 }
+
+.content h2 {
+    margin-top: 0;
+    color: #C1121F;
+}
+
+.content ul {
+    list-style: none;
+    padding: 0;
+}
+
+.content ul li {
+    padding: 12px;
+    margin: 10px 0;
+    background: #1c1c1c;
+    border-left: 4px solid #C1121F;
+    border-radius: 4px;
+}
+
+/* =========================
+   LOGIN BOX
+   ========================= */
+
+.login-box {
+    width: 320px;
+    margin: 150px auto;
+    padding: 35px;
+    background: #1c1c1c;
+    text-align: center;
+    border-radius: 12px;
+    box-shadow: 0 0 25px rgba(193, 18, 31, 0.3);
+}
+
+.login-box h2 {
+    margin-bottom: 25px;
+    color: #C1121F;
+}
+
+.login-box input {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 6px;
+    background: #2a2a2a;
+    color: white;
+    font-size: 14px;
+}
+
+.login-box input:focus {
+    outline: none;
+    border: 1px solid #C1121F;
+}
+
+.login-box button {
+    width: 100%;
+    margin-top: 15px;
+}
+
+#message {
+    margin-top: 15px;
+    color: #ff4d4d;
+    font-size: 14px;
+}
+
+/* =========================
+   FOOTER
+   ========================= */
 
 footer {
     background: #000;
     text-align: center;
     padding: 20px;
-    margin-top: 40px;
+    margin-top: 60px;
+    font-size: 14px;
+    color: #888;
 }
 
-.login-box {
-    width: 300px;
-    margin: 150px auto;
-    padding: 30px;
-    background: #222;
-    text-align: center;
-    border-radius: 10px;
-}
+/* =========================
+   RESPONSIVE DESIGN
+   ========================= */
 
-.login-box input {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    border: none;
-}
+@media (max-width: 768px) {
+    .login-box {
+        width: 90%;
+        margin: 100px auto;
+    }
 
-.login-box button {
-    width: 100%;
-    padding: 10px;
-    background: #C1121F;
-    color: white;
-    border: none;
-    cursor: pointer;
-}
+    .content {
+        padding: 20px;
+    }
 
-.login-box button:hover {
-    background: #900;
+    header h1 {
+        font-size: 22px;
+    }
 }
