@@ -8,9 +8,14 @@
 <body>
 
 <script>
-    if (!sessionStorage.getItem("loggedInUser")) {
-        window.location.href = "login.html";
-    }
+let user = sessionStorage.getItem("loggedInUser");
+
+document.getElementById("welcomeUser").innerText = "Eingeloggt als: " + user;
+
+function logout() {
+    sessionStorage.removeItem("loggedInUser");
+    window.location.href = "login.html";
+}
 </script>
 
 <header>
