@@ -15,8 +15,9 @@ if (!sessionStorage.getItem("loggedInUser")) {
 
 <header>
     <div class="header-left">
-        <a href="index.html" class="brand-link">🍔 Burgershot Intern</a>
+        <a href="index.html" class="brand-link">👑 Management</a>
     </div>
+
     <div class="header-right">
         <span id="welcomeUser"></span>
         <button class="logout-btn" onclick="logout()">Logout</button>
@@ -25,171 +26,103 @@ if (!sessionStorage.getItem("loggedInUser")) {
 
 <section class="dashboard">
 
-<div class="big-panel gold">
+    <!-- ACCOUNT ERSTELLEN -->
+    <div class="big-panel gold">
 
-    <div class="toolbar">
-        <button class="btn-primary" id="btnAdd">+ Mitarbeiter hinzufügen</button>
+        <h3>Neuen Account erstellen</h3>
+
+        <div class="form-group">
+            <input type="text" id="newUsername" placeholder="Benutzername">
+            <input type="password" id="newPassword" placeholder="4-stelliges Passwort" maxlength="4">
+        </div>
+
+        <button class="create-btn" onclick="createAccount()">Account erstellen</button>
+
     </div>
 
-    <table class="employee-table">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Rang</th>
-                <th>Discord-ID</th>
-                <th class="actions-col">Aktionen</th>
-            </tr>
-        </thead>
-        <tbody id="empTbody"></tbody>
-    </table>
+<div class="big-panel account-list">
+
+    <h3>Erstellte Accounts</h3>
+
+    <div class="account-table">
+
+        <div class="account-row header">
+            <span>Benutzername</span>
+            <span>Rolle</span>
+            <span>Aktion</span>
+        </div>
+
+        <div id="accountList"></div>
+
+    </div>
 
 </div>
 
 </section>
 
-<!-- MODAL -->
-<div class="modal-backdrop" id="modalBackdrop">
-  <div class="modal">
-    <div class="modal-head">
-      <div>Mitarbeiter hinzufügen</div>
-      <button class="btn-secondary" onclick="closeModal()">Schließen</button>
-    </div>
-
-    <div class="modal-body">
-        <div class="grid">
-            <div class="field">
-                <label>Discord-ID (nur Zahlen)</label>
-                <input id="newDiscordId">
-            </div>
-            <div class="field">
-                <label>Name</label>
-                <input id="newName">
-            </div>
-            <div class="field">
-                <label>Rang</label>
-                <select id="newRang"></select>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal-footer">
-        <button class="btn-secondary" onclick="closeModal()">Abbrechen</button>
-        <button class="btn-primary" onclick="confirmAdd()">Hinzufügen</button>
-    </div>
-  </div>
-</div>
-
-<footer>
-    Burgershot Internal System © 2026
-</footer>
-
 <script>
-const RANKS = ["Cheffe", "Management", "Mitarbeiter_in"];
-
 let user = sessionStorage.getItem("loggedInUser");
 document.getElementById("welcomeUser").innerText = "Eingeloggt als: " + user;
-
-let employees = JSON.parse(localStorage.getItem("bs_employees")) || {};
-
-if (!employees[user] || (employees[user].rang !== "Cheffe" && employees[user].rang !== "Management")) {
-    window.location.href = "index.html";
-}
 
 function logout() {
     sessionStorage.removeItem("loggedInUser");
     window.location.href = "login.html";
 }
 
-function saveEmployees(){
-    localStorage.setItem("bs_employees", JSON.stringify(employees));
-}
+function createAccount() {
+    let username = document.getElementById("newUsername").value.trim();
+    let password = document.getElementById("newPassword").value.trim();
 
-function render(){
-    const tbody = document.getElementById("empTbody");
-    tbody.innerHTML = "";
-
-    Object.entries(employees).forEach(([id, data]) => {
-
-        const tr = document.createElement("tr");
-
-        tr.innerHTML = `
-            <td>${data.name}</td>
-            <td>${data.rang}</td>
-            <td>${id}</td>
-            <td class="actions">
-                <button class="btn-secondary" onclick="uprank('${id}')">Uprank</button>
-                <button class="btn-secondary" onclick="derank('${id}')">Derank</button>
-                <button class="btn-danger" onclick="removeEmployee('${id}')">Kündigen</button>
-            </td>
-        `;
-
-        tbody.appendChild(tr);
-    });
-}
-
-function uprank(id){
-    let i = RANKS.indexOf(employees[id].rang);
-    if(i > 0){
-        employees[id].rang = RANKS[i - 1];
-        saveEmployees();
-        render();
-    }
-}
-
-function derank(id){
-    let i = RANKS.indexOf(employees[id].rang);
-    if(i < RANKS.length - 1){
-        employees[id].rang = RANKS[i + 1];
-        saveEmployees();
-        render();
-    }
-}
-
-function removeEmployee(id){
-    if(confirm("Account wirklich löschen?")){
-        delete employees[id];
-        saveEmployees();
-        render();
-    }
-}
-
-function openModal(){
-    document.getElementById("modalBackdrop").style.display = "flex";
-}
-
-function closeModal(){
-    document.getElementById("modalBackdrop").style.display = "none";
-}
-
-function confirmAdd(){
-    const id = document.getElementById("newDiscordId").value.trim();
-    const name = document.getElementById("newName").value.trim();
-    const rang = document.getElementById("newRang").value;
-
-    if(!/^\d{10,30}$/.test(id)){
-        alert("Ungültige Discord-ID.");
+    if (!username) {
+        alert("Benutzername fehlt.");
         return;
     }
 
-    employees[id] = { name, rang };
-    saveEmployees();
-    closeModal();
-    render();
+    if (password.length !== 4) {
+        alert("Passwort muss 4-stellig sein.");
+        return;
+    }
+
+    let accounts = JSON.parse(localStorage.getItem("accounts")) || {};
+
+    if (accounts[username]) {
+        alert("Account existiert bereits.");
+        return;
+    }
+
+    accounts[username] = password;
+    localStorage.setItem("accounts", JSON.stringify(accounts));
+
+    loadAccounts();
 }
 
-function initRankSelect(){
-    const sel = document.getElementById("newRang");
-    RANKS.forEach(r=>{
-        const opt = document.createElement("option");
-        opt.textContent = r;
-        sel.appendChild(opt);
+function loadAccounts() {
+    let accounts = JSON.parse(localStorage.getItem("accounts")) || {};
+    let list = document.getElementById("accountList");
+    list.innerHTML = "";
+
+    Object.keys(accounts).forEach(username => {
+
+        let row = document.createElement("div");
+        row.className = "account-row";
+
+        row.innerHTML = `
+            <span class="account-name">${username}</span>
+
+            <select class="role-select">
+                <option>Mitarbeiter</option>
+                <option>Manager</option>
+                <option>Admin</option>
+            </select>
+
+            <button class="delete-btn" onclick="deleteAccount('${username}')">Löschen</button>
+        `;
+
+        list.appendChild(row);
     });
 }
 
-document.getElementById("btnAdd").addEventListener("click", openModal);
-
-initRankSelect();
-render();
+loadAccounts();
 </script>
 
 </body>
