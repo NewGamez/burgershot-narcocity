@@ -17,6 +17,7 @@ if (!sessionStorage.getItem("loggedInUser")) {
     <div class="header-left">
         <a href="index.html" class="brand-link">🍔 Burgershot Intern</a>
     </div>
+
     <div class="header-right">
         <span id="welcomeUser"></span>
         <button class="logout-btn" onclick="logout()">Logout</button>
@@ -29,20 +30,26 @@ if (!sessionStorage.getItem("loggedInUser")) {
 
         <div class="big-panel">
             <h3>📢 Business Management</h3>
-            <p>Ankündigungen & Unternehmenskommunikation.</p>
+            <p>Ankündigungen & Unternehmenskommunikation verwalten.</p>
         </div>
 
-        <a href="management.html" class="big-panel gold" id="managementPanel">
+        <a href="management.html" class="big-panel gold clickable-panel" id="managementPanel">
             <h3>👑 Management Center</h3>
-            <p>Mitarbeiterverwaltung & Rollen.</p>
+            <p>Mitarbeiterverwaltung & Führungsentscheidungen.</p>
         </a>
 
+    </div>
+
+    <div class="small-panels">
+        <div class="small-panel">📅 Abmeldungen</div>
+        <div class="small-panel">📦 Einkäufe</div>
+        <div class="small-panel">📝 Bewerbungen</div>
     </div>
 
 </section>
 
 <footer>
-    Burgershot Internal System © 2026
+    Burgershot Internal System © 2026 - Made by Anton Horvath
 </footer>
 
 <script>
@@ -55,7 +62,6 @@ function logout() {
 }
 
 let employees = JSON.parse(localStorage.getItem("bs_employees")) || {};
-
 let current = employees[user];
 
 if (!current || (current.rang !== "Cheffe" && current.rang !== "Management")) {
