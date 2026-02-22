@@ -22,11 +22,11 @@
     <!-- TOP PANELS -->
     <div class="top-panels">
 
-        <div class="panel big" onclick="window.location.href='announcements.html'">
+        <div class="panel big">
             📢 Business Announcements
         </div>
 
-        <div class="panel big" onclick="window.location.href='management.html'">
+        <div class="panel big gold" id="managementPanel" onclick="openManagement()">
             👑 Management Center
         </div>
 
@@ -35,30 +35,18 @@
     <!-- SECOND ROW -->
     <div class="middle-panels">
 
-        <div class="panel small" onclick="window.location.href='kleiderordnung.html'">
-            👕 Kleiderordnung
-        </div>
-        <div class="panel small" onclick="window.location.href='musik.html'">
-            🎵 Musik
-        </div>
-        <div class="panel small" onclick="window.location.href='abmeldungen.html'">
-            📅 Abmeldungen
-        </div>
+        <div class="panel small">👕 Kleiderordnung</div>
+        <div class="panel small">🎵 Musik</div>
+        <div class="panel small">📅 Abmeldungen</div>
 
     </div>
 
     <!-- THIRD ROW -->
     <div class="middle-panels">
 
-        <div class="panel small" onclick="window.location.href='announcements.html'">
-            👥 Mitarbeiter
-        </div>
-        <div class="panel small" onclick="window.location.href='bewerber.html'">
-            📝 Bewerber
-        </div>
-        <div class="panel small" onclick="window.location.href='einkäufe.html'">
-            📦 Einkäufe
-        </div>
+        <div class="panel small">👥 Mitarbeiter</div>
+        <div class="panel small">📝 Bewerber</div>
+        <div class="panel small">📦 Einkäufe</div>
 
     </div>
 
@@ -78,6 +66,7 @@
 </div>
 
 <script src="script.js"></script>
+
 <script>
 requireLogin();
 setHeaderUser();
