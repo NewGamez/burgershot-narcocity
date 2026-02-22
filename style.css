@@ -1,3 +1,7 @@
+/* ===================================== */
+/* BURGERSHOT INTERN – FINAL VERSION */
+/* ===================================== */
+
 * {
     margin: 0;
     padding: 0;
@@ -15,7 +19,7 @@ body {
 }
 
 /* ============================= */
-/* BACKGROUND IMAGE ONLY */
+/* BACKGROUND IMAGE */
 /* ============================= */
 
 body::before {
@@ -33,17 +37,54 @@ body::before {
 /* ============================= */
 
 header {
-    padding: 25px;
-    text-align: center;
-    font-size: 22px;
-    font-weight: 600;
-    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 40px;
+    background: rgba(0, 0, 0, 0.55);
     backdrop-filter: blur(6px);
-    border-bottom: 2px solid #e11d48;
+}
+
+/* LEFT */
+
+.header-left {
+    font-size: 16px;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+/* RIGHT */
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.user-info {
+    font-size: 13px;
+    color: #d1d5db;
+}
+
+/* ROUND GREY LOGOUT */
+
+.logout-btn {
+    padding: 6px 14px;
+    border-radius: 999px;
+    border: none;
+    background: rgba(255,255,255,0.15);
+    color: white;
+    font-size: 12px;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.logout-btn:hover {
+    background: rgba(255,255,255,0.25);
 }
 
 /* ============================= */
-/* DASHBOARD */
+/* DASHBOARD AREA */
 /* ============================= */
 
 .dashboard {
@@ -52,13 +93,6 @@ header {
     margin: 80px auto;
     padding: 0 20px;
     text-align: center;
-}
-
-.dashboard h2 {
-    margin-bottom: 50px;
-    font-size: 28px;
-    color: #f43f5e;
-    text-shadow: 0 0 10px rgba(0,0,0,0.6);
 }
 
 /* ============================= */
@@ -96,6 +130,8 @@ header {
 .big-panel p {
     color: #d1d5db;
 }
+
+/* GOLD PANEL */
 
 .big-panel.gold {
     border: 1px solid rgba(250,204,21,0.6);
