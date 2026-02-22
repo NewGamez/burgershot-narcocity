@@ -1,23 +1,19 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="UTF-8">
-<title>Management</title>
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <title>Burgershot Management</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <header>
-    <div class="header-left">
-        <a href="index.html" class="brand-link">🍔 Burgershot Intern</a>
-    </div>
+    <div class="header-left"><a href="index.html" class="brand-link">🍔 Burgershot Intern</a></div>
     <div class="header-right">
         <span id="welcomeUser"></span>
         <button class="logout-btn" onclick="logout()">Logout</button>
     </div>
 </header>
-
-<section class="dashboard">
 
 <section class="dashboard">
     <div class="panel large management-container">
@@ -39,138 +35,85 @@
             <span style="text-align: right;">Aktionen</span>
         </div>
 
-        <div id="accountList" class="account-list-container">
-            </div>
+        <div id="accountList" class="account-list-container"></div>
     </div>
-</section>
-    
-<div class="panel large">
-
-    <h2>Erstellte Accounts</h2>
-    <div id="accountList"></div>
-
-</div>
-
 </section>
 
 <script src="script.js"></script>
 <script>
-requireLogin();
-setHeaderUser();
+    requireLogin();
+    setHeaderUser();
+    if (!isAdmin()) window.location.href = "index.html";
 
-if (!isAdmin()) {
-    window.location.href = "index.html";
-}
+    const rankOrder = ["Mitarbeiter_in", "Management", "Cheffe"];
 
-// Liste der Ränge für die Buttons
-const rankOrder = ["Mitarbeiter_in", "Management", "Cheffe"];
+    function createAccount() {
+        const name = document.getElementById("newUsername").value.trim();
+        const role = document.getElementById("newRole").value;
+        if (!name) return alert("Name angeben!");
+        const accounts = getAccounts();
+        if (accounts[name]) return alert("Existiert bereits!");
 
-function createAccount() {
-    const username = document.getElementById("newUsername").value.trim();
-    const role = document.getElementById("newRole").value;
-
-    if (!username) return alert("Name fehlt!");
-
-    const accounts = getAccounts();
-    if (accounts[username]) return alert("Existiert bereits!");
-
-    // Automatisch Passwort 0000 und Flag für ersten Login
-    accounts[username] = { 
-        password: "0000", 
-        role: role, 
-        isFirstLogin: true 
-    };
-    
-    saveAccounts(accounts);
-    document.getElementById("newUsername").value = "";
-    loadAccounts();
-}
-
-function changeRank(username, direction) {
-    const accounts = getAccounts();
-    let currentIndex = rankOrder.indexOf(accounts[username].role);
-    let newIndex = currentIndex + direction;
-
-    if (newIndex >= 0 && newIndex < rankOrder.length) {
-        accounts[username].role = rankOrder[newIndex];
+        accounts[name] = { password: "0000", role: role, isFirstLogin: true };
         saveAccounts(accounts);
+        document.getElementById("newUsername").value = "";
         loadAccounts();
     }
-}
 
-function loadAccounts() {
-    const accounts = getAccounts();
-    const list = document.getElementById("accountList");
-    list.innerHTML = "";
-
-    // Definition der Hierarchie (höchste Zahl = oben)
-    const roleWeight = {
-        "Cheffe": 3,
-        "Management": 2,
-        "Mitarbeiter_in": 1
-    };
-
-    // Accounts in ein Array umwandeln und sortieren
-    const sortedAccounts = Object.keys(accounts).sort((a, b) => {
-        const weightA = roleWeight[accounts[a].role] || 0;
-        const weightB = roleWeight[accounts[b].role] || 0;
-        
-        // Erst nach Rang sortieren, bei gleichem Rang alphabetisch nach Name
-        if (weightB !== weightA) {
-            return weightB - weightA;
+    function changeRank(user, dir) {
+        const accs = getAccounts();
+        let idx = rankOrder.indexOf(accs[user].role);
+        let newIdx = idx + dir;
+        if (newIdx >= 0 && newIdx < rankOrder.length) {
+            accs[user].role = rankOrder[newIdx];
+            saveAccounts(accs);
+            loadAccounts();
         }
-        return a.localeCompare(b);
-    });
+    }
 
-    sortedAccounts.forEach(username => {
-        const user = accounts[username];
-        const div = document.createElement("div");
-        div.className = "account-row";
+    function deleteAccount(user) {
+        if (confirm(`${user} wirklich kündigen?`)) {
+            const accs = getAccounts();
+            delete accs[user];
+            saveAccounts(accs);
+            loadAccounts();
+        }
+    }
 
-        let badgeClass = "badge-mitarbeiter";
-        if (user.role === "Management") badgeClass = "badge-management";
-        if (user.role === "Cheffe") badgeClass = "badge-cheffe";
+    function loadAccounts() {
+        const accounts = getAccounts();
+        const list = document.getElementById("accountList");
+        list.innerHTML = "";
 
-        div.innerHTML = `
-            <span class="user-name">${username}</span>
-            <span><span class="role-badge ${badgeClass}">${user.role}</span></span>
-            <div class="action-buttons">
-                <button class="rank-btn" onclick="changeRank('${username}', 1)">↑</button>
-                <button class="rank-btn" onclick="changeRank('${username}', -1)">↓</button>
-                <button class="delete-btn" onclick="deleteAccount('${username}')">Kündigen</button>
-            </div>
-        `;
-        list.appendChild(div);
-    });
-}
+        const weight = { "Cheffe": 3, "Management": 2, "Mitarbeiter_in": 1 };
 
-    // Sortieren, damit Cheffe oben steht
-    const sortedUsernames = Object.keys(accounts).sort();
+        const sorted = Object.keys(accounts).sort((a,b) => {
+            if (weight[accounts[b].role] !== weight[accounts[a].role]) {
+                return weight[accounts[b].role] - weight[accounts[a].role];
+            }
+            return a.localeCompare(b);
+        });
 
-    sortedUsernames.forEach(username => {
-        const user = accounts[username];
-        const div = document.createElement("div");
-        div.className = "account-row";
+        sorted.forEach(user => {
+            const data = accounts[user];
+            const div = document.createElement("div");
+            div.className = "account-row";
+            let bCls = data.role === "Cheffe" ? "badge-cheffe" : (data.role === "Management" ? "badge-management" : "badge-mitarbeiter");
 
-        // Badge-Klasse bestimmen
-        let badgeClass = "badge-mitarbeiter";
-        if (user.role === "Cheffe") badgeClass = "badge-cheffe";
-        if (user.role === "Management") badgeClass = "badge-management";
+            div.innerHTML = `
+                <span>${user}</span>
+                <span><span class="role-badge ${bCls}">${data.role}</span></span>
+                <div class="action-buttons">
+                    <button class="rank-btn" onclick="changeRank('${user}', 1)">↑</button>
+                    <button class="rank-btn" onclick="changeRank('${user}', -1)">↓</button>
+                    <button class="delete-btn" onclick="deleteAccount('${user}')">Kündigen</button>
+                </div>
+            `;
+            list.appendChild(div);
+        });
+    }
 
-        div.innerHTML = `
-            <span style="color: white; font-weight: 500;">${username}</span>
-            <span><span class="role-badge ${badgeClass}">${user.role}</span></span>
-            <div style="text-align: right;">
-                <button class="delete-btn" onclick="deleteAccount('${username}')">Kündigen</button>
-            </div>
-        `;
-
-        list.appendChild(div);
-    });
-}
-
-loadAccounts();
+    loadAccounts();
 </script>
-
 </body>
 </html>
