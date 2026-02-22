@@ -60,7 +60,7 @@
 
 <script>
     let user = localStorage.getItem("loggedInUser");
-    document.getElementById("welcomeUser").innerText = "Eingeloggt als: " + user;
+    document.getElementById("welcomeUser").innerText = user;
 
     function logout() {
         localStorage.removeItem("loggedInUser");
