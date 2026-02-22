@@ -15,7 +15,7 @@ if (!sessionStorage.getItem("loggedInUser")) {
 
 <header>
     <div class="header-left">
-        <a href="index.html" class="brand-link">👑 Management</a>
+        <a href="index.html" class="brand-link">🍔 Burgershot Intern</a>
     </div>
 
     <div class="header-right">
@@ -26,26 +26,24 @@ if (!sessionStorage.getItem("loggedInUser")) {
 
 <section class="dashboard">
 
-    <!-- ACCOUNT ERSTELLEN -->
-    <div class="big-panel gold">
+<div class="big-panel gold">
 
-        <h3>Neuen Account erstellen</h3>
+    <h3>Neuen Account erstellen</h3>
 
-        <div class="form-group">
-            <input type="text" id="newUsername" placeholder="Benutzername">
-            <input type="password" id="newPassword" placeholder="4-stelliges Passwort" maxlength="4">
-        </div>
-
-        <button class="create-btn" onclick="createAccount()">Account erstellen</button>
-
+    <div class="form-group">
+        <input type="text" id="newUsername" placeholder="Benutzername">
+        <input type="password" id="newPassword" placeholder="4-stelliges Passwort" maxlength="4">
     </div>
+
+    <button class="create-btn" onclick="createAccount()">Account erstellen</button>
+
+</div>
 
 <div class="big-panel account-list">
 
     <h3>Erstellte Accounts</h3>
 
     <div class="account-table">
-
         <div class="account-row header">
             <span>Benutzername</span>
             <span>Rolle</span>
@@ -53,15 +51,19 @@ if (!sessionStorage.getItem("loggedInUser")) {
         </div>
 
         <div id="accountList"></div>
-
     </div>
 
 </div>
 
 </section>
 
+<footer>
+    Burgershot Internal System © 2026
+</footer>
+
 <script>
-let user = sessionStorage.getItem("loggedInUser");
+
+const user = sessionStorage.getItem("loggedInUser");
 document.getElementById("welcomeUser").innerText = "Eingeloggt als: " + user;
 
 function logout() {
@@ -70,49 +72,42 @@ function logout() {
 }
 
 function createAccount() {
-    let username = document.getElementById("newUsername").value.trim();
-    let password = document.getElementById("newPassword").value.trim();
+    const username = document.getElementById("newUsername").value.trim();
+    const password = document.getElementById("newPassword").value.trim();
 
-    if (!username) {
-        alert("Benutzername fehlt.");
-        return;
-    }
-
-    if (password.length !== 4) {
-        alert("Passwort muss 4-stellig sein.");
-        return;
-    }
+    if (!username) return alert("Benutzername fehlt.");
+    if (password.length !== 4) return alert("Passwort muss 4-stellig sein.");
 
     let accounts = JSON.parse(localStorage.getItem("accounts")) || {};
 
-    if (accounts[username]) {
-        alert("Account existiert bereits.");
-        return;
-    }
+    if (accounts[username]) return alert("Account existiert bereits.");
 
-    accounts[username] = password;
+    accounts[username] = {
+        password: password,
+        role: "Mitarbeiter"
+    };
+
     localStorage.setItem("accounts", JSON.stringify(accounts));
-
     loadAccounts();
 }
 
 function loadAccounts() {
     let accounts = JSON.parse(localStorage.getItem("accounts")) || {};
-    let list = document.getElementById("accountList");
+    const list = document.getElementById("accountList");
     list.innerHTML = "";
 
     Object.keys(accounts).forEach(username => {
 
-        let row = document.createElement("div");
+        const row = document.createElement("div");
         row.className = "account-row";
 
         row.innerHTML = `
             <span class="account-name">${username}</span>
 
-            <select class="role-select">
-                <option>Mitarbeiter</option>
-                <option>Manager</option>
-                <option>Admin</option>
+            <select class="role-select" onchange="changeRole('${username}', this.value)">
+                <option ${accounts[username].role === "Mitarbeiter" ? "selected" : ""}>Mitarbeiter</option>
+                <option ${accounts[username].role === "Manager" ? "selected" : ""}>Manager</option>
+                <option ${accounts[username].role === "Admin" ? "selected" : ""}>Admin</option>
             </select>
 
             <button class="delete-btn" onclick="deleteAccount('${username}')">Löschen</button>
@@ -122,7 +117,21 @@ function loadAccounts() {
     });
 }
 
+function changeRole(username, role) {
+    let accounts = JSON.parse(localStorage.getItem("accounts")) || {};
+    accounts[username].role = role;
+    localStorage.setItem("accounts", JSON.stringify(accounts));
+}
+
+function deleteAccount(username) {
+    let accounts = JSON.parse(localStorage.getItem("accounts")) || {};
+    delete accounts[username];
+    localStorage.setItem("accounts", JSON.stringify(accounts));
+    loadAccounts();
+}
+
 loadAccounts();
+
 </script>
 
 </body>
