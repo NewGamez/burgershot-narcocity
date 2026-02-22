@@ -19,23 +19,28 @@
 
 <section class="dashboard">
 
-<div class="panel large">
+<div class="panel large management-container">
+    <h2>🍔 Personal-Management</h2>
 
-    <h2>Neuen Account erstellen</h2>
+    <div class="hiring-bar">
+        <input type="text" id="newUsername" placeholder="Name (z.B. A. Horvath)">
+        <input type="password" id="newPassword" placeholder="PIN" maxlength="4">
+        <select id="newRole">
+            <option>Mitarbeiter</option>
+            <option>Service-Leitung</option>
+            <option>Management</option>
+            <option>Admin</option>
+        </select>
+        <button class="add-btn" onclick="createAccount()">Einstellen</button>
+    </div>
 
-    <input type="text" id="newUsername" placeholder="Benutzername">
-    <input type="password" id="newPassword" placeholder="4-stelliges Passwort" maxlength="4">
-
-    <select id="newRole">
-        <option>Mitarbeiter</option>
-        <option>Manager</option>
-        <option>Admin</option>
-    </select>
-
-    <button onclick="createAccount()">Erstellen</button>
-
+    <div class="account-table-header">
+        <span>Name</span>
+        <span>Position</span>
+        <span style="text-align: right;">Aktion</span>
+    </div>
+    <div id="accountList" class="account-list-container"></div>
 </div>
-
 <div class="panel large">
 
     <h2>Erstellte Accounts</h2>
