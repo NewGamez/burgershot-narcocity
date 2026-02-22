@@ -1,160 +1,199 @@
-/* =========================
-   BURGERSHOT CORPORATE STYLE
-   ========================= */
-
-body {
+* {
     margin: 0;
     padding: 0;
-    font-family: 'Segoe UI', Arial, sans-serif;
-    background-color: #111;
-    color: #ffffff;
+    box-sizing: border-box;
 }
 
-/* =========================
-   HEADER
-   ========================= */
+body {
+    font-family: 'Segoe UI', sans-serif;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    overflow: hidden;
+    position: relative;
+    background: black;
+}
+
+
+body::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: url("assets/burgershot-bg.png") center/cover no-repeat;
+    transform: scale(1.05);
+    filter: brightness(0.85) contrast(1.15) saturate(1.1);
+    z-index: -2;
+}
+
+
+body::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(circle at center, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.85) 75%),
+        linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.9));
+    z-index: -1;
+}
+
+.login-box {
+    width: 380px;
+    padding: 45px;
+    background: rgba(15,15,15,0.95);
+    border-radius: 18px;
+    backdrop-filter: blur(15px);
+    box-shadow:
+        0 0 60px rgba(193,18,31,0.5),
+        0 0 120px rgba(193,18,31,0.2);
+    text-align: center;
+    animation: fadeIn 0.8s ease-in-out;
+    border: 1px solid rgba(255,0,0,0.25);
+}
+
+.login-box h2 {
+    margin-bottom: 30px;
+    color: #ff2c2c;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+
+.login-box input {
+    width: 100%;
+    padding: 14px;
+    margin: 12px 0;
+    border-radius: 8px;
+    border: 1px solid #333;
+    background: #111;
+    color: white;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+.login-box input:focus {
+    border: 1px solid #C1121F;
+    box-shadow: 0 0 10px rgba(193,18,31,0.6);
+    outline: none;
+}
+
+
+.login-box button {
+    width: 100%;
+    padding: 14px;
+    margin-top: 15px;
+    border-radius: 8px;
+    border: none;
+    background: linear-gradient(45deg, #C1121F, #ff2c2c);
+    color: white;
+    font-weight: bold;
+    font-size: 15px;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.login-box button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 15px rgba(255,0,0,0.7);
+}
+
+
+#message {
+    margin-top: 15px;
+    color: #ff4d4d;
+    font-size: 13px;
+}
 
 header {
-    background: #C1121F;
+    position: absolute;
+    top: 0;
+    width: 100%;
     padding: 20px;
-    text-align: center;
-    position: relative;
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 header h1 {
-    margin: 0;
-    font-size: 28px;
+    color: #ff2c2c;
     letter-spacing: 2px;
 }
 
 header button {
-    position: absolute;
-    right: 20px;
-    top: 20px;
-}
-
-/* =========================
-   BUTTONS
-   ========================= */
-
-button {
-    padding: 10px 18px;
-    background: #C1121F;
-    border: none;
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
+    padding: 8px 16px;
     border-radius: 6px;
-    transition: 0.3s ease;
+    border: none;
+    background: #C1121F;
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
 }
 
-button:hover {
+header button:hover {
     background: #900;
-    transform: scale(1.05);
 }
 
-/* =========================
-   CONTENT AREA
-   ========================= */
 
 .content {
-    padding: 40px;
+    position: absolute;
+    top: 120px;
+    width: 90%;
     max-width: 900px;
-    margin: auto;
+    text-align: center;
 }
 
 .content h2 {
-    margin-top: 0;
-    color: #C1121F;
+    margin-bottom: 20px;
+    color: #ff2c2c;
 }
 
 .content ul {
     list-style: none;
     padding: 0;
+    margin-top: 30px;
 }
 
 .content ul li {
-    padding: 12px;
-    margin: 10px 0;
-    background: #1c1c1c;
+    padding: 15px;
+    margin: 12px 0;
+    background: rgba(20,20,20,0.9);
+    border-radius: 10px;
     border-left: 4px solid #C1121F;
-    border-radius: 4px;
+    transition: 0.3s;
 }
 
-/* =========================
-   LOGIN BOX
-   ========================= */
-
-.login-box {
-    width: 320px;
-    margin: 150px auto;
-    padding: 35px;
-    background: #1c1c1c;
-    text-align: center;
-    border-radius: 12px;
-    box-shadow: 0 0 25px rgba(193, 18, 31, 0.3);
+.content ul li:hover {
+    background: rgba(40,40,40,0.95);
+    transform: translateX(5px);
 }
 
-.login-box h2 {
-    margin-bottom: 25px;
-    color: #C1121F;
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(25px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
-
-.login-box input {
-    width: 100%;
-    padding: 12px;
-    margin: 10px 0;
-    border: none;
-    border-radius: 6px;
-    background: #2a2a2a;
-    color: white;
-    font-size: 14px;
-}
-
-.login-box input:focus {
-    outline: none;
-    border: 1px solid #C1121F;
-}
-
-.login-box button {
-    width: 100%;
-    margin-top: 15px;
-}
-
-#message {
-    margin-top: 15px;
-    color: #ff4d4d;
-    font-size: 14px;
-}
-
-/* =========================
-   FOOTER
-   ========================= */
-
-footer {
-    background: #000;
-    text-align: center;
-    padding: 20px;
-    margin-top: 60px;
-    font-size: 14px;
-    color: #888;
-}
-
-/* =========================
-   RESPONSIVE DESIGN
-   ========================= */
 
 @media (max-width: 768px) {
+
     .login-box {
         width: 90%;
-        margin: 100px auto;
+        padding: 30px;
+    }
+
+    header {
+        flex-direction: column;
+        gap: 10px;
     }
 
     .content {
-        padding: 20px;
-    }
-
-    header h1 {
-        font-size: 22px;
+        top: 150px;
     }
 }
