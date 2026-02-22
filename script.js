@@ -1,5 +1,5 @@
 // =============================
-// GLOBAL LOGIN CHECK
+// LOGIN CHECK
 // =============================
 
 function requireLogin() {
@@ -41,5 +41,8 @@ function saveAccounts(accounts) {
 function isAdmin() {
     const user = sessionStorage.getItem("loggedInUser");
     const accounts = getAccounts();
-    return accounts[user] && accounts[user].role === "Admin";
+
+    if (!accounts[user]) return false;
+
+    return accounts[user].role === "Admin";
 }
