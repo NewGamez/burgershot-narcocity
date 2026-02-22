@@ -7,6 +7,7 @@
 </head>
 <body>
 
+<!-- LOGIN SCHUTZ -->
 <script>
     if (!localStorage.getItem("loggedInUser")) {
         window.location.href = "login.html";
@@ -15,7 +16,7 @@
 
 <header>
     <h1>🍔 BURGERSHOT INTERN</h1>
-    <div>
+    <div class="header-right">
         <span id="welcomeUser"></span>
         <button onclick="logout()">Logout</button>
     </div>
@@ -28,37 +29,37 @@
 
         <a href="kleiderordnung.html" class="panel">
             <h3>👕 Kleiderordnung</h3>
-            <p>Uniformregeln & Auftreten im Dienst.</p>
+            <p>Uniformregeln & professionelles Auftreten.</p>
         </a>
 
         <a href="sanktionen.html" class="panel">
             <h3>⚖ Sanktionen</h3>
-            <p>Verwarnungen & Disziplinarmaßnahmen.</p>
+            <p>Verwarnungen & Disziplinarsystem.</p>
         </a>
 
         <a href="businessannounce.html" class="panel">
             <h3>📢 Business Announce</h3>
-            <p>Öffentliche Bekanntmachungen.</p>
+            <p>Offizielle Bekanntmachungen.</p>
         </a>
 
         <a href="abmeldungen.html" class="panel">
             <h3>📅 Abmeldungen</h3>
-            <p>Urlaub & Dienstabwesenheit.</p>
+            <p>Urlaub & Dienstabwesenheiten.</p>
         </a>
 
         <a href="einkaeufe.html" class="panel">
             <h3>📦 Einkäufe</h3>
-            <p>Lager & Bestellungen verwalten.</p>
+            <p>Lagerverwaltung & Bestellungen.</p>
         </a>
 
         <a href="bewerber.html" class="panel">
             <h3>📝 Bewerbungen</h3>
-            <p>Neue Mitarbeiter & Bewerber prüfen.</p>
+            <p>Neue Mitarbeiter verwalten.</p>
         </a>
 
         <a href="management.html" class="panel manager-panel">
             <h3>👑 Management</h3>
-            <p>Nur für Führungsebene.</p>
+            <p>Exklusiver Bereich für Führungsebene.</p>
         </a>
 
     </div>
