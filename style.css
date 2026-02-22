@@ -32,6 +32,11 @@ body::before {
     animation: slowZoom 25s ease-in-out infinite alternate;
 }
 
+@keyframes slowZoom {
+    from { transform: scale(1.05); }
+    to { transform: scale(1.1); }
+}
+
 /* ============================= */
 /* HEADER */
 /* ============================= */
@@ -42,7 +47,7 @@ header {
     align-items: center;
     padding: 18px 40px;
     background: rgba(0, 0, 0, 0.55);
-    backdrop-filter: blur(6px);
+    backdrop-filter: blur(8px);
 }
 
 .brand-link {
@@ -77,7 +82,7 @@ header {
 }
 
 .logout-btn:hover {
-    background: rgba(255,255,255,0.25);
+    background: rgba(255,255,255,0.3);
 }
 
 /* ============================= */
@@ -86,31 +91,57 @@ header {
 
 .dashboard {
     flex: 1;
-    max-width: 1100px;
+    max-width: 1200px;
     margin: 80px auto;
     padding: 0 20px;
+}
+
+/* ============================= */
+/* PANEL GRID */
+/* ============================= */
+
+.panel-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 25px;
 }
 
 /* ============================= */
 /* PANELS */
 /* ============================= */
 
-.big-panel {
-    background: rgba(30, 32, 40, 0.65);
-    backdrop-filter: blur(12px);
-    padding: 50px;
+.panel {
+    background: rgba(30,32,40,0.65);
+    backdrop-filter: blur(14px);
+    padding: 30px;
     border-radius: 20px;
+    text-align: center;
+    font-size: 16px;
+    transition: 0.25s ease;
+    cursor: pointer;
     border: 1px solid rgba(255,255,255,0.08);
-    transition: 0.3s ease;
+}
+
+.panel:hover {
+    transform: translateY(-5px);
+    background: rgba(40,42,50,0.85);
+}
+
+.panel a {
+    text-decoration: none;
+    color: white;
+}
+
+/* ============================= */
+/* LARGE PANELS (Management Page) */
+/* ============================= */
+
+.panel.large {
+    padding: 50px;
     margin-bottom: 40px;
 }
 
-.big-panel.gold {
-    border: 1px solid rgba(250,204,21,0.6);
-}
-
-.big-panel h3 {
-    font-size: 22px;
+.panel.large h2 {
     margin-bottom: 25px;
     text-align: center;
 }
@@ -119,30 +150,22 @@ header {
 /* FORM */
 /* ============================= */
 
-.form-group {
-    display: flex;
-    gap: 15px;
-    justify-content: center;
-    margin-bottom: 25px;
-    flex-wrap: wrap;
-}
-
-.form-group input {
+.panel input,
+.panel select {
+    width: 100%;
     padding: 12px;
+    margin-bottom: 15px;
     border-radius: 12px;
     border: none;
     background: rgba(255,255,255,0.1);
     color: white;
-    width: 220px;
 }
 
-.form-group input::placeholder {
+.panel input::placeholder {
     color: #ccc;
 }
 
-.create-btn {
-    display: block;
-    margin: auto;
+.panel button {
     padding: 10px 22px;
     border-radius: 999px;
     border: none;
@@ -152,24 +175,19 @@ header {
     transition: 0.2s ease;
 }
 
-.create-btn:hover {
-    background: rgba(255,255,255,0.3);
+.panel button:hover {
+    background: rgba(255,255,255,0.35);
 }
 
 /* ============================= */
-/* ACCOUNT LIST (BURGERSHOT STYLE) */
+/* ACCOUNT LIST */
 /* ============================= */
-
-.account-table {
-    margin-top: 25px;
-}
 
 .account-row {
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    gap: 20px;
-    padding: 15px 20px;
+    align-items: center;
+    padding: 14px 20px;
     border-radius: 14px;
     background: rgba(255,255,255,0.05);
     margin-bottom: 12px;
@@ -180,40 +198,71 @@ header {
     background: rgba(255,255,255,0.08);
 }
 
-.account-name {
-    font-weight: 500;
+.account-row span {
     flex: 1;
 }
 
-/* ROLE DROPDOWN */
-
-.role-select {
-    padding: 6px 12px;
-    border-radius: 10px;
-    border: none;
-    background: rgba(255,255,255,0.1);
-    color: white;
-    min-width: 150px;
+.account-row button {
+    background: rgba(255,80,80,0.2);
 }
 
-.role-select option {
-    color: black;
+.account-row button:hover {
+    background: rgba(255,80,80,0.4);
 }
 
-/* DELETE BUTTON */
+/* ============================= */
+/* MODAL */
+/* ============================= */
 
-.delete-btn {
-    padding: 6px 16px;
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.65);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal {
+    background: rgba(30,32,40,0.95);
+    backdrop-filter: blur(20px);
+    padding: 40px;
+    border-radius: 20px;
+    width: 400px;
+    max-width: 90%;
+    text-align: center;
+    border: 1px solid rgba(250,204,21,0.6);
+    box-shadow: 0 25px 60px rgba(0,0,0,0.7);
+    animation: popIn 0.25s ease;
+}
+
+.modal h2 {
+    margin-bottom: 15px;
+}
+
+.modal p {
+    opacity: 0.85;
+    margin-bottom: 25px;
+}
+
+.modal button {
+    padding: 8px 20px;
     border-radius: 999px;
     border: none;
-    background: rgba(255,80,80,0.2);
+    background: rgba(255,255,255,0.25);
     color: white;
     cursor: pointer;
     transition: 0.2s ease;
 }
 
-.delete-btn:hover {
-    background: rgba(255,80,80,0.4);
+.modal button:hover {
+    background: rgba(255,255,255,0.4);
+}
+
+@keyframes popIn {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
 }
 
 /* ============================= */
@@ -230,30 +279,19 @@ footer {
 }
 
 /* ============================= */
-/* ANIMATION */
-/* ============================= */
-
-@keyframes slowZoom {
-    from { transform: scale(1.05); }
-    to { transform: scale(1.1); }
-}
-
-/* ============================= */
 /* RESPONSIVE */
 /* ============================= */
 
 @media (max-width: 900px) {
 
+    .dashboard {
+        margin-top: 50px;
+    }
+
     .account-row {
         flex-direction: column;
         align-items: flex-start;
+        gap: 10px;
     }
 
-    .role-select {
-        width: 100%;
-    }
-
-    .delete-btn {
-        width: 100%;
-    }
 }
