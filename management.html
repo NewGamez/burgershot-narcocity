@@ -101,16 +101,26 @@ function loadAccounts() {
     const list = document.getElementById("accountList");
     list.innerHTML = "";
 
-    Object.keys(accounts).forEach(username => {
+    Object.keys(accounts).sort().forEach(username => {
+        const role = accounts[username].role;
+        let badgeStyle = "";
+
+        // Farb-Logik für verschiedene Ränge
+        if (role === "Admin") {
+            badgeStyle = "background: rgba(255, 70, 70, 0.2); color: #ff4646; border-color: rgba(255, 70, 70, 0.4);";
+        } else if (role === "Management") {
+            badgeStyle = "background: rgba(250, 172, 21, 0.2); color: #faac15; border-color: rgba(250, 172, 21, 0.4);";
+        } else {
+            badgeStyle = "background: rgba(255, 255, 255, 0.1); color: #ddd; border-color: rgba(255, 255, 255, 0.2);";
+        }
+
         const div = document.createElement("div");
         div.className = "account-row";
-
         div.innerHTML = `
-            <span>${username}</span>
-            <span>${accounts[username].role}</span>
-            <button onclick="deleteAccount('${username}')">Löschen</button>
+            <span style="font-weight: 500; color: white;">${username}</span>
+            <span><span class="role-badge" style="${badgeStyle}">${role}</span></span>
+            <button class="delete-btn" onclick="deleteAccount('${username}')">Kündigen</button>
         `;
-
         list.appendChild(div);
     });
 }
