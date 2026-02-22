@@ -2,13 +2,18 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>Burgershot Intern</title>
+<title>Startseite</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <script>
-if (!sessionStorage.getItem("loggedInUser")) {
+let user = sessionStorage.getItem("loggedInUser");
+
+document.getElementById("welcomeUser").innerText = "Eingeloggt als: " + user;
+
+function logout() {
+    sessionStorage.removeItem("loggedInUser");
     window.location.href = "login.html";
 }
 </script>
@@ -30,10 +35,10 @@ if (!sessionStorage.getItem("loggedInUser")) {
 
         <div class="big-panel">
             <h3>📢 Business Management</h3>
-            <p>Ankündigungen & Unternehmenskommunikation verwalten.</p>
+            <p>Ankündigungen, Events & Unternehmenskommunikation verwalten.</p>
         </div>
 
-        <a href="management.html" class="big-panel gold clickable-panel" id="managementPanel">
+        <a href="management.html" class="big-panel gold">
             <h3>👑 Management Center</h3>
             <p>Mitarbeiterverwaltung & Führungsentscheidungen.</p>
         </a>
@@ -41,32 +46,29 @@ if (!sessionStorage.getItem("loggedInUser")) {
     </div>
 
     <div class="small-panels">
+
+        <div class="small-panel">👕 Kleiderordnung</div>
+        <div class="small-panel">⚖ Sanktionen</div>
         <div class="small-panel">📅 Abmeldungen</div>
         <div class="small-panel">📦 Einkäufe</div>
         <div class="small-panel">📝 Bewerbungen</div>
+
     </div>
 
 </section>
 
 <footer>
-    Burgershot Internal System © 2026 - Made by Anton Horvath
+    Burgershot Internal System © 2026
 </footer>
 
 <script>
-let user = sessionStorage.getItem("loggedInUser");
-document.getElementById("welcomeUser").innerText = "Eingeloggt als: " + user;
+    let user = sessionStorage.getItem("loggedInUser");
+    document.getElementById("welcomeUser").innerText = user;
 
-function logout() {
-    sessionStorage.removeItem("loggedInUser");
-    window.location.href = "login.html";
-}
-
-let employees = JSON.parse(localStorage.getItem("bs_employees")) || {};
-let current = employees[user];
-
-if (!current || (current.rang !== "Cheffe" && current.rang !== "Management")) {
-    document.getElementById("managementPanel").style.display = "none";
-}
+    function logout() {
+        sessionStorage.removeItem("loggedInUser");
+        window.location.href = "login.html";
+    }
 </script>
 
 </body>
