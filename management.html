@@ -20,16 +20,14 @@
 <section class="dashboard">
 
 <div class="panel large management-container">
-    <h2>🍔 Personal-Management</h2>
+    <h2>🍔 Personalverwaltung</h2>
 
     <div class="hiring-bar">
-        <input type="text" id="newUsername" placeholder="Name (z.B. A. Horvath)">
-        <input type="password" id="newPassword" placeholder="PIN" maxlength="4">
+        <input type="text" id="newUsername" placeholder="Name des Mitarbeiters">
         <select id="newRole">
-            <option>Mitarbeiter</option>
-            <option>Service-Leitung</option>
+            <option>Mitarbeiter_in</option>
             <option>Management</option>
-            <option>Admin</option>
+            <option>Cheffe</option>
         </select>
         <button class="add-btn" onclick="createAccount()">Einstellen</button>
     </div>
@@ -41,6 +39,7 @@
     </div>
     <div id="accountList" class="account-list-container"></div>
 </div>
+    
 <div class="panel large">
 
     <h2>Erstellte Accounts</h2>
@@ -60,33 +59,30 @@ if (!isAdmin()) {
 }
 
 function createAccount() {
-    const userEl = document.getElementById("newUsername");
-    const passEl = document.getElementById("newPassword");
-    const roleEl = document.getElementById("newRole");
+    const username = document.getElementById("newUsername").value.trim();
+    const role = document.getElementById("newRole").value;
 
-    const username = userEl.value.trim();
-    const password = passEl.value.trim();
-    const role = roleEl.value;
-
-    if (!username || password.length !== 4) {
-        alert("Benutzername fehlt oder Passwort ist nicht 4-stellig.");
+    if (!username) {
+        alert("Bitte einen Namen eingeben.");
         return;
     }
 
     const accounts = getAccounts();
     if (accounts[username]) {
-        alert("Account existiert bereits.");
+        alert("Dieser Mitarbeiter existiert bereits.");
         return;
     }
 
-    accounts[username] = { password, role };
+    // Standard-Passwort ist immer 0000, isFirstLogin markiert den Status
+    accounts[username] = { 
+        password: "0000", 
+        role: role, 
+        isFirstLogin: true 
+    };
+    
     saveAccounts(accounts);
-    
-    // Felder leeren
-    userEl.value = "";
-    passEl.value = "";
-    
-    loadAccounts(); // Liste aktualisieren
+    document.getElementById("newUsername").value = "";
+    loadAccounts();
 }
 
 function deleteAccount(username) {
