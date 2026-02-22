@@ -1,5 +1,5 @@
 /* ===================================== */
-/* BURGERSHOT INTERN – FINAL CLEAN BUILD */
+/* BURGERSHOT INTERN – FULL BUILD */
 /* ===================================== */
 
 * {
@@ -19,7 +19,7 @@ body {
 }
 
 /* ============================= */
-/* BACKGROUND IMAGE */
+/* BACKGROUND */
 /* ============================= */
 
 body::before {
@@ -45,8 +45,6 @@ header {
     backdrop-filter: blur(6px);
 }
 
-/* CLICKABLE TITLE (kein Button Look) */
-
 .brand-link {
     text-decoration: none;
     color: white;
@@ -59,8 +57,6 @@ header {
     opacity: 0.8;
 }
 
-/* RIGHT HEADER */
-
 .header-right {
     display: flex;
     align-items: center;
@@ -68,8 +64,6 @@ header {
     font-size: 13px;
     color: #d1d5db;
 }
-
-/* ROUND GREY LOGOUT */
 
 .logout-btn {
     padding: 6px 14px;
@@ -87,7 +81,7 @@ header {
 }
 
 /* ============================= */
-/* DASHBOARD AREA */
+/* DASHBOARD */
 /* ============================= */
 
 .dashboard {
@@ -95,103 +89,61 @@ header {
     max-width: 1100px;
     margin: 80px auto;
     padding: 0 20px;
-    text-align: center;
 }
 
 /* ============================= */
-/* BIG PANELS */
+/* PANELS */
 /* ============================= */
-
-.main-panels {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 30px;
-    margin-bottom: 60px;
-}
 
 .big-panel {
     background: rgba(30, 32, 40, 0.65);
     backdrop-filter: blur(12px);
-    padding: 60px;
+    padding: 50px;
     border-radius: 20px;
     border: 1px solid rgba(255,255,255,0.08);
     transition: 0.3s ease;
-    animation: slideUp 0.8s ease;
+    margin-bottom: 40px;
 }
-
-.big-panel:hover {
-    transform: translateY(-6px);
-    border-color: #f43f5e;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.5);
-}
-
-.big-panel h3 {
-    font-size: 22px;
-    margin-bottom: 15px;
-}
-
-.big-panel p {
-    color: #d1d5db;
-}
-
-/* GOLD PANEL */
 
 .big-panel.gold {
     border: 1px solid rgba(250,204,21,0.6);
 }
 
-.big-panel.gold:hover {
-    box-shadow: 0 15px 40px rgba(250,204,21,0.2);
+.big-panel h3 {
+    font-size: 22px;
+    margin-bottom: 25px;
+    text-align: center;
 }
 
 /* ============================= */
-/* SMALL PANELS */
-/* ============================= */
-
-.small-panels {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 20px;
-}
-
-.small-panel {
-    background: rgba(30, 32, 40, 0.65);
-    backdrop-filter: blur(12px);
-    padding: 20px;
-    border-radius: 14px;
-    border: 1px solid rgba(255,255,255,0.08);
-    transition: 0.3s ease;
-    font-weight: 500;
-}
-
-.small-panel:hover {
-    border-color: #f43f5e;
-    transform: translateY(-4px);
-}
-
-/* ============================= */
-/* MANAGEMENT FORM */
+/* FORM */
 /* ============================= */
 
 .form-group {
     display: flex;
     gap: 15px;
-    margin: 25px 0;
     justify-content: center;
+    margin-bottom: 25px;
     flex-wrap: wrap;
 }
 
 .form-group input {
     padding: 12px;
-    border-radius: 10px;
+    border-radius: 12px;
     border: none;
     background: rgba(255,255,255,0.1);
     color: white;
-    width: 200px;
+    width: 220px;
+}
+
+.form-group input::placeholder {
+    color: #ccc;
 }
 
 .create-btn {
-    padding: 10px 20px;
+    display: block;
+    margin: auto;
+    padding: 10px 22px;
     border-radius: 999px;
     border: none;
     background: rgba(255,255,255,0.2);
@@ -205,38 +157,59 @@ header {
 }
 
 /* ============================= */
-/* ACCOUNT TABLE */
+/* ACCOUNT LIST (BURGERSHOT STYLE) */
 /* ============================= */
 
 .account-table {
     margin-top: 25px;
-    text-align: left;
 }
 
 .account-row {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: 12px 15px;
-    border-radius: 10px;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 15px 20px;
+    border-radius: 14px;
     background: rgba(255,255,255,0.05);
-    margin-bottom: 10px;
+    margin-bottom: 12px;
+    transition: 0.2s ease;
 }
 
-.account-row.header {
-    background: rgba(255,255,255,0.1);
-    font-weight: 600;
+.account-row:hover {
+    background: rgba(255,255,255,0.08);
 }
+
+.account-name {
+    font-weight: 500;
+    flex: 1;
+}
+
+/* ROLE DROPDOWN */
+
+.role-select {
+    padding: 6px 12px;
+    border-radius: 10px;
+    border: none;
+    background: rgba(255,255,255,0.1);
+    color: white;
+    min-width: 150px;
+}
+
+.role-select option {
+    color: black;
+}
+
+/* DELETE BUTTON */
 
 .delete-btn {
-    padding: 5px 12px;
+    padding: 6px 16px;
     border-radius: 999px;
     border: none;
     background: rgba(255,80,80,0.2);
     color: white;
     cursor: pointer;
-    transition: 0.2s;
-    font-size: 12px;
+    transition: 0.2s ease;
 }
 
 .delete-btn:hover {
@@ -257,27 +230,12 @@ footer {
 }
 
 /* ============================= */
-/* ANIMATIONS */
+/* ANIMATION */
 /* ============================= */
 
-@keyframes slideUp {
-    from {
-        opacity: 0;
-        transform: translateY(40px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
 @keyframes slowZoom {
-    from {
-        transform: scale(1.05);
-    }
-    to {
-        transform: scale(1.1);
-    }
+    from { transform: scale(1.05); }
+    to { transform: scale(1.1); }
 }
 
 /* ============================= */
@@ -285,11 +243,17 @@ footer {
 /* ============================= */
 
 @media (max-width: 900px) {
-    .main-panels {
-        grid-template-columns: 1fr;
+
+    .account-row {
+        flex-direction: column;
+        align-items: flex-start;
     }
 
-    .big-panel {
-        padding: 40px;
+    .role-select {
+        width: 100%;
+    }
+
+    .delete-btn {
+        width: 100%;
     }
 }
