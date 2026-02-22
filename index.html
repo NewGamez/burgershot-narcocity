@@ -13,78 +13,43 @@
     }
 </script>
 
-<div class="layout">
+<header>
+    🍔 BURGERSHOT INTERN
+</header>
 
-    <aside class="sidebar">
-        <div class="brand">
-            🍔 Burgershot
+<section class="dashboard">
+
+    <h2>Interne Bereiche</h2>
+
+    <div class="main-panels">
+
+        <div class="big-panel">
+            <h3>📢 Business Management</h3>
+            <p>Ankündigungen, Events & Unternehmenskommunikation verwalten.</p>
         </div>
 
-        <nav>
-            <a class="active">Dashboard</a>
-            <a>Kleiderordnung</a>
-            <a>Sanktionen</a>
-            <a>Business</a>
-            <a>Abmeldungen</a>
-            <a>Einkäufe</a>
-            <a>Bewerbungen</a>
-            <a class="management">Management</a>
-        </nav>
-
-        <div class="user">
-            <span id="welcomeUser"></span>
-            <button onclick="logout()">Logout</button>
-        </div>
-    </aside>
-
-    <main class="content">
-
-        <div class="topbar">
-            <h1>Dashboard</h1>
+        <div class="big-panel gold">
+            <h3>👑 Management Center</h3>
+            <p>Mitarbeiterverwaltung & Führungsentscheidungen.</p>
         </div>
 
-        <div class="grid">
+    </div>
 
-            <div class="card large">
-                <h2>Business Management</h2>
-                <p>Verwalte Ankündigungen und Events.</p>
-            </div>
+    <div class="small-panels">
 
-            <div class="card large management-card">
-                <h2>Management Center</h2>
-                <p>Mitarbeiter & Unternehmensführung.</p>
-            </div>
+        <div class="small-panel">👕 Kleiderordnung</div>
+        <div class="small-panel">⚖ Sanktionen</div>
+        <div class="small-panel">📅 Abmeldungen</div>
+        <div class="small-panel">📦 Einkäufe</div>
+        <div class="small-panel">📝 Bewerbungen</div>
 
-            <div class="card small">
-                <h3>43</h3>
-                <p>Mitarbeiter</p>
-            </div>
+    </div>
 
-            <div class="card small">
-                <h3>5</h3>
-                <p>Lagerartikel</p>
-            </div>
+</section>
 
-            <div class="card small">
-                <h3>2</h3>
-                <p>Offene Bewerbungen</p>
-            </div>
-
-        </div>
-
-    </main>
-
-</div>
-
-<script>
-    let user = localStorage.getItem("loggedInUser");
-    document.getElementById("welcomeUser").innerText = "Eingeloggt als: " + user;
-
-    function logout() {
-        localStorage.removeItem("loggedInUser");
-        window.location.href = "login.html";
-    }
-</script>
+<footer>
+    Burgershot Internal System © 2026
+</footer>
 
 </body>
 </html>
