@@ -38,3 +38,32 @@ footer {
     padding: 20px;
     margin-top: 40px;
 }
+
+.login-box {
+    width: 300px;
+    margin: 150px auto;
+    padding: 30px;
+    background: #222;
+    text-align: center;
+    border-radius: 10px;
+}
+
+.login-box input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: none;
+}
+
+.login-box button {
+    width: 100%;
+    padding: 10px;
+    background: #C1121F;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.login-box button:hover {
+    background: #900;
+}
