@@ -7,7 +7,6 @@
 </head>
 <body>
 
-<!-- LOGIN SCHUTZ -->
 <script>
     if (!localStorage.getItem("loggedInUser")) {
         window.location.href = "login.html";
@@ -22,48 +21,65 @@
     </div>
 </header>
 
+<section class="hero">
+    <h2>Willkommen im internen System</h2>
+    <p>Professionelle Verwaltung für Burgershot Narco City</p>
+</section>
+
+<section class="stats">
+    <div class="stat-box">
+        <h3>👥 12</h3>
+        <p>Mitarbeiter</p>
+    </div>
+    <div class="stat-box">
+        <h3>📦 43</h3>
+        <p>Lagerartikel</p>
+    </div>
+    <div class="stat-box">
+        <h3>📝 5</h3>
+        <p>Offene Bewerbungen</p>
+    </div>
+</section>
+
 <section class="dashboard">
     <h2>Interne Bereiche</h2>
 
     <div class="panel-grid">
-
-        <a href="kleiderordnung.html" class="panel">
+        <a href="#" class="panel">
             <h3>👕 Kleiderordnung</h3>
             <p>Uniformregeln & professionelles Auftreten.</p>
         </a>
 
-        <a href="sanktionen.html" class="panel">
+        <a href="#" class="panel">
             <h3>⚖ Sanktionen</h3>
             <p>Verwarnungen & Disziplinarsystem.</p>
         </a>
 
-        <a href="businessannounce.html" class="panel">
+        <a href="#" class="panel">
             <h3>📢 Business Announce</h3>
             <p>Offizielle Bekanntmachungen.</p>
         </a>
 
-        <a href="abmeldungen.html" class="panel">
+        <a href="#" class="panel">
             <h3>📅 Abmeldungen</h3>
             <p>Urlaub & Dienstabwesenheiten.</p>
         </a>
 
-        <a href="einkaeufe.html" class="panel">
+        <a href="#" class="panel">
             <h3>📦 Einkäufe</h3>
             <p>Lagerverwaltung & Bestellungen.</p>
         </a>
 
-        <a href="bewerber.html" class="panel">
-            <h3>📝 Bewerbungen</h3>
-            <p>Neue Mitarbeiter verwalten.</p>
-        </a>
-
-        <a href="management.html" class="panel manager-panel">
+        <a href="#" class="panel manager-panel">
             <h3>👑 Management</h3>
             <p>Exklusiver Bereich für Führungsebene.</p>
         </a>
-
     </div>
 </section>
+
+<footer>
+    Burgershot Internal System © 2026
+</footer>
 
 <script>
     let user = localStorage.getItem("loggedInUser");
