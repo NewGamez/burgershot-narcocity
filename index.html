@@ -14,12 +14,17 @@
 </script>
 
 <header>
-    🍔 BURGERSHOT INTERN
+    <div class="header-left">
+        <span class="title">🍔 Burgershot Intern</span>
+    </div>
+
+    <div class="header-right">
+        <span id="welcomeUser"></span>
+        <button onclick="logout()">Logout</button>
+    </div>
 </header>
 
 <section class="dashboard">
-
-    <h2>Interne Bereiche</h2>
 
     <div class="main-panels">
 
@@ -50,6 +55,16 @@
 <footer>
     Burgershot Internal System © 2026
 </footer>
+
+<script>
+    let user = localStorage.getItem("loggedInUser");
+    document.getElementById("welcomeUser").innerText = "Eingeloggt als: " + user;
+
+    function logout() {
+        localStorage.removeItem("loggedInUser");
+        window.location.href = "login.html";
+    }
+</script>
 
 </body>
 </html>
