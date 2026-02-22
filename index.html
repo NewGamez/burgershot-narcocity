@@ -8,7 +8,7 @@
 <body>
 
 <script>
-    if (!localStorage.getItem("loggedInUser")) {
+    if (!sessionStorage.getItem("loggedInUser")) {
         window.location.href = "login.html";
     }
 </script>
@@ -59,11 +59,11 @@
 </footer>
 
 <script>
-    let user = localStorage.getItem("loggedInUser");
+    let user = sessionStorage.getItem("loggedInUser");
     document.getElementById("welcomeUser").innerText = user;
 
     function logout() {
-        localStorage.removeItem("loggedInUser");
+        sessionStorage.removeItem("loggedInUser");
         window.location.href = "login.html";
     }
 </script>
