@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Burgershot | Mitarbeiterbereich</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<script>
+    if (!localStorage.getItem("loggedInUser")) {
+        window.location.href = "login.html";
+    }
+</script>
+
+<header>
+    <h1>🍔 BURGERSHOT</h1>
+    <button onclick="logout()">Logout</button>
+</header>
+
+<section class="content">
+    <h2>Willkommen im Mitarbeiterbereich</h2>
+    <p id="welcomeText"></p>
+
+    <h3>Interne Bereiche</h3>
+    <ul>
+        <li>Kleiderordnung</li>
+        <li>Sanktionen</li>
+        <li>Business Announce</li>
+        <li>Abmeldungen</li>
+        <li>Einkäufe</li>
+    </ul>
+</section>
+
+<script>
+    let user = localStorage.getItem("loggedInUser");
+    document.getElementById("welcomeText").innerText = "Eingeloggt als: " + user;
+
+    function logout() {
+        localStorage.removeItem("loggedInUser");
+        window.location.href = "login.html";
+    }
+</script>
+
+</body>
+</html>
