@@ -1,5 +1,5 @@
 /* ===================================== */
-/* BURGERSHOT INTERN – FINAL VERSION */
+/* BURGERSHOT INTERN – FINAL CLEAN BUILD */
 /* ===================================== */
 
 * {
@@ -45,23 +45,26 @@ header {
     backdrop-filter: blur(6px);
 }
 
-/* LEFT */
+/* CLICKABLE TITLE (kein Button Look) */
 
-.header-left {
+.brand-link {
+    text-decoration: none;
+    color: white;
     font-size: 16px;
     font-weight: 600;
-    color: #ffffff;
+    transition: 0.2s ease;
 }
 
-/* RIGHT */
+.brand-link:hover {
+    opacity: 0.8;
+}
+
+/* RIGHT HEADER */
 
 .header-right {
     display: flex;
     align-items: center;
     gap: 15px;
-}
-
-.user-info {
     font-size: 13px;
     color: #d1d5db;
 }
@@ -175,6 +178,7 @@ header {
     gap: 15px;
     margin: 25px 0;
     justify-content: center;
+    flex-wrap: wrap;
 }
 
 .form-group input {
@@ -201,20 +205,42 @@ header {
 }
 
 /* ============================= */
-/* ACCOUNT LIST */
+/* ACCOUNT TABLE */
 /* ============================= */
 
-.account-list ul {
-    list-style: none;
-    margin-top: 20px;
-    padding: 0;
+.account-table {
+    margin-top: 25px;
+    text-align: left;
 }
 
-.account-list li {
-    padding: 10px;
-    border-radius: 8px;
+.account-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    border-radius: 10px;
     background: rgba(255,255,255,0.05);
-    margin-bottom: 8px;
+    margin-bottom: 10px;
+}
+
+.account-row.header {
+    background: rgba(255,255,255,0.1);
+    font-weight: 600;
+}
+
+.delete-btn {
+    padding: 5px 12px;
+    border-radius: 999px;
+    border: none;
+    background: rgba(255,80,80,0.2);
+    color: white;
+    cursor: pointer;
+    transition: 0.2s;
+    font-size: 12px;
+}
+
+.delete-btn:hover {
+    background: rgba(255,80,80,0.4);
 }
 
 /* ============================= */
