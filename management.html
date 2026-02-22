@@ -40,14 +40,23 @@ if (!sessionStorage.getItem("loggedInUser")) {
 
     </div>
 
-    <!-- ACCOUNT LISTE -->
-    <div class="big-panel account-list">
+<div class="big-panel account-list">
 
-        <h3>Erstellte Accounts</h3>
+    <h3>Erstellte Accounts</h3>
 
-        <ul id="accountList"></ul>
+    <div class="account-table">
+
+        <div class="account-row header">
+            <span>Benutzername</span>
+            <span>Rolle</span>
+            <span>Aktion</span>
+        </div>
+
+        <div id="accountList"></div>
 
     </div>
+
+</div>
 
 </section>
 
@@ -93,9 +102,23 @@ function loadAccounts() {
     list.innerHTML = "";
 
     Object.keys(accounts).forEach(username => {
-        let li = document.createElement("li");
-        li.innerText = username;
-        list.appendChild(li);
+
+        let row = document.createElement("div");
+        row.className = "account-row";
+
+        row.innerHTML = `
+            <span class="account-name">${username}</span>
+
+            <select class="role-select">
+                <option>Mitarbeiter</option>
+                <option>Manager</option>
+                <option>Admin</option>
+            </select>
+
+            <button class="delete-btn" onclick="deleteAccount('${username}')">Löschen</button>
+        `;
+
+        list.appendChild(row);
     });
 }
 
