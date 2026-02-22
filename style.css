@@ -1,5 +1,5 @@
 /* ===================================== */
-/* BURGERSHOT INTERN – COMPLETE STYLE */
+/* BURGERSHOT INTERN – FULL BUILD */
 /* ===================================== */
 
 * {
@@ -14,6 +14,7 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    position: relative;
     overflow-x: hidden;
 }
 
@@ -26,7 +27,7 @@ body::before {
     position: fixed;
     inset: 0;
     background: url("assets/burgershot-bg.png") center/cover no-repeat;
-    filter: brightness(0.65);
+    filter: brightness(0.75);
     z-index: -1;
     animation: slowZoom 25s ease-in-out infinite alternate;
 }
@@ -41,7 +42,7 @@ header {
     align-items: center;
     padding: 18px 40px;
     background: rgba(0, 0, 0, 0.55);
-    backdrop-filter: blur(8px);
+    backdrop-filter: blur(6px);
 }
 
 .brand-link {
@@ -85,26 +86,9 @@ header {
 
 .dashboard {
     flex: 1;
-    max-width: 1200px;
+    max-width: 1100px;
     margin: 80px auto;
     padding: 0 20px;
-}
-
-/* ============================= */
-/* PANEL GRID (INDEX) */
-/* ============================= */
-
-.main-panels {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 30px;
-    margin-bottom: 50px;
-}
-
-.small-panels {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
 }
 
 /* ============================= */
@@ -112,207 +96,124 @@ header {
 /* ============================= */
 
 .big-panel {
-    background: rgba(30, 32, 40, 0.75);
-    backdrop-filter: blur(16px);
-    padding: 45px;
-    border-radius: 22px;
+    background: rgba(30, 32, 40, 0.65);
+    backdrop-filter: blur(12px);
+    padding: 50px;
+    border-radius: 20px;
     border: 1px solid rgba(255,255,255,0.08);
     transition: 0.3s ease;
-    text-decoration: none;
-    color: white;
-}
-
-.big-panel:hover {
-    transform: translateY(-4px);
+    margin-bottom: 40px;
 }
 
 .big-panel.gold {
-    border: 1px solid rgba(250,204,21,0.7);
-    box-shadow: 0 0 30px rgba(250,204,21,0.2);
+    border: 1px solid rgba(250,204,21,0.6);
 }
 
 .big-panel h3 {
-    margin-bottom: 20px;
     font-size: 22px;
-}
-
-.big-panel p {
-    opacity: 0.85;
-}
-
-.small-panel {
-    background: rgba(30,32,40,0.75);
-    backdrop-filter: blur(14px);
-    padding: 20px;
-    border-radius: 16px;
-    border: 1px solid rgba(255,255,255,0.08);
-    transition: 0.2s ease;
-}
-
-.small-panel:hover {
-    background: rgba(40,42,50,0.9);
+    margin-bottom: 25px;
+    text-align: center;
 }
 
 /* ============================= */
-/* TOOLBAR */
+/* FORM */
 /* ============================= */
 
-.toolbar {
+.form-group {
     display: flex;
-    justify-content: flex-end;
-    margin-bottom: 15px;
-    gap: 10px;
-}
-
-/* ============================= */
-/* TABLE */
-/* ============================= */
-
-.employee-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 15px;
-}
-
-.employee-table th,
-.employee-table td {
-    padding: 14px;
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-    font-size: 0.85rem;
-    text-align: left;
-}
-
-.employee-table th {
-    opacity: 0.7;
-}
-
-.employee-table tr:hover {
-    background: rgba(255,255,255,0.05);
-}
-
-.actions {
-    display: flex;
-    gap: 6px;
-    justify-content: flex-end;
-}
-
-/* ============================= */
-/* BUTTONS */
-/* ============================= */
-
-.btn-primary {
-    background: rgba(250,204,21,0.85);
-    border: none;
-    padding: 8px 16px;
-    border-radius: 10px;
-    cursor: pointer;
-    font-size: 0.8rem;
-    transition: 0.2s ease;
-    color: black;
-}
-
-.btn-primary:hover {
-    background: rgba(250,204,21,1);
-}
-
-.btn-secondary {
-    background: rgba(255,255,255,0.12);
-    border: none;
-    padding: 6px 12px;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: 0.2s ease;
-    color: white;
-}
-
-.btn-secondary:hover {
-    background: rgba(255,255,255,0.2);
-}
-
-.btn-danger {
-    background: rgba(200,60,60,0.6);
-    border: none;
-    padding: 6px 12px;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: 0.2s ease;
-    color: white;
-}
-
-.btn-danger:hover {
-    background: rgba(220,60,60,0.8);
-}
-
-/* ============================= */
-/* FORM ELEMENTS */
-/* ============================= */
-
-input, select {
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.1);
-    color: white;
-    padding: 8px 10px;
-    border-radius: 8px;
-    width: 100%;
-}
-
-select option {
-    color: black;
-}
-
-/* ============================= */
-/* MODAL */
-/* ============================= */
-
-.modal-backdrop {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.65);
-    display: none;
-    align-items: center;
+    gap: 15px;
     justify-content: center;
-    z-index: 100;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
 }
 
-.modal {
-    background: rgba(30,32,40,0.95);
-    backdrop-filter: blur(20px);
-    padding: 20px;
-    border-radius: 20px;
-    width: 650px;
-    max-width: 95%;
-    border: 1px solid rgba(250,204,21,0.7);
-    box-shadow: 0 30px 70px rgba(0,0,0,0.8);
+.form-group input {
+    padding: 12px;
+    border-radius: 12px;
+    border: none;
+    background: rgba(255,255,255,0.1);
+    color: white;
+    width: 220px;
 }
 
-.modal-head {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 15px;
-    font-weight: 600;
+.form-group input::placeholder {
+    color: #ccc;
 }
 
-.modal-body {
-    margin-bottom: 15px;
-}
-
-.grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-}
-
-.field label {
+.create-btn {
     display: block;
-    font-size: 0.75rem;
-    opacity: 0.7;
-    margin-bottom: 4px;
+    margin: auto;
+    padding: 10px 22px;
+    border-radius: 999px;
+    border: none;
+    background: rgba(255,255,255,0.2);
+    color: white;
+    cursor: pointer;
+    transition: 0.2s ease;
 }
 
-.modal-footer {
+.create-btn:hover {
+    background: rgba(255,255,255,0.3);
+}
+
+/* ============================= */
+/* ACCOUNT LIST (BURGERSHOT STYLE) */
+/* ============================= */
+
+.account-table {
+    margin-top: 25px;
+}
+
+.account-row {
     display: flex;
-    justify-content: flex-end;
-    gap: 8px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 15px 20px;
+    border-radius: 14px;
+    background: rgba(255,255,255,0.05);
+    margin-bottom: 12px;
+    transition: 0.2s ease;
+}
+
+.account-row:hover {
+    background: rgba(255,255,255,0.08);
+}
+
+.account-name {
+    font-weight: 500;
+    flex: 1;
+}
+
+/* ROLE DROPDOWN */
+
+.role-select {
+    padding: 6px 12px;
+    border-radius: 10px;
+    border: none;
+    background: rgba(255,255,255,0.1);
+    color: white;
+    min-width: 150px;
+}
+
+.role-select option {
+    color: black;
+}
+
+/* DELETE BUTTON */
+
+.delete-btn {
+    padding: 6px 16px;
+    border-radius: 999px;
+    border: none;
+    background: rgba(255,80,80,0.2);
+    color: white;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.delete-btn:hover {
+    background: rgba(255,80,80,0.4);
 }
 
 /* ============================= */
@@ -321,10 +222,10 @@ select option {
 
 footer {
     text-align: center;
-    padding: 20px;
+    padding: 25px;
     background: rgba(0,0,0,0.6);
     backdrop-filter: blur(6px);
-    font-size: 13px;
+    font-size: 14px;
     color: #d1d5db;
 }
 
@@ -343,25 +244,16 @@ footer {
 
 @media (max-width: 900px) {
 
-    .main-panels {
-        grid-template-columns: 1fr;
-    }
-
-    .small-panels {
-        grid-template-columns: 1fr;
-    }
-
-    .grid {
-        grid-template-columns: 1fr;
-    }
-
-    .actions {
+    .account-row {
         flex-direction: column;
         align-items: flex-start;
     }
 
-    .employee-table th,
-    .employee-table td {
-        font-size: 0.75rem;
+    .role-select {
+        width: 100%;
+    }
+
+    .delete-btn {
+        width: 100%;
     }
 }
