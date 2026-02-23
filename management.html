@@ -61,13 +61,41 @@ function renderUsers() {
         row.innerHTML = `
             <span>${name}</span>
             <span class="role-badge ${accs[name].role.toLowerCase()}">${accs[name].role}</span>
-            <div style="text-align:right;">
-            <button class="delete-btn" onclick="delUser('${name}')">Kündigen</button>
+            <div class="action-cell">
+                <button class="rank-btn" onclick="uprankUser('${name}')">⬆</button>
+                <button class="rank-btn" onclick="derankUser('${name}')">⬇</button>
+                <button class="delete-btn" onclick="delUser('${name}')">Kündigen</button>
             </div>
         `;
 
         list.appendChild(row);
     });
+}
+
+    const roleOrder = ["Mitarbeiter", "Management", "Cheffe"];
+
+function uprankUser(name) {
+    const accs = getAccounts();
+    const currentRole = accs[name].role;
+    const index = roleOrder.indexOf(currentRole);
+
+    if (index < roleOrder.length - 1) {
+        accs[name].role = roleOrder[index + 1];
+        saveAccounts(accs);
+        renderUsers();
+    }
+}
+
+function derankUser(name) {
+    const accs = getAccounts();
+    const currentRole = accs[name].role;
+    const index = roleOrder.indexOf(currentRole);
+
+    if (index > 0) {
+        accs[name].role = roleOrder[index - 1];
+        saveAccounts(accs);
+        renderUsers();
+    }
 }
 
 function addUser() {
