@@ -166,6 +166,38 @@ function renderMeineAbmeldungen() {
     });
 }
 
+/* ================================================= */
+/* ================= MITARBEITER =================== */
+/* ================================================= */
+
+const getMitarbeiter = () =>
+    JSON.parse(localStorage.getItem("bs_mitarbeiter")) || [];
+
+const saveMitarbeiter = data =>
+    localStorage.setItem("bs_mitarbeiter", JSON.stringify(data));
+
+function addMitarbeiter(vor, nach, tel, gehalt) {
+
+    if (!vor || !nach) return;
+
+    const list = getMitarbeiter();
+
+    list.push({
+        vorname: vor,
+        nachname: nach,
+        telefon: tel,
+        gehalt: gehalt
+    });
+
+    saveMitarbeiter(list);
+}
+
+function deleteMitarbeiter(index) {
+    const list = getMitarbeiter();
+    list.splice(index, 1);
+    saveMitarbeiter(list);
+}
+
 
 /* ================================================= */
 /* ================= BEWERBER SYSTEM =============== */
