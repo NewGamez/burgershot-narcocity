@@ -2,135 +2,41 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>Burgershot Intern - Dashboard</title>
+    <title>Burgershot Dashboard</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
 <header>
-    <div class="header-left">
-        <a href="index.html" class="brand-link">🍔 Burgershot Intern</a>
-    </div>
-    <div class="header-right">
-        <span id="welcomeUser"></span>
-        <button class="logout-btn" onclick="logout()">Logout</button>
-    </div>
+    <div class="brand-link">🍔 Burgershot Intern</div>
+    <button class="add-btn" style="background: #444; color: white;" onclick="logout()">Logout</button>
 </header>
 
 <section class="dashboard">
-    <div class="dashboard-grid">
-        
-        <div class="panel scrollable" onclick="location.href='abmeldungen.html'">
-            <div class="panel-header">
-                <span>📅 Abmeldungen</span>
-                <div id="absCount" class="count-badge">0 aktiv</div>
-            </div>
-            <div class="panel-content" id="absencePreview">
-                </div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+        <div class="panel" onclick="location.href='abmeldungen.html'" style="cursor:pointer;">
+            <h3 style="color:var(--accent); margin-bottom:15px;">📅 Abmeldungen</h3>
+            <div id="absPreview"></div>
         </div>
 
-        <div class="panel highlight" onclick="location.href='announcements.html'">
-            <div class="panel-header"><span>📢 News & Infos</span></div>
-            <div class="list-item">
-                <p style="font-size: 0.85rem; color: #ccc;">Das neue Intranet-System ist ab heute für alle Mitarbeiter aktiv.</p>
-            </div>
+        <div class="panel" onclick="location.href='management.html'" style="cursor:pointer; border-color: gold;">
+            <h3 style="color:gold;">⭐ Management Center</h3>
+            <p>Mitarbeiter & System verwalten</p>
         </div>
-
-        <div class="panel scrollable" onclick="location.href='bewerber.html'">
-            <div class="panel-header">
-                <span>📝 Bewerber</span>
-                <div id="appCount" class="count-badge">0 neu</div>
-            </div>
-            <div class="panel-content" id="applicantPreview">
-                </div>
-        </div>
-
-        <div class="panel center-content" onclick="location.href='service.html'">
-            <span class="icon">📋</span><span>Service</span>
-        </div>
-        
-        <div class="panel center-content" onclick="location.href='orders.html'">
-            <span class="icon">🍔</span><span>Orders</span>
-        </div>
-
-        <div class="panel center-content" onclick="location.href='einkaeufe.html'">
-            <span class="icon">🛒</span><span>Lager</span>
-        </div>
-
-        <div class="panel center-content" onclick="location.href='musik.html'">
-            <span class="icon">🎵</span><span>Musik</span>
-        </div>
-
-        <div class="panel center-content" onclick="location.href='kleidung.html'">
-            <span class="icon">👔</span><span>Kleidung</span>
-        </div>
-
-        <div class="panel full-width" id="adminPanel" style="display:none;" onclick="location.href='management.html'">
-            <span class="mgmt-title">⭐ Management Center</span>
-            <p class="mgmt-sub">Personalverwaltung & Systemsteuerung</p>
-        </div>
-
     </div>
 </section>
 
-<div class="modal-backdrop" id="firstLoginModal" style="display:none;">
-    <div class="modal">
-        <h3>🔒 Sicherheitshinweis</h3>
-        <p>Bitte ändere deine Standard-PIN für deinen Account.</p>
-        <input type="password" id="newPinInput" maxlength="4" placeholder="NEUE PIN">
-        <div class="modal-actions">
-            <button class="add-btn" onclick="saveNewPassword()">PIN Speichern</button>
-        </div>
-    </div>
-</div>
-
 <script src="script.js"></script>
 <script>
-    // Initialisierung beim Laden
     requireLogin();
-    setHeaderUser();
-
-    // Admin-Panel Check
-    if (isAdmin()) {
-        const adminPanel = document.getElementById("adminPanel");
-        if (adminPanel) adminPanel.style.display = "flex";
-    }
-
-    // Vorschau-Daten rendern
-    function renderPreviews() {
-        // Abmeldungen
-        const absences = getAbsences();
-        const absList = document.getElementById("absencePreview");
-        document.getElementById("absCount").innerText = `${absences.length} aktiv`;
-        
-        absList.innerHTML = absences.length ? "" : "<p class='empty-msg'>Keine Abmeldungen</p>";
-        absences.slice(-3).reverse().forEach(a => {
-            absList.innerHTML += `
-                <div class="list-item">
-                    <span class="item-name">${a.name}</span>
-                    <span class="item-date">${a.time}</span>
-                </div>`;
+    function renderPreview() {
+        const div = document.getElementById("absPreview");
+        const data = getAbsences().slice(-3).reverse();
+        div.innerHTML = data.length ? "" : "<p style='color:#444;'>Keine Einträge</p>";
+        data.forEach(a => {
+            div.innerHTML += `<div style="padding:5px 0; border-bottom:1px solid #222;">${a.name} <small style="color:#888;">(${a.time})</small></div>`;
         });
-
-        // Bewerber (Statisch oder aus Speicher)
-        const applicants = getApplicants();
-        const appList = document.getElementById("applicantPreview");
-        document.getElementById("appCount").innerText = `${applicants.length} neu`;
-        appList.innerHTML = applicants.length ? "" : "<p class='empty-msg'>Keine Bewerbungen</p>";
     }
-
-    // Check Passwort Status
-    const checkPassword = () => {
-        const user = getAccounts()[sessionStorage.getItem("loggedInUser")];
-        if (user && user.isFirstLogin) {
-            document.getElementById("firstLoginModal").style.display = "flex";
-        }
-    };
-
-    window.onload = () => {
-        checkPassword();
-        renderPreviews();
-    };
+    window.onload = renderPreview;
 </script>
 </body>
 </html>
