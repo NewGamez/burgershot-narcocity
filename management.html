@@ -13,10 +13,23 @@
 
 <section class="dashboard">
 
-    <div class="panel management-wrapper">
+<div class="panel management-wrapper">
 
-        <div class="management-header">
-            <h2>👤 Personalverwaltung</h2>
+    <!-- NAVIGATION -->
+    <div class="management-tabs">
+        <button onclick="showSection('accounts')">Accountverwaltung</button>
+        <button onclick="showSection('mitarbeiter')">Mitarbeiterliste</button>
+        <button onclick="showSection('dokumente')">Dokumente</button>
+        <button onclick="showSection('sheets')">Sheets</button>
+    </div>
+
+    <!-- ================= ACCOUNTS ================= -->
+    <div id="accounts" class="management-section">
+
+        <h2>👤 Accountverwaltung</h2>
+
+        <details class="account-dropdown" open>
+            <summary>Personalverwaltung</summary>
 
             <div class="add-user-bar">
                 <input type="text" id="newName" placeholder="Name">
@@ -27,117 +40,139 @@
                 </select>
                 <button onclick="addUser()">Einstellen</button>
             </div>
+
+            <div class="account-table">
+                <div class="table-head">
+                    <span>Name</span>
+                    <span>Rang</span>
+                    <span style="text-align:right;">Aktionen</span>
+                </div>
+                <div id="userList"></div>
+            </div>
+
+        </details>
+
+    </div>
+
+    <!-- ================= MITARBEITERLISTE ================= -->
+    <div id="mitarbeiter" class="management-section" style="display:none;">
+
+        <h2>📋 Mitarbeiterliste</h2>
+
+        <div class="add-user-bar">
+            <input type="text" id="vorname" placeholder="Vorname">
+            <input type="text" id="nachname" placeholder="Nachname">
+            <input type="text" id="telefon" placeholder="Tel. Nr.">
+            <input type="number" id="gehalt" placeholder="Gehalt">
+            <button onclick="addMitarbeiter()">Eintragen</button>
         </div>
 
         <div class="account-table">
             <div class="table-head">
                 <span>Name</span>
-                <span>Rang</span>
+                <span>Telefon</span>
+                <span>Gehalt</span>
                 <span style="text-align:right;">Aktionen</span>
             </div>
-            <div id="userList"></div>
+            <div id="mitarbeiterList"></div>
         </div>
 
     </div>
+
+    <!-- ================= DOKUMENTE ================= -->
+    <div id="dokumente" class="management-section" style="display:none;">
+        <h2>📂 Dokumente</h2>
+        <p>Hier können später PDF oder andere Dokumente eingebunden werden.</p>
+    </div>
+
+    <!-- ================= SHEETS ================= -->
+    <div id="sheets" class="management-section" style="display:none;">
+        <h2>📊 Google Sheets</h2>
+        <ul class="sheet-links">
+            <li><a href="https://docs.google.com" target="_blank">📈 Umsatzübersicht</a></li>
+            <li><a href="https://docs.google.com" target="_blank">📋 Mitarbeiterplanung</a></li>
+        </ul>
+    </div>
+
+</div>
 
 </section>
 
 <script src="script.js"></script>
 <script>
+
 requireLogin();
 if(!isAdmin()) window.location.href = "index.html";
 
-document.addEventListener("DOMContentLoaded", renderUsers);
+/* ============================= */
+/* SECTION SWITCHING */
+/* ============================= */
 
-function renderUsers() {
-    const list = document.getElementById("userList");
-    list.innerHTML = "";
-    const accs = getAccounts();
+function showSection(id) {
+    document.querySelectorAll(".management-section")
+        .forEach(sec => sec.style.display = "none");
 
-    const roleOrder = {
-        "Cheffe": 0,
-        "Management": 1,
-        "Mitarbeiter": 2
-    };
+    document.getElementById(id).style.display = "block";
+}
 
-    // Accounts in Array umwandeln & sortieren
-    const sortedUsers = Object.keys(accs).sort((a, b) => {
-        return roleOrder[accs[a].role] - roleOrder[accs[b].role];
-    });
+/* ============================= */
+/* MITARBEITER SYSTEM */
+/* ============================= */
 
-    sortedUsers.forEach(name => {
+const getMitarbeiter = () =>
+    JSON.parse(localStorage.getItem("bs_mitarbeiter")) || [];
+
+const saveMitarbeiter = (data) =>
+    localStorage.setItem("bs_mitarbeiter", JSON.stringify(data));
+
+function addMitarbeiter() {
+    const vorname = document.getElementById("vorname").value;
+    const nachname = document.getElementById("nachname").value;
+    const telefon = document.getElementById("telefon").value;
+    const gehalt = document.getElementById("gehalt").value;
+
+    if(!vorname || !nachname) return alert("Name fehlt.");
+
+    const list = getMitarbeiter();
+    list.push({ vorname, nachname, telefon, gehalt });
+    saveMitarbeiter(list);
+    renderMitarbeiter();
+}
+
+function renderMitarbeiter() {
+    const container = document.getElementById("mitarbeiterList");
+    container.innerHTML = "";
+
+    const list = getMitarbeiter();
+
+    list.forEach((m, index) => {
         const row = document.createElement("div");
         row.className = "table-row";
 
         row.innerHTML = `
-            <span>${name}</span>
-            <span class="role-badge ${accs[name].role.toLowerCase()}">
-                ${accs[name].role}
-            </span>
-            <div class="action-cell">
-                <button class="rank-btn" onclick="uprankUser('${name}')">⬆</button>
-                <button class="rank-btn" onclick="derankUser('${name}')">⬇</button>
-                <button class="delete-btn" onclick="delUser('${name}')">Kündigen</button>
+            <span>${m.vorname} ${m.nachname}</span>
+            <span>${m.telefon}</span>
+            <span>${m.gehalt} €</span>
+            <div style="text-align:right;">
+                <button class="delete-btn" onclick="deleteMitarbeiter(${index})">Entfernen</button>
             </div>
         `;
 
-        list.appendChild(row);
+        container.appendChild(row);
     });
 }
 
-    const roleOrder = ["Mitarbeiter", "Management", "Cheffe"];
-
-function uprankUser(name) {
-    const accs = getAccounts();
-    const currentRole = accs[name].role;
-    const index = roleOrder.indexOf(currentRole);
-
-    if (index < roleOrder.length - 1) {
-        accs[name].role = roleOrder[index + 1];
-        saveAccounts(accs);
-        renderUsers();
-    }
+function deleteMitarbeiter(index) {
+    const list = getMitarbeiter();
+    list.splice(index, 1);
+    saveMitarbeiter(list);
+    renderMitarbeiter();
 }
 
-function derankUser(name) {
-    const accs = getAccounts();
-    const currentRole = accs[name].role;
-    const index = roleOrder.indexOf(currentRole);
-
-    if (index > 0) {
-        accs[name].role = roleOrder[index - 1];
-        saveAccounts(accs);
-        renderUsers();
-    }
-}
-
-function addUser() {
-    const name = document.getElementById("newName").value.trim();
-    const role = document.getElementById("newRole").value;
-    const accs = getAccounts();
-
-    if(name && !accs[name]) {
-        accs[name] = {
-            password: "0000",
-            role: role,
-            isFirstLogin: true
-        };
-        saveAccounts(accs);
-        renderUsers();
-        document.getElementById("newName").value = "";
-    } else {
-        alert("Name ungültig oder bereits vergeben.");
-    }
-}
-
-function delUser(name) {
-    if(confirm(name + " kündigen?")) {
-        const accs = getAccounts();
-        delete accs[name];
-        saveAccounts(accs);
-        renderUsers();
-    }
-}
+document.addEventListener("DOMContentLoaded", () => {
+    renderUsers();
+    renderMitarbeiter();
+});
 </script>
 
 </body>
