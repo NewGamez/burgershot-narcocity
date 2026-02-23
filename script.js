@@ -1,6 +1,6 @@
-/* ============================= */
-/* ACCOUNT SYSTEM */
-/* ============================= */
+/* ===================================================== */
+/* ================= ACCOUNT SYSTEM ==================== */
+/* ===================================================== */
 
 const getAccounts = () => {
     const data = localStorage.getItem("bs_accounts");
@@ -21,9 +21,10 @@ const getAccounts = () => {
 const saveAccounts = accs =>
     localStorage.setItem("bs_accounts", JSON.stringify(accs));
 
-/* ============================= */
-/* AUTH SYSTEM */
-/* ============================= */
+
+/* ===================================================== */
+/* ================= AUTH SYSTEM ======================= */
+/* ===================================================== */
 
 const requireLogin = () => {
     if (!sessionStorage.getItem("loggedInUser")) {
@@ -44,9 +45,10 @@ const isAdmin = () => {
          accs[user].role === "Cheffe");
 };
 
-/* ============================= */
-/* ABMELDUNGEN SYSTEM */
-/* ============================= */
+
+/* ===================================================== */
+/* ================= ABMELDUNGEN ======================= */
+/* ===================================================== */
 
 const getAbmeldungen = () =>
     JSON.parse(localStorage.getItem("bs_abmeldungen")) || [];
@@ -54,17 +56,16 @@ const getAbmeldungen = () =>
 const saveAbmeldungen = data =>
     localStorage.setItem("bs_abmeldungen", JSON.stringify(data));
 
-function submitAbmeldung() {
+function getAktiveAbmeldungenCount() {
+    return getAbmeldungen()
+        .filter(a => a.status === "genehmigt").length;
+}
 
-    const von = document.getElementById("abmVon").value;
-    const bis = document.getElementById("abmBis").value;
-    const grund = document.getElementById("abmGrund").value;
+function submitAbmeldung(von, bis, grund) {
+
     const user = sessionStorage.getItem("loggedInUser");
 
-    if (!von || !bis || !grund) {
-        alert("Bitte alles ausfüllen.");
-        return;
-    }
+    if (!von || !bis || !grund) return;
 
     const list = getAbmeldungen();
 
@@ -77,26 +78,24 @@ function submitAbmeldung() {
     });
 
     saveAbmeldungen(list);
-    updateAbmCounter();
 }
 
-function updateAbmCounter() {
-
+function approveAbm(i){
     const list = getAbmeldungen();
-
-    const activeCount =
-        list.filter(a => a.status === "genehmigt").length;
-
-    const badge = document.getElementById("abmCounter");
-
-    if (badge) {
-        badge.innerText = activeCount + " aktiv";
-    }
+    list[i].status = "genehmigt";
+    saveAbmeldungen(list);
 }
 
-/* ============================= */
-/* MITARBEITER SYSTEM */
-/* ============================= */
+function rejectAbm(i){
+    const list = getAbmeldungen();
+    list[i].status = "abgelehnt";
+    saveAbmeldungen(list);
+}
+
+
+/* ===================================================== */
+/* ================= MITARBEITER ======================= */
+/* ===================================================== */
 
 const getMitarbeiter = () =>
     JSON.parse(localStorage.getItem("bs_mitarbeiter")) || [];
@@ -104,32 +103,33 @@ const getMitarbeiter = () =>
 const saveMitarbeiter = data =>
     localStorage.setItem("bs_mitarbeiter", JSON.stringify(data));
 
-function addMitarbeiter(vorname, nachname, telefon, gehalt) {
+function addMitarbeiter(vor, nach, tel, geh) {
 
-    if (!vorname || !nachname) return;
+    if (!vor || !nach) return;
 
     const list = getMitarbeiter();
 
     list.push({
-        vorname,
-        nachname,
-        telefon,
-        gehalt
+        vorname: vor,
+        nachname: nach,
+        telefon: tel,
+        gehalt: geh
     });
 
     saveMitarbeiter(list);
 }
 
-/* ============================= */
-/* INIT */
-/* ============================= */
+function deleteMitarbeiter(i){
+    const list = getMitarbeiter();
+    list.splice(i,1);
+    saveMitarbeiter(list);
+}
 
-document.addEventListener("DOMContentLoaded", () => {
 
-    const user = sessionStorage.getItem("loggedInUser");
-    const accs = getAccounts();
+/* ===================================================== */
+/* ================= BEWERBER COUNT ==================== */
+/* ===================================================== */
 
-    if (!user || !accs[user]) return;
-
-    updateAbmCounter();
-});
+function getNeueBewerberCount() {
+    return JSON.parse(localStorage.getItem("bs_bewerber"))?.length || 0;
+}
