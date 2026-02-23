@@ -164,7 +164,7 @@ function submitAbmeldungUI(){
     // Counter aktualisieren
     const counter = document.getElementById("abmCounter");
     if(counter){
-        counter.innerText = getAktiveAbmeldungenCount() + " aktiv";
+        counter.innerText = getOffeneAbmeldungenCount() + " offen";
     }
 
     // Felder leeren
