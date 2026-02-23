@@ -3,24 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <title>Burgershot Login</title>
+    <link rel="stylesheet" href="style.css">
     <style>
-        /* Beibehalten deines Stylings */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: sans-serif; min-height: 100vh; display: flex; align-items: center; justify-content: center; color: white; overflow: hidden; }
-        body::before { content: ""; position: fixed; inset: 0; background: #1e2028; z-index: -1; } /* Fallback Farbe */
-        .login-box { background: rgba(30, 32, 40, 0.8); backdrop-filter: blur(15px); padding: 50px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); width: 350px; text-align: center; }
-        input { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 10px; border: none; background: rgba(255,255,255,0.1); color: white; }
-        button { width: 100%; padding: 10px; border-radius: 999px; border: none; background: #faac15; color: black; font-weight: bold; cursor: pointer; }
-        .hint { margin-top: 15px; font-size: 12px; color: #ccc; }
+        .login-wrapper {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .login-card {
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
+            padding: 50px;
+            border-radius: 35px;
+            width: 400px;
+            text-align: center;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.6);
+        }
+        .login-card h1 {
+            color: var(--primary);
+            margin-bottom: 35px;
+            letter-spacing: 2px;
+        }
+        .login-card input {
+            width: 100%;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+        .login-card button {
+            width: 100%;
+            font-size: 1.1rem;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
-    <div class="login-box">
-        <h1>🍔 Burgershot Login</h1>
-        <input type="text" id="username" placeholder="Benutzername" required>
-        <input type="password" id="password" placeholder="Passwort" maxlength="4" required>
-        <button onclick="handleLogin()">Login</button>
-        <div class="hint">Standard Passwort: 0000</div>
+    <div class="login-wrapper">
+        <div class="login-card">
+            <h1>🍔 BURGERSHOT</h1>
+            <input type="text" id="username" placeholder="Mitarbeiter-Name">
+            <input type="password" id="password" placeholder="PIN" maxlength="4">
+            <button onclick="handleLogin()">Einloggen</button>
+        </div>
     </div>
 
     <script src="script.js"></script>
@@ -29,12 +55,11 @@
             const u = document.getElementById("username").value.trim();
             const p = document.getElementById("password").value.trim();
             const accs = getAccounts();
-
             if (accs[u] && accs[u].password === p) {
                 sessionStorage.setItem("loggedInUser", u);
                 window.location.href = "index.html";
             } else {
-                alert("Login fehlgeschlagen. Überprüfe Name und PIN.");
+                alert("Login fehlgeschlagen!");
             }
         }
     </script>
