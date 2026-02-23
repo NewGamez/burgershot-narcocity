@@ -54,13 +54,26 @@ function renderUsers() {
     list.innerHTML = "";
     const accs = getAccounts();
 
-    Object.keys(accs).forEach(name => {
+    const roleOrder = {
+        "Cheffe": 0,
+        "Management": 1,
+        "Mitarbeiter": 2
+    };
+
+    // Accounts in Array umwandeln & sortieren
+    const sortedUsers = Object.keys(accs).sort((a, b) => {
+        return roleOrder[accs[a].role] - roleOrder[accs[b].role];
+    });
+
+    sortedUsers.forEach(name => {
         const row = document.createElement("div");
         row.className = "table-row";
 
         row.innerHTML = `
             <span>${name}</span>
-            <span class="role-badge ${accs[name].role.toLowerCase()}">${accs[name].role}</span>
+            <span class="role-badge ${accs[name].role.toLowerCase()}">
+                ${accs[name].role}
+            </span>
             <div class="action-cell">
                 <button class="rank-btn" onclick="uprankUser('${name}')">⬆</button>
                 <button class="rank-btn" onclick="derankUser('${name}')">⬇</button>
