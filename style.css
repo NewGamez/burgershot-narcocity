@@ -425,20 +425,18 @@ select:focus {
     background: rgba(255, 60, 60, 0.2);
 }
 
-/* ============================= */
-/*         DASHBOARD HERO        */
-/* ============================= */
+/* ================= HERO ================= */
 
 .dashboard-hero {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 50px;
-    padding: 30px;
+    padding: 25px 30px;
+    margin-bottom: 40px;
     background: var(--glass-bg);
     backdrop-filter: var(--glass-blur);
     border: 1px solid var(--glass-border);
-    border-radius: 22px;
+    border-radius: 20px;
 }
 
 .hero-left {
@@ -448,18 +446,18 @@ select:focus {
 }
 
 .hero-logo {
-    width: 80px;
-    filter: drop-shadow(0 0 15px rgba(250,172,21,0.6));
+    width: 70px;
+    filter: drop-shadow(0 0 10px rgba(250,172,21,0.6));
 }
 
 .dashboard-hero h1 {
-    font-size: 1.8rem;
     color: var(--primary);
-    margin-bottom: 5px;
+    font-size: 1.6rem;
 }
 
 .dashboard-hero p {
     opacity: 0.7;
+    font-size: 0.9rem;
 }
 
 .hero-stats {
@@ -472,12 +470,12 @@ select:focus {
 }
 
 .stat-number {
-    font-size: 1.8rem;
+    font-size: 1.6rem;
     font-weight: bold;
     color: var(--primary);
 }
 
 .stat-label {
-    font-size: 0.85rem;
+    font-size: 0.75rem;
     opacity: 0.6;
 }
