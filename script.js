@@ -1,44 +1,34 @@
 /* ===================================== */
-/* BURGERSHOT INTERN – CORE SCRIPT       */
+/* BURGERSHOT INTERN – CORE LOGIC        */
 /* ===================================== */
 
-// --- ACCOUNTS & AUTH ---
-function getAccounts() {
-    const accs = localStorage.getItem("bs_accounts");
-    return accs ? JSON.parse(accs) : {
-        "Admin": { password: "123", role: "Cheffe", isFirstLogin: false }
-    };
-}
+const getAccounts = () => JSON.parse(localStorage.getItem("bs_accounts")) || {
+    "Admin": { password: "123", role: "Cheffe", isFirstLogin: false }
+};
 
-function saveAccounts(accs) {
-    localStorage.setItem("bs_accounts", JSON.stringify(accs));
-}
+const saveAccounts = (accs) => localStorage.setItem("bs_accounts", JSON.stringify(accs));
 
-function isAdmin() {
-    const username = sessionStorage.getItem("loggedInUser");
-    const accounts = getAccounts();
-    const user = accounts[username];
-    if (!user) return false;
-    // Cheffe und Management zählen als Admins für das Panel
-    return ["Cheffe", "Management"].includes(user.role);
-}
+const getAbsences = () => JSON.parse(localStorage.getItem("bs_absences")) || [];
+const saveAbsences = (data) => localStorage.setItem("bs_absences", JSON.stringify(data));
 
-function requireLogin() {
-    if (!sessionStorage.getItem("loggedInUser")) {
-        window.location.href = "login.html";
-    }
-}
+const isAdmin = () => {
+    const user = getAccounts()[sessionStorage.getItem("loggedInUser")];
+    return user && ["Cheffe", "Management"].includes(user.role);
+};
 
-function setHeaderUser() {
-    const user = sessionStorage.getItem("loggedInUser");
+const requireLogin = () => {
+    if (!sessionStorage.getItem("loggedInUser")) window.location.href = "login.html";
+};
+
+const setHeaderUser = () => {
     const welcome = document.getElementById("welcomeUser");
-    if (welcome) welcome.innerText = "Moin, " + user;
-}
+    if (welcome) welcome.innerText = `Moin, ${sessionStorage.getItem("loggedInUser")}`;
+};
 
-function logout() {
+const logout = () => {
     sessionStorage.clear();
     window.location.href = "login.html";
-}
+};
 
 // --- ABMELDUNGEN LOGIK ---
 function getAbsences() {
