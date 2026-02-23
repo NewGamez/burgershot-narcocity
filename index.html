@@ -5,6 +5,20 @@
 <title>Burgershot Intern</title>
 <link rel="stylesheet" href="style.css">
 </head>
+    
+    <!-- ================= ABMELDUNG MODAL ================= -->
+<div class="modal-backdrop" id="abmModal">
+    <div class="modal">
+        <h2>📅 Neue Abmeldung</h2>
+
+        <input type="date" id="abmVon">
+        <input type="date" id="abmBis">
+        <input type="text" id="abmGrund" placeholder="Grund">
+
+        <button onclick="submitAbmeldungUI()">Einreichen</button>
+        <button onclick="closeAbmModal()">Abbrechen</button>
+    </div>
+</div>
 <body>
 
 <header>
@@ -24,7 +38,7 @@
             <p>Wichtige Ankündigungen.</p>
         </div>
 
-        <div class="panel big">
+        <div class="panel big" onclick="openAbmModal()">
             <div class="panel-top">
                 <span class="panel-header">📅 ABMELDUNGEN</span>
                 <span id="abmCounter" class="badge">0 aktiv</span>
