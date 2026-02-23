@@ -19,6 +19,7 @@
     <div class="management-tabs">
         <button class="tab-btn active" onclick="showSection('accounts', this)">Accountverwaltung</button>
         <button class="tab-btn" onclick="showSection('mitarbeiter', this)">Mitarbeiterliste</button>
+        <button class="tab-btn" onclick="showSection('abmeldungen', this)">Abmeldungen</button>
         <button class="tab-btn" onclick="showSection('dokumente', this)">Dokumente</button>
         <button class="tab-btn" onclick="showSection('sheets', this)">Sheets</button>
     </div>
@@ -49,7 +50,7 @@
 
     </div>
 
-    <!-- ================= MITARBEITERLISTE ================= -->
+    <!-- ================= MITARBEITER ================= -->
     <div id="mitarbeiter" class="management-section" style="display:none;">
 
         <h2>📋 Mitarbeiterliste</h2>
@@ -74,6 +75,23 @@
 
     </div>
 
+    <!-- ================= ABMELDUNGEN ================= -->
+    <div id="abmeldungen" class="management-section" style="display:none;">
+
+        <h2>📅 Abmeldungen verwalten</h2>
+
+        <div class="account-table">
+            <div class="table-head">
+                <span>User</span>
+                <span>Zeitraum</span>
+                <span>Status</span>
+                <span style="text-align:right;">Aktionen</span>
+            </div>
+            <div id="abmList"></div>
+        </div>
+
+    </div>
+
     <!-- ================= DOKUMENTE ================= -->
     <div id="dokumente" class="management-section" style="display:none;">
         <h2>📂 Dokumente</h2>
@@ -83,7 +101,7 @@
     <!-- ================= SHEETS ================= -->
     <div id="sheets" class="management-section" style="display:none;">
         <h2>📊 Google Sheets</h2>
-        <ul class="sheet-links">
+        <ul>
             <li><a href="https://docs.google.com" target="_blank">📈 Umsatzübersicht</a></li>
             <li><a href="https://docs.google.com" target="_blank">📋 Mitarbeiterplanung</a></li>
         </ul>
@@ -110,6 +128,8 @@ function showSection(id, btn) {
         .forEach(b => b.classList.remove("active"));
 
     if(btn) btn.classList.add("active");
+
+    if(id === "abmeldungen") renderAbmeldungen();
 }
 
 /* ================= ACCOUNTS ================= */
@@ -117,12 +137,15 @@ function showSection(id, btn) {
 const roleOrder = ["Cheffe", "Management", "Mitarbeiter"];
 
 function renderUsers() {
+
     const list = document.getElementById("userList");
     list.innerHTML = "";
+
     const accs = getAccounts();
 
     const sorted = Object.keys(accs).sort((a,b) =>
-        roleOrder.indexOf(accs[a].role) - roleOrder.indexOf(accs[b].role)
+        roleOrder.indexOf(accs[a].role) -
+        roleOrder.indexOf(accs[b].role)
     );
 
     sorted.forEach(name => {
@@ -135,7 +158,7 @@ function renderUsers() {
             <span class="role-badge ${accs[name].role.toLowerCase()}">
                 ${accs[name].role}
             </span>
-            <div class="action-cell">
+            <div style="text-align:right;">
                 <button class="rank-btn" onclick="uprankUser('${name}')">⬆</button>
                 <button class="rank-btn" onclick="derankUser('${name}')">⬇</button>
                 <button class="delete-btn" onclick="delUser('${name}')">Kündigen</button>
@@ -147,12 +170,19 @@ function renderUsers() {
 }
 
 function addUser() {
+
     const name = document.getElementById("newName").value.trim();
     const role = document.getElementById("newRole").value;
+
     const accs = getAccounts();
 
     if(name && !accs[name]) {
-        accs[name] = { password: "0000", role: role, isFirstLogin: true };
+        accs[name] = {
+            password: "0000",
+            role: role,
+            isFirstLogin: true
+        };
+
         saveAccounts(accs);
         renderUsers();
         document.getElementById("newName").value = "";
@@ -169,8 +199,10 @@ function delUser(name) {
 }
 
 function uprankUser(name) {
+
     const accs = getAccounts();
     const index = roleOrder.indexOf(accs[name].role);
+
     if(index > 0) {
         accs[name].role = roleOrder[index - 1];
         saveAccounts(accs);
@@ -179,8 +211,10 @@ function uprankUser(name) {
 }
 
 function derankUser(name) {
+
     const accs = getAccounts();
     const index = roleOrder.indexOf(accs[name].role);
+
     if(index < roleOrder.length - 1) {
         accs[name].role = roleOrder[index + 1];
         saveAccounts(accs);
@@ -203,13 +237,11 @@ function addMitarbeiter() {
     const telefon = document.getElementById("telefon").value.trim();
     const gehalt = document.getElementById("gehalt").value.trim();
 
-    if(!vorname || !nachname) {
-        alert("Name fehlt.");
-        return;
-    }
+    if(!vorname || !nachname) return;
 
     const list = getMitarbeiter();
     list.push({ vorname, nachname, telefon, gehalt });
+
     saveMitarbeiter(list);
     renderMitarbeiter();
 
@@ -226,7 +258,7 @@ function renderMitarbeiter() {
 
     const list = getMitarbeiter();
 
-    list.forEach((m, index) => {
+    list.forEach((m,index) => {
 
         const row = document.createElement("div");
         row.className = "table-row";
@@ -235,7 +267,7 @@ function renderMitarbeiter() {
             <span>${m.vorname} ${m.nachname}</span>
             <span>${m.telefon}</span>
             <span style="text-align:right;">${m.gehalt} €</span>
-            <div class="action-cell">
+            <div style="text-align:right;">
                 <button class="delete-btn" onclick="deleteMitarbeiter(${index})">
                     Entfernen
                 </button>
@@ -248,24 +280,21 @@ function renderMitarbeiter() {
 
 function deleteMitarbeiter(index) {
     const list = getMitarbeiter();
-    list.splice(index, 1);
+    list.splice(index,1);
     saveMitarbeiter(list);
     renderMitarbeiter();
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-    renderUsers();
-    renderMitarbeiter();
-});
+/* ================= ABMELDUNGEN ================= */
 
-    function renderAbmeldungen() {
+function renderAbmeldungen() {
 
     const container = document.getElementById("abmList");
     container.innerHTML = "";
 
     const list = getAbmeldungen();
 
-    list.forEach((a, index) => {
+    list.forEach((a,index) => {
 
         const row = document.createElement("div");
         row.className = "table-row";
@@ -274,7 +303,7 @@ document.addEventListener("DOMContentLoaded", () => {
             <span>${a.user}</span>
             <span>${a.von} - ${a.bis}</span>
             <span>${a.status}</span>
-            <div class="action-cell">
+            <div style="text-align:right;">
                 ${a.status === "offen" ? `
                     <button class="rank-btn" onclick="approveAbm(${index})">✔</button>
                     <button class="delete-btn" onclick="rejectAbm(${index})">✖</button>
@@ -301,7 +330,8 @@ function rejectAbm(index) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    renderAbmeldungen();
+    renderUsers();
+    renderMitarbeiter();
 });
 </script>
 
