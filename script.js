@@ -1,5 +1,5 @@
 /* ============================= */
-/*         ACCOUNT SYSTEM        */
+/* ACCOUNT SYSTEM */
 /* ============================= */
 
 const getAccounts = () => {
@@ -18,12 +18,11 @@ const getAccounts = () => {
     return defaultAccounts;
 };
 
-const saveAccounts = (accs) => {
+const saveAccounts = accs =>
     localStorage.setItem("bs_accounts", JSON.stringify(accs));
-};
 
 /* ============================= */
-/*         AUTH LOGIC            */
+/* AUTH SYSTEM */
 /* ============================= */
 
 const requireLogin = () => {
@@ -38,24 +37,99 @@ const logout = () => {
 };
 
 const isAdmin = () => {
-    const username = sessionStorage.getItem("loggedInUser");
+    const user = sessionStorage.getItem("loggedInUser");
     const accs = getAccounts();
-    const user = accs[username];
-    return user && (user.role === "Management" || user.role === "Cheffe");
+    return accs[user] &&
+        (accs[user].role === "Management" ||
+         accs[user].role === "Cheffe");
 };
 
 /* ============================= */
-/*        COUNTER SYSTEM         */
+/* ABMELDUNGEN SYSTEM */
 /* ============================= */
 
 const getAbmeldungen = () =>
     JSON.parse(localStorage.getItem("bs_abmeldungen")) || [];
 
-const getBewerber = () =>
-    JSON.parse(localStorage.getItem("bs_bewerber")) || [];
+const saveAbmeldungen = data =>
+    localStorage.setItem("bs_abmeldungen", JSON.stringify(data));
 
-const getAktiveAbmeldungenCount = () =>
-    getAbmeldungen().filter(a => a.status === "aktiv").length;
+function submitAbmeldung() {
 
-const getNeueBewerberCount = () =>
-    getBewerber().filter(b => b.status === "neu").length;
+    const von = document.getElementById("abmVon").value;
+    const bis = document.getElementById("abmBis").value;
+    const grund = document.getElementById("abmGrund").value;
+    const user = sessionStorage.getItem("loggedInUser");
+
+    if (!von || !bis || !grund) {
+        alert("Bitte alles ausfüllen.");
+        return;
+    }
+
+    const list = getAbmeldungen();
+
+    list.push({
+        user,
+        von,
+        bis,
+        grund,
+        status: "offen"
+    });
+
+    saveAbmeldungen(list);
+    updateAbmCounter();
+}
+
+function updateAbmCounter() {
+
+    const list = getAbmeldungen();
+
+    const activeCount =
+        list.filter(a => a.status === "genehmigt").length;
+
+    const badge = document.getElementById("abmCounter");
+
+    if (badge) {
+        badge.innerText = activeCount + " aktiv";
+    }
+}
+
+/* ============================= */
+/* MITARBEITER SYSTEM */
+/* ============================= */
+
+const getMitarbeiter = () =>
+    JSON.parse(localStorage.getItem("bs_mitarbeiter")) || [];
+
+const saveMitarbeiter = data =>
+    localStorage.setItem("bs_mitarbeiter", JSON.stringify(data));
+
+function addMitarbeiter(vorname, nachname, telefon, gehalt) {
+
+    if (!vorname || !nachname) return;
+
+    const list = getMitarbeiter();
+
+    list.push({
+        vorname,
+        nachname,
+        telefon,
+        gehalt
+    });
+
+    saveMitarbeiter(list);
+}
+
+/* ============================= */
+/* INIT */
+/* ============================= */
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    const user = sessionStorage.getItem("loggedInUser");
+    const accs = getAccounts();
+
+    if (!user || !accs[user]) return;
+
+    updateAbmCounter();
+});
