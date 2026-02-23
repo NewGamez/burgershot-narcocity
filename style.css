@@ -461,3 +461,41 @@ select:focus {
     color: var(--primary);
     background: rgba(250, 172, 21, 0.12);
 }
+
+/* ============================= */
+/*      MANAGEMENT TABLES        */
+/* ============================= */
+
+.account-table {
+    margin-top: 20px;
+}
+
+.table-head,
+.table-row {
+    display: grid;
+    grid-template-columns: 2fr 1.5fr 1fr 1fr;
+    align-items: center;
+    padding: 14px 20px;
+}
+
+.table-head {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.6;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.table-row {
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    transition: 0.2s ease;
+}
+
+.table-row:hover {
+    background: rgba(255,255,255,0.04);
+}
+
+.table-row span:last-child,
+.table-head span:last-child {
+    text-align: right;
+}
