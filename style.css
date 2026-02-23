@@ -1,14 +1,14 @@
-
 :root {
     --primary: #faac15;
     --primary-hover: #ffbd3d;
-    --glass-bg: rgba(255, 255, 255, 0.07);
-    --glass-border: rgba(255, 255, 255, 0.15);
+    --glass-bg: rgba(20, 20, 25, 0.65);
+    --glass-border: rgba(255, 255, 255, 0.12);
     --glass-blur: blur(20px);
     --text-color: #ffffff;
-    --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+    --shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
 }
 
+/* RESET */
 * {
     margin: 0;
     padding: 0;
@@ -19,12 +19,10 @@ body {
     font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
     color: var(--text-color);
     min-height: 100vh;
-    display: flex;
-    flex-direction: column;
     overflow-x: hidden;
 }
 
-/* Hintergrund-Layer */
+/* BACKGROUND */
 body::before {
     content: "";
     position: fixed;
@@ -34,133 +32,102 @@ body::before {
     z-index: -1;
 }
 
-/* Header Glas-Optik */
+/* HEADER */
 header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 20px 40px;
-    background: rgba(0, 0, 0, 0.3);
-    backdrop-filter: var(--glass-blur);
+    background: rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(15px);
     border-bottom: 1px solid var(--glass-border);
-    position: sticky;
-    top: 0;
-    z-index: 100;
 }
 
 .brand-link {
     text-decoration: none;
     color: var(--primary);
     font-weight: 800;
-    font-size: 1.4rem;
-    text-shadow: 0 0 15px rgba(250, 172, 21, 0.4);
+    font-size: 1.3rem;
 }
 
-/* Buttons im Glas-Stil */
-button, .add-btn, .logout-btn {
-    background: linear-gradient(135deg, rgba(250, 172, 21, 0.9), rgba(250, 172, 21, 0.6));
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    padding: 10px 22px;
-    border-radius: 12px;
-    color: #000;
-    font-weight: 700;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    backdrop-filter: blur(5px);
-}
-
-button:hover, .add-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 20px rgba(250, 172, 21, 0.4);
+button {
     background: var(--primary);
+    border: none;
+    padding: 8px 16px;
+    border-radius: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
 }
 
-/* Dashboard Grid */
+button:hover {
+    background: var(--primary-hover);
+}
+
+/* DASHBOARD CONTAINER */
 .dashboard {
-    flex: 1;
-    max-width: 1300px;
-    margin: 40px auto;
-    padding: 0 20px;
-    width: 100%;
+    max-width: 1400px;
+    margin: 60px auto;
+    padding: 0 40px;
 }
 
-.dashboard-grid {
+/* ===== GRID TOP (4 BIG PANELS) ===== */
+.grid-top {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(4, 1fr);
     gap: 25px;
+    margin-bottom: 30px;
 }
 
-/* Panel Design */
+/* ===== GRID BOTTOM (4 SMALL PANELS) ===== */
+.grid-bottom {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 25px;
+    margin-bottom: 40px;
+}
+
+/* PANEL BASE */
 .panel {
     background: var(--glass-bg);
     backdrop-filter: var(--glass-blur);
     border: 1px solid var(--glass-border);
-    border-radius: 25px;
-    padding: 30px;
+    border-radius: 22px;
+    padding: 22px;
     box-shadow: var(--shadow);
+    transition: 0.3s ease;
     cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
+/* PANEL HOVER */
 .panel:hover {
-    transform: scale(1.03);
+    transform: translateY(-5px);
     border-color: var(--primary);
-    background: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 12px 30px rgba(250, 172, 21, 0.25);
 }
 
-.panel-header {
-    color: var(--primary);
-    font-weight: 700;
-    font-size: 1.2rem;
-    margin-bottom: 15px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
+/* BIG PANEL */
+.panel.big {
+    min-height: 150px;
 }
 
-/* Input Styles */
-input, select {
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px solid var(--glass-border);
-    color: white;
-    padding: 12px;
-    border-radius: 12px;
-    backdrop-filter: blur(10px);
-    outline: none;
-}
-
-input:focus {
-    border-color: var(--primary);
-}
-
-/* Modal */
-.modal-backdrop {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.8);
-    backdrop-filter: blur(10px);
+/* SMALL PANEL */
+.panel.small {
+    min-height: 90px;
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1000;
+    flex-direction: column;
+    font-weight: bold;
+    font-size: 1rem;
 }
 
-.modal {
-    background: var(--glass-bg);
-    backdrop-filter: var(--glass-blur);
-    padding: 40px;
-    border-radius: 30px;
-    border: 1px solid var(--primary);
-    text-align: center;
-    width: 400px;
-}
-
-/* CUSTOM GRID LAYOUT */
-.custom-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 25px;
+/* PANEL HEADER */
+.panel-header {
+    color: var(--primary);
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 8px;
 }
 
 .panel-top {
@@ -169,20 +136,33 @@ input:focus {
     align-items: center;
 }
 
+/* HIGHLIGHT (News Panel) */
+.panel.highlight {
+    border: 1px solid var(--primary);
+    box-shadow: 0 0 25px rgba(250, 172, 21, 0.2);
+}
+
+/* CENTER PANEL (Service) */
+.panel.center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* BADGE */
 .badge {
     background: var(--primary);
     color: black;
     padding: 4px 10px;
     border-radius: 20px;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     font-weight: bold;
 }
 
-/* Management Bar */
+/* MANAGEMENT BAR */
 .management-bar {
-    margin-top: 40px;
     padding: 20px 30px;
-    border-radius: 25px;
+    border-radius: 22px;
     border: 1px solid var(--primary);
     background: var(--glass-bg);
     backdrop-filter: var(--glass-blur);
@@ -194,6 +174,21 @@ input:focus {
 }
 
 .management-bar:hover {
-    background: rgba(255,255,255,0.12);
-    box-shadow: 0 10px 20px rgba(250, 172, 21, 0.3);
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 12px 30px rgba(250, 172, 21, 0.3);
+}
+
+/* RESPONSIVE (nur wenn Bildschirm wirklich klein ist) */
+@media (max-width: 1200px) {
+    .grid-top,
+    .grid-bottom {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 700px) {
+    .grid-top,
+    .grid-bottom {
+        grid-template-columns: 1fr;
+    }
 }
