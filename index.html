@@ -2,53 +2,50 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>Burgershot Intern</title>
+    <title>Burgershot Dashboard</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <header>
-    <div class="header-left"><a href="index.html" class="brand-link">🍔 Burgershot Intern</a></div>
-    <div class="header-right">
-        <span id="welcomeUser"></span>
-        <button class="logout-btn" onclick="logout()">Logout</button>
+    <a href="index.html" class="brand-link">🍔 BURGERSHOT INTERN</a>
+    <div style="display: flex; align-items: center; gap: 20px;">
+        <span id="welcomeUser" style="color: var(--primary); font-weight: bold;"></span>
+        <button onclick="logout()">Logout</button>
     </div>
 </header>
 
 <section class="dashboard">
     <div class="dashboard-grid">
-        <div class="panel scrollable" onclick="location.href='abmeldungen.html'">
-            <div class="panel-header"><span>📅 Abmeldungen</span></div>
-            <div class="panel-content">
-                <p>Max Mustermann (bis 24.02.)</p>
-                <p>Lisa Lustig (bis 01.03.)</p>
-            </div>
+        <div class="panel" onclick="location.href='abmeldungen.html'">
+            <div class="panel-header">📅 Abmeldungen</div>
+            <p style="opacity: 0.7;">Verwalte deine Abwesenheiten.</p>
         </div>
 
-        <div class="panel highlight" onclick="location.href='announcements.html'">
-            <div class="panel-header"><span>📢 Announcements</span></div>
-            <p style="font-size: 0.85rem; color: #bbb;">Neue Dienstvorschrift online!</p>
+        <div class="panel" onclick="location.href='bewerber.html'">
+            <div class="panel-header">📝 Bewerber</div>
+            <p style="opacity: 0.7;">Neue Anfragen sichten.</p>
         </div>
 
-        <div class="panel" onclick="location.href='bewerber.html'"><span>📝 Bewerber</span></div>
-        <div class="panel" onclick="location.href='einkaeufe.html'"><span>🛒 Lager</span></div>
-        <div class="panel" onclick="location.href='kleiderordnung.html'"><span>👔 Kleidung</span></div>
-        <div class="panel" onclick="location.href='musik.html'"><span>🎵 Musik</span></div>
+        <div class="panel" onclick="location.href='lager.html'">
+            <div class="panel-header">🛒 Lager & Einkäufe</div>
+            <p style="opacity: 0.7;">Bestand kontrollieren.</p>
+        </div>
 
-        <div class="panel full-width" id="adminPanel" style="display:none;" onclick="location.href='management.html'">
-            <span style="font-size: 1.2rem; color: #faac15; font-weight: bold;">⭐ Management Center</span>
-            <p style="color: #888; font-size: 0.8rem;">Personalverwaltung & System</p>
+        <div id="adminPanel" class="panel" style="display:none; border: 1px solid var(--primary);" onclick="location.href='management.html'">
+            <div class="panel-header">⭐ MANAGEMENT</div>
+            <p style="color: var(--primary);">Personalverwaltung & System</p>
         </div>
     </div>
 </section>
 
-<div class="modal-backdrop" id="firstLoginModal" style="display:none;">
+<div class="modal-backdrop" id="pinModal" style="display:none;">
     <div class="modal">
-        <h2>🔒 PIN ändern</h2>
-        <p>Bitte lege eine eigene 4-stellige PIN fest.</p>
-        <input type="password" id="newPinInput" maxlength="4" style="padding: 10px; text-align: center; font-size: 20px; width: 100px; background: #000; color: #fff; border: 1px solid #faac15;">
+        <h2 style="color: var(--primary); margin-bottom: 20px;">🔒 PIN ändern</h2>
+        <p style="margin-bottom: 20px;">Bitte setze deine persönliche 4-stellige PIN.</p>
+        <input type="password" id="newPin" maxlength="4" style="width: 120px; text-align: center; font-size: 1.5rem;">
         <br><br>
-        <button class="add-btn" onclick="saveNewPassword()">Speichern</button>
+        <button onclick="savePin()">Speichern</button>
     </div>
 </div>
 
@@ -56,27 +53,31 @@
 <script>
     requireLogin();
     window.onload = () => {
-        setHeaderUser();
-        if (isAdmin()) document.getElementById("adminPanel").style.display = "flex";
-        
         const user = sessionStorage.getItem("loggedInUser");
-        if (getAccounts()[user]?.isFirstLogin) {
-            document.getElementById("firstLoginModal").style.display = "flex";
+        document.getElementById("welcomeUser").innerText = user;
+        
+        if (isAdmin()) {
+            document.getElementById("adminPanel").style.display = "block";
+        }
+
+        const accs = getAccounts();
+        if (accs[user] && accs[user].isFirstLogin) {
+            document.getElementById("pinModal").style.display = "flex";
         }
     };
 
-    function saveNewPassword() {
-        const pin = document.getElementById("newPinInput").value;
+    function savePin() {
+        const pin = document.getElementById("newPin").value;
         const user = sessionStorage.getItem("loggedInUser");
         const accs = getAccounts();
         if (pin.length === 4 && !isNaN(pin)) {
             accs[user].password = pin;
             accs[user].isFirstLogin = false;
             saveAccounts(accs);
-            document.getElementById("firstLoginModal").style.display = "none";
-            alert("PIN erfolgreich geändert!");
+            document.getElementById("pinModal").style.display = "none";
+            alert("PIN erfolgreich gesetzt!");
         } else {
-            alert("Bitte gib 4 Zahlen ein.");
+            alert("Bitte 4 Zahlen eingeben!");
         }
     }
 </script>
