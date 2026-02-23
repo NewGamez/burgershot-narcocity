@@ -1,56 +1,85 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <title>Burgershot Dashboard</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<title>Burgershot Intern</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <header>
-    <a href="index.html" class="brand-link">🍔 BURGERSHOT INTERN</a>
+    <a href="index.html" class="brand-link">🍔 Burgershot Intern</a>
     <div>
-        <span id="welcomeUser" style="color: var(--primary); font-weight: bold;"></span>
+        <span id="welcomeUser" style="margin-right:15px;"></span>
         <button onclick="logout()">Logout</button>
     </div>
 </header>
 
 <section class="dashboard">
+
+    <!-- ===== TOP GRID ===== -->
     <div class="dashboard-grid">
 
         <div class="panel">
-            <div class="panel-header">📅 Abmeldungen</div>
-            <p>Verwalte deine Abwesenheiten.</p>
+            <div class="panel-header">📅 ABMELDUNGEN</div>
+            <p>Abwesenheiten & Urlaubsanträge.</p>
         </div>
 
         <div class="panel">
-            <div class="panel-header">📝 Bewerber</div>
-            <p>Neue Anfragen sichten.</p>
+            <div class="panel-header">📢 NEWS & INFOS</div>
+            <p>Wichtige Ankündigungen.</p>
         </div>
 
         <div class="panel">
-            <div class="panel-header">📦 Lager & Einkäufe</div>
-            <p>Bestand kontrollieren.</p>
+            <div class="panel-header">📝 BEWERBER</div>
+            <p>Neue Bewerbungen prüfen.</p>
         </div>
 
-        <div id="adminPanel" class="panel" style="display:none; border:1px solid var(--primary);" onclick="location.href='management.html'">
-            <div class="panel-header">⭐ MANAGEMENT</div>
-            <p style="color: var(--primary);">Personalverwaltung & System</p>
+        <div class="panel">
+            <div class="panel-header">📋 SERVICE</div>
+            <p>Interne Service-Infos.</p>
         </div>
 
     </div>
+
+    <!-- ===== SECOND GRID ===== -->
+    <div class="dashboard-grid" style="margin-top:25px;">
+
+        <div class="panel">
+            <div class="panel-header">🍔 ORDERS</div>
+            <p>Bestellungen & Übersicht.</p>
+        </div>
+
+        <div class="panel">
+            <div class="panel-header">🛒 LAGER</div>
+            <p>Bestand & Einkäufe.</p>
+        </div>
+
+        <div class="panel">
+            <div class="panel-header">🎵 MUSIK</div>
+            <p>Restaurant Playlist.</p>
+        </div>
+
+        <div class="panel">
+            <div class="panel-header">👕 KLEIDUNG</div>
+            <p>Dresscode & Ausstattung.</p>
+        </div>
+
+    </div>
+
+    <!-- ===== MANAGEMENT BAR ===== -->
+    <div id="adminPanel" class="panel" 
+         style="margin-top:30px; display:none; border:1px solid var(--primary);"
+         onclick="location.href='management.html'">
+
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div class="panel-header">⭐ Management Center</div>
+            <span style="color:var(--primary);">Personalverwaltung & Systemsteuerung</span>
+        </div>
+
+    </div>
+
 </section>
-
-<div class="modal-backdrop" id="pinModal" style="display:none;">
-    <div class="modal">
-        <h2 style="color: var(--primary); margin-bottom: 20px;">🔒 PIN ändern</h2>
-        <p>Bitte setze deine persönliche 4-stellige PIN.</p>
-        <br>
-        <input type="password" id="newPin" maxlength="4" style="width:120px; text-align:center; font-size:1.5rem;">
-        <br><br>
-        <button onclick="savePin()">Speichern</button>
-    </div>
-</div>
 
 <script src="script.js"></script>
 <script>
@@ -60,32 +89,12 @@ window.onload = () => {
     const user = sessionStorage.getItem("loggedInUser");
     const accs = getAccounts();
 
-    document.getElementById("welcomeUser").innerText = "Willkommen, " + user;
+    document.getElementById("welcomeUser").innerText = "Moin, " + user;
 
     if (isAdmin()) {
         document.getElementById("adminPanel").style.display = "block";
     }
-
-    if (accs[user].isFirstLogin) {
-        document.getElementById("pinModal").style.display = "flex";
-    }
 };
-
-function savePin() {
-    const pin = document.getElementById("newPin").value.trim();
-    const user = sessionStorage.getItem("loggedInUser");
-    const accs = getAccounts();
-
-    if (/^\d{4}$/.test(pin)) {
-        accs[user].password = pin;
-        accs[user].isFirstLogin = false;
-        saveAccounts(accs);
-        document.getElementById("pinModal").style.display = "none";
-        alert("PIN erfolgreich gesetzt!");
-    } else {
-        alert("Bitte genau 4 Zahlen eingeben!");
-    }
-}
 </script>
 
 </body>
