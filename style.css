@@ -124,6 +124,29 @@ header {
     letter-spacing: 1px;
 }
 
+/* Platzhalter-Style für leere Listen */
+.panel-content:empty::before {
+    content: "Keine aktuellen Einträge";
+    display: block;
+    text-align: center;
+    margin-top: 30px;
+    color: rgba(255, 255, 255, 0.2);
+    font-style: italic;
+    font-size: 0.8rem;
+}
+
+/* Animation für die Badges (leuchtet ganz leicht) */
+.count-badge {
+    box-shadow: 0 0 10px rgba(250, 172, 21, 0.2);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.6; }
+    100% { opacity: 1; }
+}
+
 /* Ein kleiner Counter im Header des Panels */
 .count-badge {
     background: rgba(250, 172, 21, 0.2);
