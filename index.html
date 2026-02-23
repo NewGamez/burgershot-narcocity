@@ -1,55 +1,43 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <title>Burgershot Dashboard</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-<header>
-    <div class="brand-link">🍔 Burgershot Intern</div>
-    <div style="display:flex; align-items:center; gap:15px;">
-        <span id="userDisplay"></span>
-        <button class="add-btn" style="background: #444; color: white;" onclick="logout()">Logout</button>
-    </div>
-</header>
-
 <section class="dashboard">
     <div class="dashboard-grid">
-        <div class="panel" onclick="location.href='abmeldungen.html'" style="cursor:pointer;">
-            <h3 style="color:var(--accent); margin-bottom:15px;">📅 Abmeldungen</h3>
-            <div id="absPreview"></div>
+        
+        <div class="panel scrollable" onclick="location.href='abmeldungen.html'">
+            <div class="panel-header"><span>📅 Abmeldungen</span></div>
+            <div class="panel-content">
+                <p>• Max Mustermann (bis 24.02.)</p>
+                <p>• Lisa Lustig (bis 01.03.)</p>
+            </div>
         </div>
 
-        <div class="panel"><h3>🛒 Einkäufe</h3><p style="color:#444;">In Kürze...</p></div>
-        <div class="panel"><h3>🎵 Musik</h3><p style="color:#444;">In Kürze...</p></div>
+        <div class="panel highlight" onclick="location.href='announcements.html'">
+            <span>📢 Business Announcements</span>
+        </div>
 
-        <div class="panel full-width" id="adminPanel" style="display:none; cursor:pointer; border-color: gold;" onclick="location.href='management.html'">
-            <h3 style="color:gold;">⭐ Management Center</h3>
-            <p>Personalverwaltung & Ränge verwalten</p>
+        <div class="panel scrollable" onclick="location.href='bewerber.html'">
+            <div class="panel-header"><span>📝 Bewerber</span></div>
+            <div class="panel-content">
+                <p>• Kevin Ketchup (Offen)</p>
+                <p>• Sarah Salat (In Prüfung)</p>
+            </div>
+        </div>
+
+        <div class="panel" onclick="location.href='einkaeufe.html'">
+            <span>🛒 Einkäufe / Lager</span>
+        </div>
+
+        <div class="panel" onclick="location.href='kleidung.html'">
+            <span>👔 Kleiderordnung</span>
+        </div>
+
+        <div class="panel" onclick="location.href='musik.html'">
+            <span>🎵 Musik-Playlist</span>
+        </div>
+
+        <div class="panel" onclick="location.href='service.html'">📋 Service-Übersicht</div>
+        <div class="panel" onclick="location.href='orders.html'">🍔 Bestellungen</div>
+
+        <div class="panel full-width" id="adminPanel" style="display:none;" onclick="location.href='management.html'">
+            <span>⭐ Management Center</span>
         </div>
     </div>
 </section>
-
-<script src="script.js"></script>
-<script>
-    requireLogin();
-    
-    function init() {
-        document.getElementById("userDisplay").innerText = "Moin, " + sessionStorage.getItem("loggedInUser");
-        
-        // Admin-Check
-        if(isAdmin()) document.getElementById("adminPanel").style.display = "block";
-
-        // Vorschau Abmeldungen
-        const div = document.getElementById("absPreview");
-        const data = getAbsences().slice(-3).reverse();
-        div.innerHTML = data.length ? "" : "<p style='color:#444;'>Keine Einträge</p>";
-        data.forEach(a => {
-            div.innerHTML += `<div style="padding:8px 0; border-bottom:1px solid #222;">${a.name} <small style="color:#888;">(${a.time})</small></div>`;
-        });
-    }
-    window.onload = init;
-</script>
-</body>
-</html>
