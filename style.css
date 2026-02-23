@@ -1,14 +1,16 @@
 :root {
     --primary: #faac15;
-    --primary-hover: #ffbd3d;
-    --glass-bg: rgba(20, 20, 25, 0.65);
-    --glass-border: rgba(255, 255, 255, 0.12);
-    --glass-blur: blur(20px);
-    --text-color: #ffffff;
-    --shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+    --bg-dark: #0f1117;
+    --glass: rgba(255,255,255,0.05);
+    --glass-strong: rgba(255,255,255,0.08);
+    --border: rgba(255,255,255,0.12);
+    --text: #ffffff;
 }
 
-/* RESET */
+/* ============================= */
+/* GLOBAL */
+/* ============================= */
+
 * {
     margin: 0;
     padding: 0;
@@ -16,160 +18,68 @@
 }
 
 body {
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    color: var(--text-color);
-    min-height: 100vh;
-    overflow-x: hidden;
+    font-family: 'Segoe UI', sans-serif;
+    background: var(--bg-dark);
+    color: var(--text);
 }
 
-/* BACKGROUND */
-body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    background: url("assets/burgershot-bg.png") center/cover no-repeat;
-    filter: brightness(0.35);
-    z-index: -1;
-}
-
+/* ============================= */
 /* HEADER */
+/* ============================= */
+
 header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 40px;
-    background: rgba(0, 0, 0, 0.35);
-    backdrop-filter: blur(15px);
-    border-bottom: 1px solid var(--glass-border);
+    padding: 15px 40px;
+    background: rgba(0,0,0,0.4);
+    border-bottom: 1px solid var(--border);
 }
 
 .brand-link {
     text-decoration: none;
     color: var(--primary);
-    font-weight: 800;
-    font-size: 1.3rem;
-}
-
-button {
-    background: var(--primary);
-    border: none;
-    padding: 8px 16px;
-    border-radius: 12px;
     font-weight: bold;
-    cursor: pointer;
-    transition: 0.3s;
+    font-size: 1.2rem;
 }
 
-button:hover {
-    background: var(--primary-hover);
-}
+/* ============================= */
+/* DASHBOARD */
+/* ============================= */
 
-/* DASHBOARD CONTAINER */
 .dashboard {
-    max-width: 1400px;
-    margin: 60px auto;
-    padding: 0 40px;
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
 }
 
-/* ============================= */
-/*           PIN MODAL           */
-/* ============================= */
-
-.modal-backdrop {
-    position: fixed;
-    inset: 0;
-
-    background: rgba(0, 0, 0, 0.75);
-    backdrop-filter: blur(8px);
-
-    display: none;
-    align-items: center;
-    justify-content: center;
-
-    z-index: 99999;
-}
-
-.modal-backdrop.active {
-    display: flex;
-}
-
-.modal {
-    background: rgba(20, 20, 25, 0.95);
-    border: 1px solid var(--primary);
-    border-radius: 20px;
-    padding: 35px;
-    width: 380px;
-    text-align: center;
-    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.7);
-}
-
-.modal h2 {
-    color: var(--primary);
-    margin-bottom: 15px;
-}
-
-.modal input {
-    width: 100%;
-    margin: 15px 0;
-}
-
-/* ===== GRID TOP (4 BIG PANELS) ===== */
 .grid-top {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 25px;
-    margin-bottom: 30px;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
 }
 
-/* ===== GRID BOTTOM (4 SMALL PANELS) ===== */
-.grid-bottom {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 25px;
-    margin-bottom: 40px;
-}
+/* ============================= */
+/* PANELS */
+/* ============================= */
 
-/* PANEL BASE */
 .panel {
-    background: var(--glass-bg);
-    backdrop-filter: var(--glass-blur);
-    border: 1px solid var(--glass-border);
-    border-radius: 22px;
-    padding: 22px;
-    box-shadow: var(--shadow);
-    transition: 0.3s ease;
+    background: var(--glass);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 25px;
     cursor: pointer;
+    transition: 0.2s ease;
 }
 
-/* PANEL HOVER */
 .panel:hover {
-    transform: translateY(-5px);
-    border-color: var(--primary);
-    box-shadow: 0 12px 30px rgba(250, 172, 21, 0.25);
+    background: var(--glass-strong);
 }
 
-/* BIG PANEL */
-.panel.big {
-    min-height: 150px;
-}
-
-/* SMALL PANEL */
-.panel.small {
-    min-height: 90px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    font-weight: bold;
-    font-size: 1rem;
-}
-
-/* PANEL HEADER */
 .panel-header {
+    font-weight: bold;
+    margin-bottom: 10px;
     color: var(--primary);
-    font-weight: 700;
-    font-size: 1rem;
-    margin-bottom: 8px;
 }
 
 .panel-top {
@@ -178,235 +88,100 @@ button:hover {
     align-items: center;
 }
 
-/* HIGHLIGHT (News Panel) */
-.panel.highlight {
-    border: 1px solid var(--primary);
-    box-shadow: 0 0 25px rgba(250, 172, 21, 0.2);
-}
-
-/* CENTER PANEL (Service) */
-.panel.center {
+.center {
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-/* BADGE */
+/* ============================= */
+/* BADGES */
+/* ============================= */
+
 .badge {
-    background: var(--primary);
-    color: black;
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: bold;
-}
-
-/* MANAGEMENT BAR */
-.management-bar {
-    padding: 20px 30px;
-    border-radius: 22px;
+    background: rgba(250,172,21,0.15);
+    color: var(--primary);
     border: 1px solid var(--primary);
-    background: var(--glass-bg);
-    backdrop-filter: var(--glass-blur);
-    display: none;
-    justify-content: space-between;
-    align-items: center;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.management-bar:hover {
-    background: rgba(255, 255, 255, 0.1);
-    box-shadow: 0 12px 30px rgba(250, 172, 21, 0.3);
-}
-
-/* RESPONSIVE (nur wenn Bildschirm wirklich klein ist) */
-@media (max-width: 1200px) {
-    .grid-top,
-    .grid-bottom {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 700px) {
-    .grid-top,
-    .grid-bottom {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* ============================= */
-/*      MANAGEMENT DESIGN        */
-/* ============================= */
-
-.management-wrapper {
-    padding: 30px;
-}
-
-.management-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 25px;
-}
-
-.management-header h2 {
-    color: var(--primary);
-}
-
-.add-user-bar {
-    display: flex;
-    gap: 10px;
-}
-
-.add-user-bar input,
-.add-user-bar select {
-    padding: 8px 12px;
-    border-radius: 10px;
-    border: 1px solid var(--glass-border);
-    background: rgba(0,0,0,0.4);
-    color: white;
-}
-
-.account-table {
-    margin-top: 10px;
-}
-
-.table-head {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    padding: 12px 0;
-    border-bottom: 1px solid var(--glass-border);
-    font-weight: bold;
-    opacity: 0.8;
-}
-
-.table-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    align-items: center;
-    padding: 14px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
-}
-
-.role-badge {
-    padding: 5px 12px;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: bold;
-    width: fit-content;
-}
-
-/* ============================= */
-/*          ROLE BADGES          */
-/* ============================= */
-
-.role-badge {
-    padding: 4px 12px;
+    padding: 3px 10px;
     border-radius: 6px;
-    font-size: 0.75rem;
-    font-weight: bold;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    width: fit-content;
-    border: 1px solid;
-}
-
-/* CHEFFE */
-.role-badge.cheffe {
-    color: #ff4d4d;
-    border-color: #ff4d4d;
-    background: rgba(255, 77, 77, 0.12);
-}
-
-/* MANAGEMENT */
-.role-badge.management {
-    color: #faac15;
-    border-color: #faac15;
-    background: rgba(250, 172, 21, 0.12);
-}
-
-/* MITARBEITER */
-.role-badge.mitarbeiter {
-    color: #aaa;
-    border-color: #666;
-    background: rgba(255, 255, 255, 0.05);
+    font-size: 0.8rem;
 }
 
 /* ============================= */
-/*        GLOBAL INPUT STYLE     */
+/* MANAGEMENT BAR */
 /* ============================= */
 
-input,
-select {
-    padding: 12px 15px;
+.management-bar {
+    margin-top: 30px;
+    padding: 15px;
+    text-align: center;
+    border: 1px solid var(--primary);
     border-radius: 12px;
-    border: 1px solid var(--glass-border);
-    background: rgba(0, 0, 0, 0.55);
-    color: white;
-    font-size: 0.95rem;
-    backdrop-filter: blur(10px);
-    outline: none;
-    transition: 0.25s ease;
-}
-
-/* Placeholder */
-input::placeholder {
-    color: rgba(255, 255, 255, 0.5);
-}
-
-/* Focus Effekt */
-input:focus,
-select:focus {
-    border-color: var(--primary);
-    box-shadow: 0 0 12px rgba(250, 172, 21, 0.4);
-    background: rgba(0, 0, 0, 0.7);
-}
-
-/* ============================= */
-/*        RANK BUTTONS           */
-/* ============================= */
-
-.action-cell {
-    display: flex;
-    justify-content: flex-end;
-    gap: 8px;
-}
-
-.rank-btn {
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.2);
-    color: #ccc;
-    padding: 4px 8px;
-    border-radius: 6px;
+    background: rgba(250,172,21,0.08);
     cursor: pointer;
-    transition: 0.2s ease;
 }
 
-.rank-btn:hover {
-    border-color: var(--primary);
+/* ============================= */
+/* MODALS */
+/* ============================= */
+
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.modal-backdrop.active {
+    display: flex;
+}
+
+.modal {
+    background: #181c24;
+    padding: 30px;
+    border-radius: 18px;
+    width: 350px;
+    border: 1px solid var(--border);
+}
+
+.modal h2 {
+    margin-bottom: 15px;
     color: var(--primary);
 }
 
+.modal input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.05);
+    color: white;
+}
+
 /* ============================= */
-/*        DELETE BUTTON          */
+/* BUTTONS */
 /* ============================= */
 
-.delete-btn {
-    background: rgba(255, 60, 60, 0.08);
-    border: 1px solid #ff4d4d;
-    color: #ff4d4d;
-    padding: 6px 14px;
-    border-radius: 6px;
-    font-size: 0.8rem;
-    font-weight: bold;
+button {
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: none;
+    background: var(--primary);
     cursor: pointer;
-    transition: 0.2s ease;
+    font-weight: bold;
 }
 
-.delete-btn:hover {
-    background: rgba(255, 60, 60, 0.2);
+button:hover {
+    opacity: 0.9;
 }
+
+/* ============================= */
+/* MANAGEMENT TABS */
+/* ============================= */
 
 .management-tabs {
     display: flex;
@@ -414,56 +189,19 @@ select:focus {
     margin-bottom: 25px;
 }
 
-.management-tabs button {
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.2);
-    color: white;
-    padding: 8px 14px;
-    border-radius: 8px;
-    cursor: pointer;
-}
-
-.management-tabs button:hover {
-    border-color: var(--primary);
-    color: var(--primary);
-}
-
-.sheet-links li {
-    margin-bottom: 10px;
-}
-
-.sheet-links a {
-    color: var(--primary);
-    text-decoration: none;
-}
-
-.sheet-links a:hover {
-    text-decoration: underline;
-}
-
 .tab-btn {
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
     color: white;
-    padding: 8px 14px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-.tab-btn:hover {
-    border-color: var(--primary);
-    color: var(--primary);
 }
 
 .tab-btn.active {
     border-color: var(--primary);
     color: var(--primary);
-    background: rgba(250, 172, 21, 0.12);
 }
 
 /* ============================= */
-/*      MANAGEMENT TABLES        */
+/* TABLES */
 /* ============================= */
 
 .account-table {
@@ -475,27 +213,82 @@ select:focus {
     display: grid;
     grid-template-columns: 2fr 1.5fr 1fr 1fr;
     align-items: center;
-    padding: 14px 20px;
+    padding: 12px 15px;
 }
 
 .table-head {
     font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
     opacity: 0.6;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
+    border-bottom: 1px solid var(--border);
 }
 
 .table-row {
     border-bottom: 1px solid rgba(255,255,255,0.05);
-    transition: 0.2s ease;
 }
 
 .table-row:hover {
-    background: rgba(255,255,255,0.04);
+    background: rgba(255,255,255,0.05);
 }
 
-.table-row span:last-child,
-.table-head span:last-child {
-    text-align: right;
+/* ============================= */
+/* ROLE BADGES */
+/* ============================= */
+
+.role-badge {
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    border: 1px solid;
+}
+
+.role-badge.cheffe {
+    color: #ff4d4d;
+    border-color: #ff4d4d;
+    background: rgba(255,77,77,0.1);
+}
+
+.role-badge.management {
+    color: var(--primary);
+    border-color: var(--primary);
+    background: rgba(250,172,21,0.1);
+}
+
+.role-badge.mitarbeiter {
+    color: #aaa;
+    border-color: #666;
+    background: rgba(255,255,255,0.05);
+}
+
+/* ============================= */
+/* RANK BUTTONS */
+/* ============================= */
+
+.rank-btn {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid var(--border);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 6px;
+}
+
+.rank-btn:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+/* ============================= */
+/* DELETE BUTTON */
+/* ============================= */
+
+.delete-btn {
+    background: rgba(255,60,60,0.08);
+    border: 1px solid #ff4d4d;
+    color: #ff4d4d;
+    padding: 5px 12px;
+    border-radius: 6px;
+}
+
+.delete-btn:hover {
+    background: rgba(255,60,60,0.2);
 }
