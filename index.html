@@ -16,13 +16,48 @@
 </header>
 
 <section class="dashboard">
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
-        <div class="panel" onclick="window.location.href='service.html'">📋 Service-Übersicht</div>
-        <div class="panel" onclick="window.location.href='orders.html'">🍔 Bestellungen</div>
-        <div class="panel" id="adminPanel" style="display:none; border: 1px solid #faac15;" onclick="window.location.href='management.html'">⭐ Management Center</div>
+    <div class="dashboard-grid">
+        
+        <div class="panel scrollable" onclick="location.href='abmeldungen.html'">
+            <div class="panel-header"><span>📅 Abmeldungen</span></div>
+            <div class="panel-content">
+                <p>• Max Mustermann (bis 24.02.)</p>
+                <p>• Lisa Lustig (bis 01.03.)</p>
+            </div>
+        </div>
+
+        <div class="panel highlight" onclick="location.href='announcements.html'">
+            <span>📢 Business Announcements</span>
+        </div>
+
+        <div class="panel scrollable" onclick="location.href='bewerber.html'">
+            <div class="panel-header"><span>📝 Bewerber</span></div>
+            <div class="panel-content">
+                <p>• Kevin Ketchup (Offen)</p>
+                <p>• Sarah Salat (In Prüfung)</p>
+            </div>
+        </div>
+
+        <div class="panel" onclick="location.href='einkaeufe.html'">
+            <span>🛒 Einkäufe / Lager</span>
+        </div>
+
+        <div class="panel" onclick="location.href='kleidung.html'">
+            <span>👔 Kleiderordnung</span>
+        </div>
+
+        <div class="panel" onclick="location.href='musik.html'">
+            <span>🎵 Musik-Playlist</span>
+        </div>
+
+        <div class="panel" onclick="location.href='service.html'">📋 Service-Übersicht</div>
+        <div class="panel" onclick="location.href='orders.html'">🍔 Bestellungen</div>
+
+        <div class="panel full-width" id="adminPanel" style="display:none;" onclick="location.href='management.html'">
+            <span>⭐ Management Center</span>
+        </div>
     </div>
 </section>
-
 <div class="modal-backdrop" id="firstLoginModal" style="display:none;">
     <div class="modal">
         <h2>🔒 Passwort ändern</h2>
