@@ -407,3 +407,36 @@ select:focus {
 .delete-btn:hover {
     background: rgba(255, 60, 60, 0.2);
 }
+
+.management-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+.management-tabs button {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: white;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.management-tabs button:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.sheet-links li {
+    margin-bottom: 10px;
+}
+
+.sheet-links a {
+    color: var(--primary);
+    text-decoration: none;
+}
+
+.sheet-links a:hover {
+    text-decoration: underline;
+}
