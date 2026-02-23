@@ -77,34 +77,30 @@ button:hover {
 
 .modal-backdrop {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
+    inset: 0;
 
     background: rgba(0, 0, 0, 0.75);
     backdrop-filter: blur(8px);
 
-    display: none; /* Standard versteckt */
+    display: none;
     align-items: center;
     justify-content: center;
 
     z-index: 99999;
 }
 
-/* Wenn aktiv */
 .modal-backdrop.active {
     display: flex;
 }
 
 .modal {
-    background: rgba(20, 20, 25, 0.9);
+    background: rgba(20, 20, 25, 0.95);
     border: 1px solid var(--primary);
     border-radius: 20px;
     padding: 35px;
     width: 380px;
     text-align: center;
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.7);
 }
 
 .modal h2 {
