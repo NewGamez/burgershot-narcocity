@@ -59,3 +59,57 @@ const getAktiveAbmeldungenCount = () =>
 
 const getNeueBewerberCount = () =>
     getBewerber().filter(b => b.status === "neu").length;
+
+/* ============================= */
+/*       ABMELDUNGEN SYSTEM      */
+/* ============================= */
+
+const getAbmeldungen = () =>
+    JSON.parse(localStorage.getItem("bs_abmeldungen")) || [];
+
+const saveAbmeldungen = (data) =>
+    localStorage.setItem("bs_abmeldungen", JSON.stringify(data));
+
+function openAbmeldungModal() {
+    document.getElementById("abmModal").classList.add("active");
+}
+
+function closeAbmModal() {
+    document.getElementById("abmModal").classList.remove("active");
+}
+
+function updateAbmCounter() {
+
+    const list = getAbmeldungen();
+
+    const activeCount = list.filter(a => a.status === "genehmigt").length;
+
+    const badge = document.getElementById("abmCounter");
+    if(badge) badge.innerText = activeCount + " aktiv";
+}
+
+function submitAbmeldung() {
+
+    const von = document.getElementById("abmVon").value;
+    const bis = document.getElementById("abmBis").value;
+    const grund = document.getElementById("abmGrund").value;
+    const user = sessionStorage.getItem("loggedInUser");
+
+    if(!von || !bis || !grund) {
+        alert("Bitte alles ausfüllen.");
+        return;
+    }
+
+    const list = getAbmeldungen();
+    list.push({
+        user,
+        von,
+        bis,
+        grund,
+        status: "offen"
+    });
+
+    saveAbmeldungen(list);
+    closeAbmModal();
+    updateAbmCounter();
+}
