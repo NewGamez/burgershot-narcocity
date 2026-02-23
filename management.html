@@ -62,9 +62,7 @@ function renderUsers() {
             <span>${name}</span>
             <span class="role-badge ${accs[name].role.toLowerCase()}">${accs[name].role}</span>
             <div style="text-align:right;">
-                ${name !== "Admin"
-                    ? `<button class="delete-btn" onclick="delUser('${name}')">Kündigen</button>`
-                    : `<span class="owner-label">Inhaber</span>`}
+            <button class="delete-btn" onclick="delUser('${name}')">Kündigen</button>
             </div>
         `;
 
