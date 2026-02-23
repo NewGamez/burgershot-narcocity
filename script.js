@@ -1,61 +1,61 @@
-// =============================
-// LOGIN CHECK
-// =============================
+/* ===================================== */
+/* BURGERSHOT INTERN – CORE SCRIPT       */
+/* ===================================== */
+
+// --- ACCOUNTS & AUTH ---
+function getAccounts() {
+    const accs = localStorage.getItem("bs_accounts");
+    return accs ? JSON.parse(accs) : {
+        "Admin": { password: "123", role: "Cheffe", isFirstLogin: false }
+    };
+}
+
+function saveAccounts(accs) {
+    localStorage.setItem("bs_accounts", JSON.stringify(accs));
+}
+
+function isAdmin() {
+    const username = sessionStorage.getItem("loggedInUser");
+    const accounts = getAccounts();
+    const user = accounts[username];
+    if (!user) return false;
+    // Cheffe und Management zählen als Admins für das Panel
+    return ["Cheffe", "Management"].includes(user.role);
+}
 
 function requireLogin() {
-    const user = sessionStorage.getItem("loggedInUser");
-    if (!user) {
+    if (!sessionStorage.getItem("loggedInUser")) {
         window.location.href = "login.html";
     }
 }
 
 function setHeaderUser() {
     const user = sessionStorage.getItem("loggedInUser");
-    const el = document.getElementById("welcomeUser");
-    if (el && user) {
-        el.innerText = "Eingeloggt als: " + user;
-    }
+    const welcome = document.getElementById("welcomeUser");
+    if (welcome) welcome.innerText = "Moin, " + user;
 }
 
 function logout() {
-    sessionStorage.removeItem("loggedInUser");
+    sessionStorage.clear();
     window.location.href = "login.html";
 }
 
-// =============================
-// ACCOUNT STORAGE
-// =============================
-
-function getAccounts() {
-    return JSON.parse(localStorage.getItem("accounts")) || {};
+// --- ABMELDUNGEN LOGIK ---
+function getAbsences() {
+    const data = localStorage.getItem("bs_absences");
+    return data ? JSON.parse(data) : [];
 }
 
-function saveAccounts(accounts) {
-    localStorage.setItem("accounts", JSON.stringify(accounts));
+function saveAbsences(data) {
+    localStorage.setItem("bs_absences", JSON.stringify(data));
 }
 
-// =============================
-// ROLE CHECK
-// =============================
-
-function isAdmin() {
-    const username = sessionStorage.getItem("loggedInUser");
-    const accounts = getAccounts();
-    const user = accounts[username];
-
-    if (!user) return false;
-
-    // Erlaube Zugriff für Admin, Cheffe und Management
-    const privilegedRoles = ["Admin", "Cheffe", "Management"];
-    return privilegedRoles.includes(user.role);
+// --- BEWERBER LOGIK ---
+function getApplicants() {
+    const data = localStorage.getItem("bs_applicants");
+    return data ? JSON.parse(data) : [];
 }
 
-// Initialer Setup-Check (Falls noch gar keine Accounts existieren)
-(function initializeSystem() {
-    const accounts = getAccounts();
-    if (Object.keys(accounts).length === 0) {
-        console.log("System leer. Erstelle Standard-Admin...");
-        accounts["Admin"] = { password: "0000", role: "Admin" };
-        saveAccounts(accounts);
-    }
-})();
+function saveApplicants(data) {
+    localStorage.setItem("bs_applicants", JSON.stringify(data));
+}
