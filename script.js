@@ -133,3 +133,42 @@ function deleteMitarbeiter(i){
 function getNeueBewerberCount() {
     return JSON.parse(localStorage.getItem("bs_bewerber"))?.length || 0;
 }
+
+/* ===================================================== */
+/* ================= ABMELDUNG UI ====================== */
+/* ===================================================== */
+
+function openAbmModal(){
+    document.getElementById("abmModal").classList.add("active");
+}
+
+function closeAbmModal(){
+    document.getElementById("abmModal").classList.remove("active");
+}
+
+function submitAbmeldungUI(){
+
+    const von = document.getElementById("abmVon").value;
+    const bis = document.getElementById("abmBis").value;
+    const grund = document.getElementById("abmGrund").value;
+
+    if(!von || !bis || !grund){
+        alert("Bitte alles ausfüllen.");
+        return;
+    }
+
+    submitAbmeldung(von, bis, grund);
+
+    closeAbmModal();
+
+    // Counter aktualisieren
+    const counter = document.getElementById("abmCounter");
+    if(counter){
+        counter.innerText = getAktiveAbmeldungenCount() + " aktiv";
+    }
+
+    // Felder leeren
+    document.getElementById("abmVon").value = "";
+    document.getElementById("abmBis").value = "";
+    document.getElementById("abmGrund").value = "";
+}
