@@ -43,14 +43,15 @@
         const list = document.getElementById("userList");
         list.innerHTML = "";
         const accs = getAccounts();
+    
         Object.keys(accs).forEach(name => {
             const row = document.createElement("div");
-            row.className = "account-row";
+            row.className = "mgmt-grid"; // Benutzt jetzt das neue Grid-System
             row.innerHTML = `
                 <span style="font-weight:bold;">${name}</span>
-                <span class="role-badge">${accs[name].role}</span>
+                <span style="color: #bbb;">${accs[name].role}</span>
                 <div style="text-align:right;">
-                    <button class="delete-btn" onclick="delUser('${name}')">Kündigen</button>
+                    ${name !== 'Admin' ? `<button class="btn-danger" onclick="delUser('${name}')">Kündigen</button>` : ''}
                 </div>
             `;
             list.appendChild(row);
