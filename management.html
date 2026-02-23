@@ -168,6 +168,31 @@ document.addEventListener("DOMContentLoaded", () => {
     renderUsers();
     renderMitarbeiter();
 });
+
+    <script src="script.js"></script>
+
+<script>
+requireLogin();
+if(!isAdmin()) window.location.href = "index.html";
+
+/* SECTION SWITCHING */
+function showSection(id, btn) {
+
+    document.querySelectorAll(".management-section")
+        .forEach(sec => sec.style.display = "none");
+
+    document.getElementById(id).style.display = "block";
+
+    document.querySelectorAll(".tab-btn")
+        .forEach(b => b.classList.remove("active"));
+
+    if (btn) btn.classList.add("active");
+}
+
+/* Hier kommen deine anderen Funktionen */
+renderUsers();
+renderMitarbeiter();
+
 </script>
 
 </body>
