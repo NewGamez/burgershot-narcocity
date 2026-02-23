@@ -240,17 +240,14 @@ function renderMitarbeiter() {
         row.className = "table-row";
         row.innerHTML = `
             <span>${m.vorname} ${m.nachname}</span>
-            <span>${m.telefon}</span>
-            <span>${m.gehalt} €</span>
-            <div style="text-align:right;">
+            <span>${m.telefon || "-"}</span>
+            <span>${m.gehalt ? m.gehalt + " €" : "-"}</span>
+            <div>
                 <button class="delete-btn" onclick="deleteMitarbeiter(${i})">
                     Entfernen
                 </button>
             </div>
         `;
-        c.appendChild(row);
-    });
-}
 
 function deleteMitarbeiter(i){
     const list = getMitarbeiter();
