@@ -257,6 +257,52 @@ document.addEventListener("DOMContentLoaded", () => {
     renderUsers();
     renderMitarbeiter();
 });
+
+    function renderAbmeldungen() {
+
+    const container = document.getElementById("abmList");
+    container.innerHTML = "";
+
+    const list = getAbmeldungen();
+
+    list.forEach((a, index) => {
+
+        const row = document.createElement("div");
+        row.className = "table-row";
+
+        row.innerHTML = `
+            <span>${a.user}</span>
+            <span>${a.von} - ${a.bis}</span>
+            <span>${a.status}</span>
+            <div class="action-cell">
+                ${a.status === "offen" ? `
+                    <button class="rank-btn" onclick="approveAbm(${index})">✔</button>
+                    <button class="delete-btn" onclick="rejectAbm(${index})">✖</button>
+                ` : ""}
+            </div>
+        `;
+
+        container.appendChild(row);
+    });
+}
+
+function approveAbm(index) {
+    const list = getAbmeldungen();
+    list[index].status = "genehmigt";
+    saveAbmeldungen(list);
+    renderAbmeldungen();
+}
+
+function rejectAbm(index) {
+    const list = getAbmeldungen();
+    list[index].status = "abgelehnt";
+    saveAbmeldungen(list);
+    renderAbmeldungen();
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    renderAbmeldungen();
+});
 </script>
 
 </body>
