@@ -17,11 +17,14 @@
 
 <section class="dashboard">
 
-    <!-- ===== TOP GRID ===== -->
-    <div class="dashboard-grid">
+    <div class="custom-grid">
 
+        <!-- ROW 1 -->
         <div class="panel">
-            <div class="panel-header">📅 ABMELDUNGEN</div>
+            <div class="panel-top">
+                <span class="panel-header">📅 ABMELDUNGEN</span>
+                <span id="abmCounter" class="badge">0 aktiv</span>
+            </div>
             <p>Abwesenheiten & Urlaubsanträge.</p>
         </div>
 
@@ -31,20 +34,23 @@
         </div>
 
         <div class="panel">
-            <div class="panel-header">📝 BEWERBER</div>
+            <div class="panel-top">
+                <span class="panel-header">📝 BEWERBER</span>
+                <span id="bewerberCounter" class="badge">0 neu</span>
+            </div>
             <p>Neue Bewerbungen prüfen.</p>
         </div>
 
+        <!-- ROW 2 -->
         <div class="panel">
             <div class="panel-header">📋 SERVICE</div>
             <p>Interne Service-Infos.</p>
         </div>
 
-    </div>
+        <div></div>
+        <div></div>
 
-    <!-- ===== SECOND GRID ===== -->
-    <div class="dashboard-grid" style="margin-top:25px;">
-
+        <!-- ROW 3 -->
         <div class="panel">
             <div class="panel-header">🍔 ORDERS</div>
             <p>Bestellungen & Übersicht.</p>
@@ -60,6 +66,7 @@
             <p>Restaurant Playlist.</p>
         </div>
 
+        <!-- ROW 4 -->
         <div class="panel">
             <div class="panel-header">👕 KLEIDUNG</div>
             <p>Dresscode & Ausstattung.</p>
@@ -67,16 +74,10 @@
 
     </div>
 
-    <!-- ===== MANAGEMENT BAR ===== -->
-    <div id="adminPanel" class="panel" 
-         style="margin-top:30px; display:none; border:1px solid var(--primary);"
-         onclick="location.href='management.html'">
-
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-            <div class="panel-header">⭐ Management Center</div>
-            <span style="color:var(--primary);">Personalverwaltung & Systemsteuerung</span>
-        </div>
-
+    <!-- MANAGEMENT -->
+    <div id="adminPanel" class="management-bar" onclick="location.href='management.html'">
+        <div>⭐ Management Center</div>
+        <div>Personalverwaltung & Systemsteuerung</div>
     </div>
 
 </section>
@@ -87,13 +88,17 @@ requireLogin();
 
 window.onload = () => {
     const user = sessionStorage.getItem("loggedInUser");
-    const accs = getAccounts();
-
     document.getElementById("welcomeUser").innerText = "Moin, " + user;
 
     if (isAdmin()) {
-        document.getElementById("adminPanel").style.display = "block";
+        document.getElementById("adminPanel").style.display = "flex";
     }
+
+    document.getElementById("abmCounter").innerText =
+        getAktiveAbmeldungenCount() + " aktiv";
+
+    document.getElementById("bewerberCounter").innerText =
+        getNeueBewerberCount() + " neu";
 };
 </script>
 
