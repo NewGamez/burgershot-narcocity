@@ -1,6 +1,16 @@
 /* ===================================== */
-/* BURGERSHOT INTERN – COMPLETE STYLE    */
+/* BURGERSHOT INTERN – DEFINITIVE STYLE  */
 /* ===================================== */
+
+:root {
+    --accent: #faac15;
+    --accent-hover: #ffbd3d;
+    --bg-panel: rgba(25, 27, 34, 0.85);
+    --border: rgba(255, 255, 255, 0.1);
+    --text-main: #ffffff;
+    --text-muted: #888888;
+    --danger: #ff4646;
+}
 
 * {
     margin: 0;
@@ -9,13 +19,14 @@
 }
 
 body {
-    font-family: system-ui, -apple-system, sans-serif;
-    color: white;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color: var(--text-main);
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     position: relative;
     overflow-x: hidden;
+    background: #0a0a0b;
 }
 
 body::before {
@@ -23,312 +34,273 @@ body::before {
     position: fixed;
     inset: 0;
     background: url("assets/burgershot-bg.png") center/cover no-repeat;
-    filter: brightness(0.6);
+    filter: brightness(0.4);
     z-index: -1;
 }
 
-/* HEADER */
+/* --- HEADER --- */
 header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 15px 40px;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(10px);
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(15px);
     border-bottom: 1px solid rgba(250, 172, 21, 0.3);
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }
 
-.brand-link { text-decoration: none; color: white; font-weight: bold; font-size: 18px; }
-
-.logout-btn {
-    padding: 6px 15px;
-    border-radius: 20px;
-    border: none;
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-    cursor: pointer;
-    transition: 0.2s;
+.brand-link {
+    text-decoration: none;
+    color: var(--text-main);
+    font-weight: 800;
+    font-size: 20px;
+    letter-spacing: 1px;
 }
 
-.logout-btn:hover { background: rgba(255, 80, 80, 0.4); }
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
 
-/* DASHBOARD GRID SYSTEM */
+/* --- DASHBOARD GRID --- */
 .dashboard {
     flex: 1;
     max-width: 1400px;
-    margin: 40px auto;
+    margin: 30px auto;
     width: 95%;
 }
 
 .dashboard-grid {
     display: grid;
-    /* Nutzt auto-fill für eine dynamische Verteilung ohne Lücken */
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 25px;
-    align-items: stretch; /* Sorgt dafür, dass Panels in einer Reihe gleich hoch sind */
+    gap: 20px;
 }
 
-/* PANEL BASE STYLE */
+/* --- PANELS --- */
 .panel {
-    background: rgba(25, 27, 34, 0.8);
+    background: var(--bg-panel);
     backdrop-filter: blur(20px);
-    border-radius: 24px;
+    border-radius: 20px;
     padding: 25px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 15px 35px rgba(0,0,0,0.4);
-    cursor: pointer;
+    border: 1px solid var(--border);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     flex-direction: column;
-    position: relative;
-    overflow: hidden;
+    cursor: pointer;
 }
-
-/* Glanzeffekt bei Hover */
-.panel::after {
-    content: "";
-    position: absolute;
-    top: 0; left: -100%;
-    width: 100%; height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
-    transition: 0.5s;
-}
-
-.panel:hover::after { left: 100%; }
 
 .panel:hover {
-    transform: translateY(-8px);
-    border-color: #faac15;
+    transform: translateY(-5px);
+    border-color: var(--accent);
     background: rgba(35, 38, 48, 0.9);
 }
 
-/* SCROLLABLE PANELS (Abmeldungen & Bewerber) */
 .panel.scrollable {
-    height: 350px; /* Einheitliche Höhe für die obere Reihe */
+    height: 300px;
     cursor: default;
 }
 
+.panel.highlight {
+    border-left: 4px solid var(--accent);
+}
+
+.panel.full-width {
+    grid-column: 1 / -1;
+    border: 1px solid rgba(250, 172, 21, 0.4);
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 80px;
+}
+
+.panel.center-content {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.panel .icon {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    display: block;
+}
+
+/* --- PANEL COMPONENTS --- */
 .panel-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-bottom: 15px;
     margin-bottom: 15px;
-    border-bottom: 1px solid rgba(250, 172, 21, 0.3);
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
 }
 
 .panel-header span {
-    color: #faac15;
+    color: var(--accent);
+    text-transform: uppercase;
+    font-size: 0.85rem;
     font-weight: 800;
-    font-size: 1.1rem;
     letter-spacing: 1px;
 }
 
-/* Platzhalter-Style für leere Listen */
-.panel-content:empty::before {
-    content: "Keine aktuellen Einträge";
-    display: block;
-    text-align: center;
-    margin-top: 30px;
-    color: rgba(255, 255, 255, 0.2);
-    font-style: italic;
-    font-size: 0.8rem;
-}
-
-/* Animation für die Badges (leuchtet ganz leicht) */
 .count-badge {
-    box-shadow: 0 0 10px rgba(250, 172, 21, 0.2);
-    animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-    0% { opacity: 1; }
-    50% { opacity: 0.6; }
-    100% { opacity: 1; }
-}
-
-/* Ein kleiner Counter im Header des Panels */
-.count-badge {
-    background: rgba(250, 172, 21, 0.2);
-    color: #faac15;
-    padding: 2px 8px;
-    border-radius: 6px;
-    font-size: 0.8rem;
+    background: rgba(250, 172, 21, 0.15);
+    color: var(--accent);
+    padding: 3px 10px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: bold;
 }
 
 .panel-content {
     flex: 1;
     overflow-y: auto;
-    scrollbar-width: thin;
-    scrollbar-color: #faac15 transparent;
+    padding-right: 5px;
 }
 
-/* List-Items schöner machen */
 .list-item {
     display: flex;
     justify-content: space-between;
-    padding: 12px 10px;
+    align-items: center;
+    padding: 10px;
+    background: rgba(255,255,255,0.03);
     border-radius: 10px;
     margin-bottom: 8px;
-    background: rgba(255, 255, 255, 0.03);
-    border-left: 3px solid transparent;
+    border: 1px solid transparent;
+}
+
+.item-name { font-weight: 600; font-size: 0.95rem; }
+.item-date { color: var(--text-muted); font-size: 0.8rem; }
+
+.empty-msg {
+    color: var(--text-muted);
+    text-align: center;
+    margin-top: 40px;
+    font-style: italic;
+    font-size: 0.9rem;
+}
+
+/* --- TABLES (Abmeldungen / Management) --- */
+.table-container { margin-top: 10px; }
+
+.table-head {
+    display: grid;
+    grid-template-columns: 1.5fr 1.5fr 2fr 0.8fr;
+    padding: 12px 20px;
+    background: rgba(250, 172, 21, 0.1);
+    color: var(--accent);
+    font-weight: bold;
+    font-size: 0.85rem;
+    border-radius: 10px 10px 0 0;
+}
+
+.table-row {
+    display: grid;
+    grid-template-columns: 1.5fr 1.5fr 2fr 0.8fr;
+    padding: 15px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    align-items: center;
+    background: rgba(255,255,255,0.01);
+}
+
+.reason-text { color: var(--text-muted); font-size: 0.85rem; }
+
+/* --- BUTTONS --- */
+.logout-btn {
+    padding: 8px 18px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.05);
+    color: white;
+    cursor: pointer;
     transition: 0.2s;
 }
 
-.list-item:hover {
-    background: rgba(255, 255, 255, 0.07);
-    border-left-color: #faac15;
+.logout-btn:hover { background: var(--danger); border-color: var(--danger); }
+
+.add-btn {
+    padding: 10px 20px;
+    background: var(--accent);
+    color: #000;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
 }
 
-.list-item .date { color: #888; font-size: 0.8rem; }
+.add-btn:hover { background: var(--accent-hover); transform: scale(1.02); }
 
-/* MANAGEMENT PANEL (Breite optimiert) */
-.panel.full-width {
-    grid-column: 1 / -1;
-    background: linear-gradient(135deg, rgba(30, 32, 40, 0.9), rgba(20, 22, 28, 0.9));
-    border: 1px solid rgba(250, 172, 21, 0.5);
-    min-height: 100px;
-    margin-top: 10px;
+.delete-btn-small {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.1rem;
+    opacity: 0.5;
+    transition: 0.2s;
 }
 
-/* Custom Scrollbar */
-.panel-content::-webkit-scrollbar { width: 5px; }
-.panel-content::-webkit-scrollbar-thumb { background: #faac15; border-radius: 10px; }
+.delete-btn-small:hover { opacity: 1; transform: scale(1.2); }
 
-/* FULL WIDTH PANEL (Management) */
-.panel.full-width {
-    grid-column: 1 / -1; /* Geht über alle Spalten */
-    border: 1px solid rgba(250, 172, 21, 0.4);
-    background: rgba(30, 32, 40, 0.9);
-    margin-top: 10px;
-}
-
-.panel.highlight {
-    border: 1px solid rgba(250, 172, 21, 0.2);
-}
-
-/* MANAGEMENT SPECIFIC (Für management.html) */
-.management-container {
+/* --- MODALS --- */
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(8px);
     display: flex;
-    flex-direction: column;
-    align-items: stretch !important;
-    cursor: default;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
 }
 
-.hiring-bar {
-    display: grid;
-    grid-template-columns: 2fr 1.5fr auto;
-    gap: 15px;
-    background: rgba(0, 0, 0, 0.3);
-    padding: 20px;
-    border-radius: 12px;
-    margin-bottom: 30px;
+.modal {
+    background: #16181d;
+    padding: 35px;
+    border-radius: 25px;
+    width: 100%;
+    max-width: 450px;
+    border: 1px solid var(--accent);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
 }
 
-.hiring-bar input, .hiring-bar select {
-    padding: 10px;
-    border-radius: 8px;
-    border: 1px solid rgba(255,255,255,0.1);
-    background: rgba(255,255,255,0.05);
+.modal h3 { margin-bottom: 20px; color: var(--accent); }
+
+.modal input, .modal textarea {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    background: #0a0a0b;
+    border: 1px solid #333;
+    border-radius: 10px;
     color: white;
     outline: none;
 }
 
-.hiring-bar input:focus { border-color: #faac15; }
+.modal input:focus { border-color: var(--accent); }
 
-.add-btn {
-    background: #faac15 !important;
-    color: black !important;
-    font-weight: bold;
-    border-radius: 8px;
-    padding: 0 25px;
-    border: none;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-.add-btn:hover { background: #ffbd3d !important; }
-
-/* TABLE STYLES */
-.account-table-header {
-    display: grid;
-    grid-template-columns: 2fr 1.5fr 1.5fr;
-    padding: 10px 20px;
-    color: #faac15;
-    font-weight: bold;
-    border-bottom: 2px solid rgba(250, 172, 21, 0.4);
-    font-size: 0.9rem;
-    text-transform: uppercase;
-}
-
-.account-row {
-    display: grid;
-    grid-template-columns: 2fr 1.5fr 1.5fr;
-    align-items: center;
-    padding: 12px 20px;
-    background: rgba(255, 255, 255, 0.03);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.action-buttons { display: flex; gap: 8px; justify-content: flex-end; }
-
-.rank-btn {
-    background: rgba(255,255,255,0.1);
-    color: white;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-}
-
-.rank-btn:hover { background: rgba(255,255,255,0.2); }
-
-.delete-btn {
-    background: rgba(255, 70, 70, 0.15);
-    color: #ff4646;
-    border: 1px solid rgba(255, 70, 70, 0.3);
-    padding: 6px 14px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-.delete-btn:hover { background: rgba(255, 70, 70, 0.3); border-color: #ff4646; }
-
-/* BADGES */
-.role-badge {
-    padding: 4px 12px;
-    border-radius: 6px;
-    font-size: 10px;
-    font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-.badge-cheffe { background: rgba(255, 70, 70, 0.2); color: #ff4646; border: 1px solid rgba(255, 70, 70, 0.4); }
-.badge-management { background: rgba(250, 172, 21, 0.2); color: #faac15; border: 1px solid rgba(250, 172, 21, 0.4); }
-.badge-mitarbeiter { background: rgba(255, 255, 255, 0.08); color: #ccc; border: 1px solid rgba(255, 255, 255, 0.2); }
-
-/* MODAL */
-.modal-backdrop {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.85);
+.modal-actions {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 9999;
-    backdrop-filter: blur(5px);
-}
-.modal {
-    background: #1e2028;
-    padding: 40px;
-    border-radius: 25px;
-    text-align: center;
-    border: 1px solid #faac15;
-    width: 450px;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+    gap: 10px;
+    margin-top: 10px;
 }
 
-.modal h2 { color: #faac15; margin-bottom: 15px; }
-.modal p { margin-bottom: 20px; color: #bbb; }
+/* --- CUSTOM SCROLLBAR --- */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+/* --- RESPONSIVE --- */
+@media (max-width: 768px) {
+    header { padding: 15px 20px; }
+    .table-head, .table-row { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .table-head span:nth-child(3), .table-head span:nth-child(4) { display: none; }
+}
