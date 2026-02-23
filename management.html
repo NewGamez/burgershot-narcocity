@@ -11,28 +11,49 @@
     <span style="color: gold; font-weight: bold;">Management Center</span>
 </header>
 
-<section class="dashboard">
-    <div class="panel full-width">
-        <h3 style="margin-bottom:20px; color:gold;">👤 Personalverwaltung</h3>
-        
-        <div class="hiring-bar">
-            <input type="text" id="newName" placeholder="Name">
-            <select id="newRole">
-                <option value="Mitarbeiter_in">Mitarbeiter/in</option>
-                <option value="Management">Management</option>
-                <option value="Cheffe">Cheffe</option>
-            </select>
-            <button class="add-btn" onclick="addUser()">Einstellen</button>
-        </div>
-
-        <div class="account-table-header">
-            <span>Name</span>
-            <span>Rang</span>
-            <span style="text-align:right;">Aktion</span>
-        </div>
-        <div id="userList"></div>
+<div class="glass-card">
+    <h2 style="color: var(--primary); margin-bottom: 20px;">👤 Personalverwaltung</h2>
+    
+    <div style="display: flex; gap: 10px; margin-bottom: 30px;">
+        <input type="text" id="newName" placeholder="Name" style="flex:1;">
+        <select id="newRole">
+            <option>Mitarbeiter/in</option>
+            <option>Management</option>
+            <option>Cheffe</option>
+        </select>
+        <button class="btn-gold" onclick="addUser()">Einstellen</button>
     </div>
-</section>
+
+    <div class="mgmt-header">
+        <span>Name</span>
+        <span>Rang</span>
+        <span>Aktion</span>
+    </div>
+    <div id="userList"></div>
+</div>
+
+<script src="script.js"></script>
+<script>
+    function renderUsers() {
+        const list = document.getElementById("userList");
+        list.innerHTML = "";
+        const accs = getAccounts();
+        
+        Object.keys(accs).forEach(name => {
+            const row = document.createElement("div");
+            row.className = "mgmt-row";
+            row.innerHTML = `
+                <span style="font-weight:bold;">${name}</span>
+                <span style="opacity:0.7;">${accs[name].role}</span>
+                <div>
+                    ${name !== 'Admin' ? `<button class="btn-danger" onclick="delUser('${name}')">Kündigen</button>` : ''}
+                </div>
+            `;
+            list.appendChild(row);
+        });
+    }
+    window.onload = renderUsers;
+</script>
 
 <script src="script.js"></script>
 <script>
