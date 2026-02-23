@@ -35,12 +35,17 @@
 
 <script src="script.js"></script>
 <script>
-    requireLogin();
-    setHeaderUser();
+    // In der index.html
+        requireLogin();
+        setHeaderUser();
 
-    if (isAdmin()) {
-        document.getElementById("adminPanel").style.display = "block";
-    }
+        // Diese Zeile sorgt dafür, dass das Panel erscheint
+        if (isAdmin()) {
+         const adminPanel = document.getElementById("adminPanel");
+         if (adminPanel) {
+              adminPanel.style.display = "flex"; 
+          }
+     }
 
     function checkPasswordStatus() {
         const username = sessionStorage.getItem("loggedInUser");
