@@ -25,12 +25,13 @@
         </div>
 
         <div class="panel big">
-            <div class="panel-top">
-                <span class="panel-header">📅 ABMELDUNGEN</span>
-                <span id="abmCounter" class="badge">0 aktiv</span>
+            <div class="panel big" onclick="openAbmeldungModal()">
+                <div class="panel-top">
+                    <span class="panel-header">📅 ABMELDUNGEN</span>
+                    <span id="abmCounter" class="badge">0 aktiv</span>
+                </div>
+                <p>Abwesenheiten & Urlaubsanträge.</p>
             </div>
-            <p>Abwesenheiten & Urlaubsanträge.</p>
-        </div>
 
         <div class="panel big">
             <div class="panel-top">
@@ -68,6 +69,22 @@
         <p>Bitte setze deine persönliche 4-stellige PIN.</p>
         <input type="password" id="newPin" maxlength="4" placeholder="Neue PIN">
         <button onclick="savePin()">Speichern</button>
+    </div>
+</div>
+
+    <!-- ================= ABMELDUNG MODAL ================= -->
+<div class="modal-backdrop" id="abmModal">
+    <div class="modal">
+        <h2>📅 Neue Abmeldung</h2>
+
+        <input type="date" id="abmVon">
+        <input type="date" id="abmBis">
+        <input type="text" id="abmGrund" placeholder="Grund">
+
+        <div style="margin-top:15px;">
+            <button onclick="submitAbmeldung()">Einreichen</button>
+            <button onclick="closeAbmModal()" style="margin-left:10px;">Abbrechen</button>
+        </div>
     </div>
 </div>
 
