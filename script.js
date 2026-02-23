@@ -39,12 +39,15 @@ function saveAccounts(accounts) {
 // =============================
 
 function isAdmin() {
-    const user = sessionStorage.getItem("loggedInUser");
+    const username = sessionStorage.getItem("loggedInUser");
     const accounts = getAccounts();
+    const user = accounts[username];
 
-    if (!accounts[user]) return false;
+    if (!user) return false;
 
-    return accounts[user].role === "Admin";
+    // Erlaube Zugriff für Admin, Cheffe und Management
+    const privilegedRoles = ["Admin", "Cheffe", "Management"];
+    return privilegedRoles.includes(user.role);
 }
 
 // Initialer Setup-Check (Falls noch gar keine Accounts existieren)
