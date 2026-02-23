@@ -1,86 +1,90 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <title>Management Center</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<title>Management Center</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
+
 <header>
     <a href="index.html" class="brand-link">← Zurück</a>
-    <span style="color: gold; font-weight: bold;">Management Center</span>
+    <span style="color:gold; font-weight:bold;">Management Center</span>
 </header>
 
 <section class="dashboard">
-    <div class="panel full-width">
+    <div class="panel" style="cursor:default;">
+
         <h3 style="margin-bottom:20px; color:gold;">👤 Personalverwaltung</h3>
-        
-        <div class="hiring-bar">
+
+        <div style="display:flex; gap:10px; margin-bottom:20px;">
             <input type="text" id="newName" placeholder="Name">
             <select id="newRole">
-                <option value="Mitarbeiter_in">Mitarbeiter/in</option>
+                <option value="Mitarbeiter">Mitarbeiter</option>
                 <option value="Management">Management</option>
                 <option value="Cheffe">Cheffe</option>
             </select>
-            <button class="add-btn" onclick="addUser()">Einstellen</button>
+            <button onclick="addUser()">Einstellen</button>
         </div>
 
-        <div class="account-table-header">
-            <span>Name</span>
-            <span>Rang</span>
-            <span style="text-align:right;">Aktion</span>
-        </div>
         <div id="userList"></div>
+
     </div>
 </section>
 
 <script src="script.js"></script>
 <script>
-    requireLogin();
-    if(!isAdmin()) window.location.href = "index.html";
+requireLogin();
+if(!isAdmin()) window.location.href = "index.html";
 
-    function renderUsers() {
-        const list = document.getElementById("userList");
-        list.innerHTML = "";
+function renderUsers() {
+    const list = document.getElementById("userList");
+    list.innerHTML = "";
+    const accs = getAccounts();
+
+    Object.keys(accs).forEach(name => {
+        const row = document.createElement("div");
+        row.style.display = "flex";
+        row.style.justifyContent = "space-between";
+        row.style.marginBottom = "10px";
+
+        row.innerHTML = `
+            <span><strong>${name}</strong> (${accs[name].role})</span>
+            <button onclick="delUser('${name}')">Kündigen</button>
+        `;
+
+        list.appendChild(row);
+    });
+}
+
+function addUser() {
+    const name = document.getElementById("newName").value.trim();
+    const role = document.getElementById("newRole").value;
+    const accs = getAccounts();
+
+    if(name && !accs[name]) {
+        accs[name] = { password: "0000", role: role, isFirstLogin: true };
+        saveAccounts(accs);
+        renderUsers();
+        document.getElementById("newName").value = "";
+    } else {
+        alert("Name ungültig oder bereits vergeben.");
+    }
+}
+
+function delUser(name) {
+    if(name === "Admin") return alert("Admin kann nicht gelöscht werden.");
+
+    if(confirm(name + " kündigen?")) {
         const accs = getAccounts();
-        Object.keys(accs).forEach(name => {
-            const row = document.createElement("div");
-            row.className = "account-row";
-            row.innerHTML = `
-                <span style="font-weight:bold;">${name}</span>
-                <span class="role-badge">${accs[name].role}</span>
-                <div style="text-align:right;">
-                    <button class="delete-btn" onclick="delUser('${name}')">Kündigen</button>
-                </div>
-            `;
-            list.appendChild(row);
-        });
+        delete accs[name];
+        saveAccounts(accs);
+        renderUsers();
     }
+}
 
-    function addUser() {
-        const name = document.getElementById("newName").value.trim();
-        const role = document.getElementById("newRole").value;
-        const accs = getAccounts();
-        if(name && !accs[name]) {
-            accs[name] = { password: "0000", role: role, isFirstLogin: true };
-            saveAccounts(accs);
-            renderUsers();
-            document.getElementById("newName").value = "";
-        } else {
-            alert("Name ungültig oder bereits vergeben.");
-        }
-    }
-
-    function delUser(name) {
-        if(name === "Admin") return alert("Admin kann nicht gelöscht werden.");
-        if(confirm(name + " kündigen?")) {
-            const accs = getAccounts();
-            delete accs[name];
-            saveAccounts(accs);
-            renderUsers();
-        }
-    }
-    window.onload = renderUsers;
+window.onload = renderUsers;
 </script>
+
 </body>
 </html>
