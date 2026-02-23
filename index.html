@@ -102,7 +102,8 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
-    document.getElementById("welcomeUser").innerText = "Eingeloggt als: " + user;
+    document.getElementById("welcomeUser").innerText =
+        "Eingeloggt als: " + user;
 
     if (isAdmin()) {
         document.getElementById("adminPanel").style.display = "flex";
@@ -112,11 +113,14 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("pinModal").classList.add("active");
     }
 
-    document.getElementById("abmCounter").innerText =
-        getAktiveAbmeldungenCount() + " aktiv";
+    // ✅ Live Counter sauber über Funktion
+    updateAbmCounter();
 
-    document.getElementById("bewerberCounter").innerText =
-        getNeueBewerberCount() + " neu";
+    const bewerberBadge = document.getElementById("bewerberCounter");
+    if (bewerberBadge) {
+        bewerberBadge.innerText =
+            getNeueBewerberCount() + " neu";
+    }
 });
 
 function savePin() {
