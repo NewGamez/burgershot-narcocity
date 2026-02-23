@@ -1,6 +1,6 @@
-/* ===================================================== */
-/* ================= ACCOUNT SYSTEM ==================== */
-/* ===================================================== */
+/* ================================================= */
+/* ================= ACCOUNT SYSTEM ================= */
+/* ================================================= */
 
 const getAccounts = () => {
     const data = localStorage.getItem("bs_accounts");
@@ -22,9 +22,9 @@ const saveAccounts = accs =>
     localStorage.setItem("bs_accounts", JSON.stringify(accs));
 
 
-/* ===================================================== */
-/* ================= AUTH SYSTEM ======================= */
-/* ===================================================== */
+/* ================================================= */
+/* ================= AUTH SYSTEM =================== */
+/* ================================================= */
 
 const requireLogin = () => {
     if (!sessionStorage.getItem("loggedInUser")) {
@@ -46,9 +46,9 @@ const isAdmin = () => {
 };
 
 
-/* ===================================================== */
-/* ================= ABMELDUNGEN ======================= */
-/* ===================================================== */
+/* ================================================= */
+/* ================= ABMELDUNGEN =================== */
+/* ================================================= */
 
 const getAbmeldungen = () =>
     JSON.parse(localStorage.getItem("bs_abmeldungen")) || [];
@@ -56,16 +56,19 @@ const getAbmeldungen = () =>
 const saveAbmeldungen = data =>
     localStorage.setItem("bs_abmeldungen", JSON.stringify(data));
 
-function getOffeneAbmeldungenCount() {
-    return getAbmeldungen()
-        .filter(a => a.status === "offen").length;
-}
+/* ---------- Abmeldung einreichen ---------- */
 
-function submitAbmeldung(von, bis, grund) {
+function submitAbmeldungUI() {
 
+    const von = document.getElementById("abmVon").value;
+    const bis = document.getElementById("abmBis").value;
+    const grund = document.getElementById("abmGrund").value;
     const user = sessionStorage.getItem("loggedInUser");
 
-    if (!von || !bis || !grund) return;
+    if (!von || !bis || !grund) {
+        alert("Bitte alles ausfüllen.");
+        return;
+    }
 
     const list = getAbmeldungen();
 
@@ -78,141 +81,109 @@ function submitAbmeldung(von, bis, grund) {
     });
 
     saveAbmeldungen(list);
-}
-
-function approveAbm(i){
-    const list = getAbmeldungen();
-    list[i].status = "genehmigt";
-    saveAbmeldungen(list);
-}
-
-function rejectAbm(i){
-    const list = getAbmeldungen();
-    list[i].status = "abgelehnt";
-    saveAbmeldungen(list);
-}
-
-
-/* ===================================================== */
-/* ================= MITARBEITER ======================= */
-/* ===================================================== */
-
-const getMitarbeiter = () =>
-    JSON.parse(localStorage.getItem("bs_mitarbeiter")) || [];
-
-const saveMitarbeiter = data =>
-    localStorage.setItem("bs_mitarbeiter", JSON.stringify(data));
-
-function addMitarbeiter(vor, nach, tel, geh) {
-
-    if (!vor || !nach) return;
-
-    const list = getMitarbeiter();
-
-    list.push({
-        vorname: vor,
-        nachname: nach,
-        telefon: tel,
-        gehalt: geh
-    });
-
-    saveMitarbeiter(list);
-}
-
-function deleteMitarbeiter(i){
-    const list = getMitarbeiter();
-    list.splice(i,1);
-    saveMitarbeiter(list);
-}
-
-
-/* ===================================================== */
-/* ================= BEWERBER COUNT ==================== */
-/* ===================================================== */
-
-function getNeueBewerberCount() {
-    return JSON.parse(localStorage.getItem("bs_bewerber"))?.length || 0;
-}
-
-/* ===================================================== */
-/* ================= ABMELDUNG UI ====================== */
-/* ===================================================== */
-
-function openAbmModal(){
-    document.getElementById("abmModal").classList.add("active");
-}
-
-function closeAbmModal(){
-    document.getElementById("abmModal").classList.remove("active");
-}
-
-function submitAbmeldungUI(){
-
-    const von = document.getElementById("abmVon").value;
-    const bis = document.getElementById("abmBis").value;
-    const grund = document.getElementById("abmGrund").value;
-
-    if(!von || !bis || !grund){
-        alert("Bitte alles ausfüllen.");
-        return;
-    }
-
-    submitAbmeldung(von, bis, grund);
 
     closeAbmModal();
+    renderMeineAbmeldungen();
+    updateAbmCounter();
+}
 
-    // Counter aktualisieren
-    const counter = document.getElementById("abmCounter");
-    if(counter){
-        counter.innerText = getOffeneAbmeldungenCount() + " offen";
+/* ---------- Counter (nur OFFEN) ---------- */
+
+function getOffeneAbmeldungenCount() {
+    return getAbmeldungen()
+        .filter(a => a.status === "offen").length;
+}
+
+function updateAbmCounter() {
+    const badge = document.getElementById("abmCounter");
+    if (badge) {
+        badge.innerText =
+            getOffeneAbmeldungenCount() + " offen";
     }
+}
 
-    // Felder leeren
+/* ---------- Modal ---------- */
+
+function openAbmModal() {
+    document.getElementById("abmModal")
+        .classList.add("active");
+}
+
+function closeAbmModal() {
+    document.getElementById("abmModal")
+        .classList.remove("active");
+
     document.getElementById("abmVon").value = "";
     document.getElementById("abmBis").value = "";
     document.getElementById("abmGrund").value = "";
 }
 
-/* ===================================================== */
-/* ============== MEINE ABMELDUNGEN ==================== */
-/* ===================================================== */
+/* ---------- Meine Abmeldungen anzeigen ---------- */
 
-function renderMeineAbmeldungen(){
+function renderMeineAbmeldungen() {
 
-    const container = document.getElementById("meineAbmeldungenList");
-    if(!container) return;
+    const container =
+        document.getElementById("meineAbmeldungenList");
+
+    if (!container) return;
 
     container.innerHTML = "";
 
     const user = sessionStorage.getItem("loggedInUser");
-    const list = getAbmeldungen()
+
+    const meine = getAbmeldungen()
         .filter(a => a.user === user);
 
-    if(list.length === 0){
-        container.innerHTML = "<p style='opacity:0.6'>Keine Abmeldungen vorhanden.</p>";
+    if (meine.length === 0) {
+        container.innerHTML =
+            "<p style='opacity:0.6;'>Keine Abmeldungen vorhanden.</p>";
         return;
     }
 
-    list.forEach(a => {
+    meine.forEach((a, index) => {
+
+        const div = document.createElement("div");
 
         let color = "#aaa";
+        if (a.status === "offen") color = "#faac15";
+        if (a.status === "genehmigt") color = "#4caf50";
+        if (a.status === "abgelehnt") color = "#ff4d4d";
 
-        if(a.status === "genehmigt") color = "#4CAF50";
-        if(a.status === "abgelehnt") color = "#ff4d4d";
-        if(a.status === "offen") color = "#faac15";
+        div.style.marginBottom = "10px";
 
-        const row = document.createElement("div");
-        row.style.marginBottom = "8px";
-
-        row.innerHTML = `
-            <div style="display:flex;justify-content:space-between;">
-                <span>${a.von} - ${a.bis}</span>
-                <span style="color:${color};font-weight:bold;">
-                    ${a.status.toUpperCase()}
+        div.innerHTML = `
+            <div style="font-size:0.85rem;">
+                ${a.von} - ${a.bis}
+                <span style="color:${color};
+                             font-weight:bold;
+                             margin-left:8px;">
+                    (${a.status})
                 </span>
             </div>
         `;
 
-        container.appendChild(row);
+        container.appendChild(div);
     });
 }
+
+
+/* ================================================= */
+/* ================= BEWERBER SYSTEM =============== */
+/* ================================================= */
+
+const getBewerber = () =>
+    JSON.parse(localStorage.getItem("bs_bewerber")) || [];
+
+function getNeueBewerberCount() {
+    return getBewerber()
+        .filter(b => b.status === "neu").length;
+}
+
+
+/* ================================================= */
+/* ================= INIT ========================== */
+/* ================================================= */
+
+document.addEventListener("DOMContentLoaded", () => {
+    updateAbmCounter();
+});
