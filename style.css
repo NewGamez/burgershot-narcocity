@@ -155,3 +155,45 @@ input:focus {
     text-align: center;
     width: 400px;
 }
+
+/* CUSTOM GRID LAYOUT */
+.custom-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+}
+
+.panel-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.badge {
+    background: var(--primary);
+    color: black;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+/* Management Bar */
+.management-bar {
+    margin-top: 40px;
+    padding: 20px 30px;
+    border-radius: 25px;
+    border: 1px solid var(--primary);
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    display: none;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.management-bar:hover {
+    background: rgba(255,255,255,0.12);
+    box-shadow: 0 10px 20px rgba(250, 172, 21, 0.3);
+}
