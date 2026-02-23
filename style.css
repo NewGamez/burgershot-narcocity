@@ -440,3 +440,24 @@ select:focus {
 .sheet-links a:hover {
     text-decoration: underline;
 }
+
+.tab-btn {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: white;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.tab-btn:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.tab-btn.active {
+    border-color: var(--primary);
+    color: var(--primary);
+    background: rgba(250, 172, 21, 0.12);
+}
