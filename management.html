@@ -13,30 +13,20 @@
 
 <section class="dashboard">
 
-<div class="panel management-wrapper">
+    <div class="panel management-wrapper">
 
-    <!-- ================= TABS ================= -->
-    <div class="management-tabs">
-        <button class="tab-btn active" onclick="showSection('accounts', this)">Accountverwaltung</button>
-        <button class="tab-btn" onclick="showSection('mitarbeiter', this)">Mitarbeiterliste</button>
-        <button class="tab-btn" onclick="showSection('abmeldungen', this)">Abmeldungen</button>
-        <button class="tab-btn" onclick="showSection('dokumente', this)">Dokumente</button>
-        <button class="tab-btn" onclick="showSection('sheets', this)">Sheets</button>
-    </div>
+        <div class="management-header">
+            <h2>👤 Personalverwaltung</h2>
 
-    <!-- ================= ACCOUNTS ================= -->
-    <div id="accounts" class="management-section">
-
-        <h2>👤 Accountverwaltung</h2>
-
-        <div class="add-user-bar">
-            <input type="text" id="newName" placeholder="Name">
-            <select id="newRole">
-                <option value="Mitarbeiter">Mitarbeiter</option>
-                <option value="Management">Management</option>
-                <option value="Cheffe">Cheffe</option>
-            </select>
-            <button onclick="addUser()">Einstellen</button>
+            <div class="add-user-bar">
+                <input type="text" id="newName" placeholder="Name">
+                <select id="newRole">
+                    <option value="Mitarbeiter">Mitarbeiter</option>
+                    <option value="Management">Management</option>
+                    <option value="Cheffe">Cheffe</option>
+                </select>
+                <button onclick="addUser()">Einstellen</button>
+            </div>
         </div>
 
         <div class="account-table">
@@ -50,106 +40,32 @@
 
     </div>
 
-    <!-- ================= MITARBEITER ================= -->
-    <div id="mitarbeiter" class="management-section" style="display:none;">
-
-        <h2>📋 Mitarbeiterliste</h2>
-
-        <div class="add-user-bar">
-            <input type="text" id="vorname" placeholder="Vorname">
-            <input type="text" id="nachname" placeholder="Nachname">
-            <input type="text" id="telefon" placeholder="Tel. Nr.">
-            <input type="number" id="gehalt" placeholder="Gehalt">
-            <button onclick="addMitarbeiter()">Eintragen</button>
-        </div>
-
-        <div class="account-table">
-            <div class="table-head">
-                <span>Name</span>
-                <span>Telefon</span>
-                <span style="text-align:right;">Gehalt</span>
-                <span style="text-align:right;">Aktionen</span>
-            </div>
-            <div id="mitarbeiterList"></div>
-        </div>
-
-    </div>
-
-    <!-- ================= ABMELDUNGEN ================= -->
-    <div id="abmeldungen" class="management-section" style="display:none;">
-
-        <h2>📅 Abmeldungen verwalten</h2>
-
-        <div class="account-table">
-            <div class="table-head">
-                <span>User</span>
-                <span>Zeitraum</span>
-                <span>Status</span>
-                <span style="text-align:right;">Aktionen</span>
-            </div>
-            <div id="abmList"></div>
-        </div>
-
-    </div>
-
-    <!-- ================= DOKUMENTE ================= -->
-    <div id="dokumente" class="management-section" style="display:none;">
-        <h2>📂 Dokumente</h2>
-        <p>Hier können später interne Dokumente eingebunden werden.</p>
-    </div>
-
-    <!-- ================= SHEETS ================= -->
-    <div id="sheets" class="management-section" style="display:none;">
-        <h2>📊 Google Sheets</h2>
-        <ul>
-            <li><a href="https://docs.google.com" target="_blank">📈 Umsatzübersicht</a></li>
-            <li><a href="https://docs.google.com" target="_blank">📋 Mitarbeiterplanung</a></li>
-        </ul>
-    </div>
-
-</div>
 </section>
 
 <script src="script.js"></script>
-
 <script>
 requireLogin();
 if(!isAdmin()) window.location.href = "index.html";
 
-/* ================= TAB SWITCH ================= */
-function showSection(id, btn) {
-
-    document.querySelectorAll(".management-section")
-        .forEach(sec => sec.style.display = "none");
-
-    document.getElementById(id).style.display = "block";
-
-    document.querySelectorAll(".tab-btn")
-        .forEach(b => b.classList.remove("active"));
-
-    if(btn) btn.classList.add("active");
-
-    if(id === "abmeldungen") renderAbmeldungen();
-}
-
-/* ================= ACCOUNTS ================= */
-
-const roleOrder = ["Cheffe", "Management", "Mitarbeiter"];
+document.addEventListener("DOMContentLoaded", renderUsers);
 
 function renderUsers() {
-
     const list = document.getElementById("userList");
     list.innerHTML = "";
-
     const accs = getAccounts();
 
-    const sorted = Object.keys(accs).sort((a,b) =>
-        roleOrder.indexOf(accs[a].role) -
-        roleOrder.indexOf(accs[b].role)
-    );
+    const roleOrder = {
+        "Cheffe": 0,
+        "Management": 1,
+        "Mitarbeiter": 2
+    };
 
-    sorted.forEach(name => {
+    // Accounts in Array umwandeln & sortieren
+    const sortedUsers = Object.keys(accs).sort((a, b) => {
+        return roleOrder[accs[a].role] - roleOrder[accs[b].role];
+    });
 
+    sortedUsers.forEach(name => {
         const row = document.createElement("div");
         row.className = "table-row";
 
@@ -158,7 +74,7 @@ function renderUsers() {
             <span class="role-badge ${accs[name].role.toLowerCase()}">
                 ${accs[name].role}
             </span>
-            <div style="text-align:right;">
+            <div class="action-cell">
                 <button class="rank-btn" onclick="uprankUser('${name}')">⬆</button>
                 <button class="rank-btn" onclick="derankUser('${name}')">⬇</button>
                 <button class="delete-btn" onclick="delUser('${name}')">Kündigen</button>
@@ -169,11 +85,35 @@ function renderUsers() {
     });
 }
 
-function addUser() {
+    const roleOrder = ["Mitarbeiter", "Management", "Cheffe"];
 
+function uprankUser(name) {
+    const accs = getAccounts();
+    const currentRole = accs[name].role;
+    const index = roleOrder.indexOf(currentRole);
+
+    if (index < roleOrder.length - 1) {
+        accs[name].role = roleOrder[index + 1];
+        saveAccounts(accs);
+        renderUsers();
+    }
+}
+
+function derankUser(name) {
+    const accs = getAccounts();
+    const currentRole = accs[name].role;
+    const index = roleOrder.indexOf(currentRole);
+
+    if (index > 0) {
+        accs[name].role = roleOrder[index - 1];
+        saveAccounts(accs);
+        renderUsers();
+    }
+}
+
+function addUser() {
     const name = document.getElementById("newName").value.trim();
     const role = document.getElementById("newRole").value;
-
     const accs = getAccounts();
 
     if(name && !accs[name]) {
@@ -182,10 +122,11 @@ function addUser() {
             role: role,
             isFirstLogin: true
         };
-
         saveAccounts(accs);
         renderUsers();
         document.getElementById("newName").value = "";
+    } else {
+        alert("Name ungültig oder bereits vergeben.");
     }
 }
 
@@ -197,142 +138,6 @@ function delUser(name) {
         renderUsers();
     }
 }
-
-function uprankUser(name) {
-
-    const accs = getAccounts();
-    const index = roleOrder.indexOf(accs[name].role);
-
-    if(index > 0) {
-        accs[name].role = roleOrder[index - 1];
-        saveAccounts(accs);
-        renderUsers();
-    }
-}
-
-function derankUser(name) {
-
-    const accs = getAccounts();
-    const index = roleOrder.indexOf(accs[name].role);
-
-    if(index < roleOrder.length - 1) {
-        accs[name].role = roleOrder[index + 1];
-        saveAccounts(accs);
-        renderUsers();
-    }
-}
-
-/* ================= MITARBEITER ================= */
-
-const getMitarbeiter = () =>
-    JSON.parse(localStorage.getItem("bs_mitarbeiter")) || [];
-
-const saveMitarbeiter = (data) =>
-    localStorage.setItem("bs_mitarbeiter", JSON.stringify(data));
-
-function addMitarbeiter() {
-
-    const vorname = document.getElementById("vorname").value.trim();
-    const nachname = document.getElementById("nachname").value.trim();
-    const telefon = document.getElementById("telefon").value.trim();
-    const gehalt = document.getElementById("gehalt").value.trim();
-
-    if(!vorname || !nachname) return;
-
-    const list = getMitarbeiter();
-    list.push({ vorname, nachname, telefon, gehalt });
-
-    saveMitarbeiter(list);
-    renderMitarbeiter();
-
-    document.getElementById("vorname").value = "";
-    document.getElementById("nachname").value = "";
-    document.getElementById("telefon").value = "";
-    document.getElementById("gehalt").value = "";
-}
-
-function renderMitarbeiter() {
-
-    const container = document.getElementById("mitarbeiterList");
-    container.innerHTML = "";
-
-    const list = getMitarbeiter();
-
-    list.forEach((m,index) => {
-
-        const row = document.createElement("div");
-        row.className = "table-row";
-
-        row.innerHTML = `
-            <span>${m.vorname} ${m.nachname}</span>
-            <span>${m.telefon}</span>
-            <span style="text-align:right;">${m.gehalt} €</span>
-            <div style="text-align:right;">
-                <button class="delete-btn" onclick="deleteMitarbeiter(${index})">
-                    Entfernen
-                </button>
-            </div>
-        `;
-
-        container.appendChild(row);
-    });
-}
-
-function deleteMitarbeiter(index) {
-    const list = getMitarbeiter();
-    list.splice(index,1);
-    saveMitarbeiter(list);
-    renderMitarbeiter();
-}
-
-/* ================= ABMELDUNGEN ================= */
-
-function renderAbmeldungen() {
-
-    const container = document.getElementById("abmList");
-    container.innerHTML = "";
-
-    const list = getAbmeldungen();
-
-    list.forEach((a,index) => {
-
-        const row = document.createElement("div");
-        row.className = "table-row";
-
-        row.innerHTML = `
-            <span>${a.user}</span>
-            <span>${a.von} - ${a.bis}</span>
-            <span>${a.status}</span>
-            <div style="text-align:right;">
-                ${a.status === "offen" ? `
-                    <button class="rank-btn" onclick="approveAbm(${index})">✔</button>
-                    <button class="delete-btn" onclick="rejectAbm(${index})">✖</button>
-                ` : ""}
-            </div>
-        `;
-
-        container.appendChild(row);
-    });
-}
-
-function approveAbm(index) {
-    const list = getAbmeldungen();
-    list[index].status = "genehmigt";
-    saveAbmeldungen(list);
-    renderAbmeldungen();
-}
-
-function rejectAbm(index) {
-    const list = getAbmeldungen();
-    list[index].status = "abgelehnt";
-    saveAbmeldungen(list);
-    renderAbmeldungen();
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-    renderUsers();
-    renderMitarbeiter();
-});
 </script>
 
 </body>
