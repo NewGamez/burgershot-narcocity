@@ -1,3 +1,4 @@
+
 /* --- SPEICHER-FUNKTIONEN --- */
 const getAccounts = () => JSON.parse(localStorage.getItem("bs_accounts")) || {
     "Admin": { password: "123", role: "Cheffe", isFirstLogin: false }
