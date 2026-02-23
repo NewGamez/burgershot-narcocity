@@ -9,31 +9,43 @@
 
 <header>
     <div class="header-left"><a href="index.html" class="brand-link">🍔 Burgershot Intern</a></div>
-    <button class="add-btn" onclick="openAbsenceModal()">+ Neue Abmeldung</button>
+    <div class="header-right">
+        <button class="add-btn" onclick="openModal()">+ Neue Abmeldung</button>
+        <button class="logout-btn" onclick="logout()" style="margin-left:10px;">Logout</button>
+    </div>
 </header>
 
 <section class="dashboard">
-    <div class="panel large management-container">
-        <h2>📅 Aktuelle Abmeldungen</h2>
+    <div class="panel full-width management-container">
+        <div class="panel-header">
+            <span>📅 Aktuelle Abmeldungen</span>
+        </div>
+        
         <div class="account-table-header">
-            <span>Name</span>
+            <span>Mitarbeiter</span>
             <span>Zeitraum</span>
             <span>Grund</span>
             <span style="text-align: right;">Aktion</span>
         </div>
-        <div id="absenceList"></div>
+        <div id="absenceList">
+            </div>
     </div>
 </section>
 
 <div class="modal-backdrop" id="absenceModal" style="display:none;">
     <div class="modal">
         <h2>Neue Abmeldung</h2>
-        <input type="text" id="absName" placeholder="Dein Name" style="width:100%; margin-bottom:10px;">
-        <input type="text" id="absTime" placeholder="Zeitraum (z.B. 24.02. - 01.03.)" style="width:100%; margin-bottom:10px;">
-        <textarea id="absReason" placeholder="Grund (optional)" style="width:100%; height:80px; margin-bottom:10px; background:rgba(0,0,0,0.2); color:white; border:1px solid #faac15; border-radius:8px; padding:10px;"></textarea>
+        <p>Trage hier deine Abwesenheit ein.</p>
+        
+        <input type="text" id="inName" placeholder="Dein Name" style="width:100%; padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid #faac15; background:#111; color:white;">
+        
+        <input type="text" id="inTime" placeholder="Zeitraum (z.B. 25.02. - 02.03.)" style="width:100%; padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid #faac15; background:#111; color:white;">
+        
+        <textarea id="inReason" placeholder="Grund (optional)" style="width:100%; padding:10px; margin-bottom:20px; border-radius:8px; border:1px solid #faac15; background:#111; color:white; height:80px;"></textarea>
+        
         <div style="display:flex; gap:10px;">
-            <button class="add-btn" onclick="saveNewAbsence()" style="flex:1;">Eintragen</button>
-            <button class="delete-btn" onclick="closeAbsenceModal()" style="flex:1;">Abbrechen</button>
+            <button class="add-btn" style="flex:1; height:40px;" onclick="addEntry()">Eintragen</button>
+            <button class="delete-btn" style="flex:1; height:40px;" onclick="closeModal()">Abbrechen</button>
         </div>
     </div>
 </div>
@@ -42,52 +54,83 @@
 <script>
     requireLogin();
 
-    function openAbsenceModal() { document.getElementById("absenceModal").style.display = "flex"; }
-    function closeAbsenceModal() { document.getElementById("absenceModal").style.display = "none"; }
+    function openModal() { document.getElementById("absenceModal").style.display = "flex"; }
+    function closeModal() { document.getElementById("absenceModal").style.display = "none"; }
 
-    function saveNewAbsence() {
-        const name = document.getElementById("absName").value.trim();
-        const time = document.getElementById("absTime").value.trim();
-        const reason = document.getElementById("absReason").value.trim() || "Kein Grund";
+    // Funktion zum Hinzufügen
+    function addEntry() {
+        const name = document.getElementById("inName").value.trim();
+        const time = document.getElementById("inTime").value.trim();
+        const reason = document.getElementById("inReason").value.trim() || "Kein Grund angegeben";
 
-        if (!name || !time) return alert("Name und Zeitraum fehlen!");
+        if (name === "" || time === "") {
+            alert("Bitte Name und Zeitraum ausfüllen!");
+            return;
+        }
 
-        const absences = getAbsences();
-        absences.push({ id: Date.now(), name, time, reason });
-        saveAbsences(absences);
+        // 1. Daten holen (aus script.js Funktion)
+        const currentAbsences = getAbsences();
+
+        // 2. Neuen Eintrag erstellen
+        const newEntry = {
+            id: Date.now(),
+            name: name,
+            time: time,
+            reason: reason
+        };
+
+        // 3. Hinzufügen und Speichern
+        currentAbsences.push(newEntry);
+        saveAbsences(currentAbsences);
+
+        // 4. UI aufräumen
+        document.getElementById("inName").value = "";
+        document.getElementById("inTime").value = "";
+        document.getElementById("inReason").value = "";
+        closeModal();
         
-        closeAbsenceModal();
-        loadAbsences();
+        // 5. Liste neu laden
+        renderList();
     }
 
-    function deleteAbsence(id) {
-        let absences = getAbsences();
-        absences = absences.filter(a => a.id !== id);
-        saveAbsences(absences);
-        loadAbsences();
+    // Funktion zum Löschen
+    function deleteEntry(id) {
+        if(confirm("Eintrag wirklich löschen?")) {
+            let list = getAbsences();
+            list = list.filter(item => item.id !== id);
+            saveAbsences(list);
+            renderList();
+        }
     }
 
-    function loadAbsences() {
-        const list = document.getElementById("absenceList");
+    // Liste anzeigen
+    function renderList() {
+        const container = document.getElementById("absenceList");
         const data = getAbsences();
-        list.innerHTML = "";
+        container.innerHTML = "";
 
-        data.forEach(abs => {
-            const div = document.createElement("div");
-            div.className = "account-row";
-            div.innerHTML = `
-                <span>${abs.name}</span>
-                <span>${abs.time}</span>
-                <span style="color:#888; font-size:0.8rem;">${abs.reason}</span>
+        if (data.length === 0) {
+            container.innerHTML = "<p style='text-align:center; padding:20px; color:#555;'>Keine Abmeldungen vorhanden.</p>";
+            return;
+        }
+
+        data.reverse().forEach(item => {
+            const row = document.createElement("div");
+            row.className = "account-row";
+            row.innerHTML = `
+                <span>${item.name}</span>
+                <span>${item.time}</span>
+                <span style="color:#888; font-size:0.8rem;">${item.reason}</span>
                 <div style="text-align:right;">
-                    <button class="delete-btn" onclick="deleteAbsence(${abs.id})">Löschen</button>
+                    <button class="delete-btn" onclick="deleteEntry(${item.id})">Löschen</button>
                 </div>
             `;
-            list.appendChild(div);
+            container.appendChild(row);
         });
     }
 
-    loadAbsences();
+    // Beim Laden der Seite Liste zeigen
+    window.onload = renderList;
 </script>
 </body>
 </html>
