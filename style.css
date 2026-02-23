@@ -424,3 +424,60 @@ select:focus {
 .delete-btn:hover {
     background: rgba(255, 60, 60, 0.2);
 }
+
+/* ============================= */
+/*         DASHBOARD HERO        */
+/* ============================= */
+
+.dashboard-hero {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 50px;
+    padding: 30px;
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    border-radius: 22px;
+}
+
+.hero-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.hero-logo {
+    width: 80px;
+    filter: drop-shadow(0 0 15px rgba(250,172,21,0.6));
+}
+
+.dashboard-hero h1 {
+    font-size: 1.8rem;
+    color: var(--primary);
+    margin-bottom: 5px;
+}
+
+.dashboard-hero p {
+    opacity: 0.7;
+}
+
+.hero-stats {
+    display: flex;
+    gap: 30px;
+}
+
+.stat-box {
+    text-align: center;
+}
+
+.stat-number {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: var(--primary);
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    opacity: 0.6;
+}
