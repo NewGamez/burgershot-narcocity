@@ -116,7 +116,7 @@ button:hover {
 /* ===== GRID TOP (4 BIG PANELS) ===== */
 .grid-top {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 25px;
     margin-bottom: 30px;
 }
@@ -423,59 +423,4 @@ select:focus {
 
 .delete-btn:hover {
     background: rgba(255, 60, 60, 0.2);
-}
-
-/* ================= HERO ================= */
-
-.dashboard-hero {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 25px 30px;
-    margin-bottom: 40px;
-    background: var(--glass-bg);
-    backdrop-filter: var(--glass-blur);
-    border: 1px solid var(--glass-border);
-    border-radius: 20px;
-}
-
-.hero-left {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
-
-.hero-logo {
-    width: 70px;
-    filter: drop-shadow(0 0 10px rgba(250,172,21,0.6));
-}
-
-.dashboard-hero h1 {
-    color: var(--primary);
-    font-size: 1.6rem;
-}
-
-.dashboard-hero p {
-    opacity: 0.7;
-    font-size: 0.9rem;
-}
-
-.hero-stats {
-    display: flex;
-    gap: 30px;
-}
-
-.stat-box {
-    text-align: center;
-}
-
-.stat-number {
-    font-size: 1.6rem;
-    font-weight: bold;
-    color: var(--primary);
-}
-
-.stat-label {
-    font-size: 0.75rem;
-    opacity: 0.6;
 }
