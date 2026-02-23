@@ -8,28 +8,41 @@
 <body>
 
 <header>
-    <a href="index.html" class="brand-link">← Zurück</a>
-    <span style="color:gold; font-weight:bold;">Management Center</span>
+    <a href="index.html" class="brand-link">🍔 Burgershot Intern</a>
 </header>
 
 <section class="dashboard">
-    <div class="panel" style="cursor:default;">
 
-        <h3 style="margin-bottom:20px; color:gold;">👤 Personalverwaltung</h3>
+    <div class="panel management-wrapper">
 
-        <div style="display:flex; gap:10px; margin-bottom:20px;">
-            <input type="text" id="newName" placeholder="Name">
-            <select id="newRole">
-                <option value="Mitarbeiter">Mitarbeiter</option>
-                <option value="Management">Management</option>
-                <option value="Cheffe">Cheffe</option>
-            </select>
-            <button onclick="addUser()">Einstellen</button>
+        <div class="management-header">
+            <h2>👤 Personalverwaltung</h2>
+
+            <div class="add-user-bar">
+                <input type="text" id="newName" placeholder="Name">
+                <select id="newRole">
+                    <option value="Mitarbeiter">Mitarbeiter</option>
+                    <option value="Management">Management</option>
+                    <option value="Cheffe">Cheffe</option>
+                </select>
+                <button onclick="addUser()">Einstellen</button>
+            </div>
         </div>
 
-        <div id="userList"></div>
+        <div class="account-table">
+
+            <div class="table-head">
+                <span>Name</span>
+                <span>Rang</span>
+                <span style="text-align:right;">Aktionen</span>
+            </div>
+
+            <div id="userList"></div>
+
+        </div>
 
     </div>
+
 </section>
 
 <script src="script.js"></script>
@@ -44,13 +57,16 @@ function renderUsers() {
 
     Object.keys(accs).forEach(name => {
         const row = document.createElement("div");
-        row.style.display = "flex";
-        row.style.justifyContent = "space-between";
-        row.style.marginBottom = "10px";
+        row.className = "table-row";
 
         row.innerHTML = `
-            <span><strong>${name}</strong> (${accs[name].role})</span>
-            <button onclick="delUser('${name}')">Kündigen</button>
+            <span class="name-cell">${name}</span>
+            <span class="role-badge ${accs[name].role.toLowerCase()}">${accs[name].role}</span>
+            <div class="action-cell">
+                ${name !== "Admin" 
+                    ? `<button class="delete-btn" onclick="delUser('${name}')">Kündigen</button>`
+                    : `<span class="owner-label">Inhaber</span>`}
+            </div>
         `;
 
         list.appendChild(row);
@@ -73,8 +89,6 @@ function addUser() {
 }
 
 function delUser(name) {
-    if(name === "Admin") return alert("Admin kann nicht gelöscht werden.");
-
     if(confirm(name + " kündigen?")) {
         const accs = getAccounts();
         delete accs[name];
