@@ -291,3 +291,33 @@ button:hover {
     color: var(--primary);
     font-weight: bold;
 }
+
+/* ============================= */
+/*        GLOBAL INPUT STYLE     */
+/* ============================= */
+
+input,
+select {
+    padding: 12px 15px;
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+    background: rgba(0, 0, 0, 0.55);
+    color: white;
+    font-size: 0.95rem;
+    backdrop-filter: blur(10px);
+    outline: none;
+    transition: 0.25s ease;
+}
+
+/* Placeholder */
+input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* Focus Effekt */
+input:focus,
+select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 12px rgba(250, 172, 21, 0.4);
+    background: rgba(0, 0, 0, 0.7);
+}
