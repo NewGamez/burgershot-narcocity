@@ -85,7 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
-    document.getElementById("welcomeUser").innerText = "Moin, " + user;
+    document.getElementById("welcomeUser").innerText = "Eingeloggt als: " + user;
 
     if (isAdmin()) {
         document.getElementById("adminPanel").style.display = "flex";
