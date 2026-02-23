@@ -17,10 +17,10 @@
 
 <section class="dashboard">
 
-    <div class="custom-grid">
+    <!-- ===== TOP BIG PANELS ===== -->
+    <div class="grid-top">
 
-        <!-- ROW 1 -->
-        <div class="panel">
+        <div class="panel big">
             <div class="panel-top">
                 <span class="panel-header">📅 ABMELDUNGEN</span>
                 <span id="abmCounter" class="badge">0 aktiv</span>
@@ -28,12 +28,12 @@
             <p>Abwesenheiten & Urlaubsanträge.</p>
         </div>
 
-        <div class="panel">
+        <div class="panel big highlight">
             <div class="panel-header">📢 NEWS & INFOS</div>
             <p>Wichtige Ankündigungen.</p>
         </div>
 
-        <div class="panel">
+        <div class="panel big">
             <div class="panel-top">
                 <span class="panel-header">📝 BEWERBER</span>
                 <span id="bewerberCounter" class="badge">0 neu</span>
@@ -41,41 +41,36 @@
             <p>Neue Bewerbungen prüfen.</p>
         </div>
 
-        <!-- ROW 2 -->
-        <div class="panel">
-            <div class="panel-header">📋 SERVICE</div>
-            <p>Interne Service-Infos.</p>
-        </div>
-
-        <div></div>
-        <div></div>
-
-        <!-- ROW 3 -->
-        <div class="panel">
-            <div class="panel-header">🍔 ORDERS</div>
-            <p>Bestellungen & Übersicht.</p>
-        </div>
-
-        <div class="panel">
-            <div class="panel-header">🛒 LAGER</div>
-            <p>Bestand & Einkäufe.</p>
-        </div>
-
-        <div class="panel">
-            <div class="panel-header">🎵 MUSIK</div>
-            <p>Restaurant Playlist.</p>
-        </div>
-
-        <!-- ROW 4 -->
-        <div class="panel">
-            <div class="panel-header">👕 KLEIDUNG</div>
-            <p>Dresscode & Ausstattung.</p>
+        <div class="panel big center">
+            <div class="panel-header">📋 Service</div>
         </div>
 
     </div>
 
-    <!-- MANAGEMENT -->
-    <div id="adminPanel" class="management-bar" onclick="location.href='management.html'">
+    <!-- ===== SMALL PANELS ===== -->
+    <div class="grid-bottom">
+
+        <div class="panel small">
+            🍔<br>Orders
+        </div>
+
+        <div class="panel small">
+            🛒<br>Lager
+        </div>
+
+        <div class="panel small">
+            🎵<br>Musik
+        </div>
+
+        <div class="panel small">
+            👕<br>Kleidung
+        </div>
+
+    </div>
+
+    <!-- ===== MANAGEMENT ===== -->
+    <div id="adminPanel" class="management-bar"
+         onclick="location.href='management.html'">
         <div>⭐ Management Center</div>
         <div>Personalverwaltung & Systemsteuerung</div>
     </div>
