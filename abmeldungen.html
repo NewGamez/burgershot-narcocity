@@ -8,44 +8,42 @@
 <body>
 
 <header>
-    <div class="header-left"><a href="index.html" class="brand-link">🍔 Burgershot Intern</a></div>
+    <div class="header-left"><a href="index.html" class="brand-link">← Zurück zum Dashboard</a></div>
     <div class="header-right">
         <button class="add-btn" onclick="openModal()">+ Neue Abmeldung</button>
-        <button class="logout-btn" onclick="logout()" style="margin-left:10px;">Logout</button>
     </div>
 </header>
 
 <section class="dashboard">
-    <div class="panel full-width management-container">
+    <div class="panel full-width" style="display: block; height: auto;">
         <div class="panel-header">
             <span>📅 Aktuelle Abmeldungen</span>
         </div>
         
-        <div class="account-table-header">
-            <span>Mitarbeiter</span>
-            <span>Zeitraum</span>
-            <span>Grund</span>
-            <span style="text-align: right;">Aktion</span>
-        </div>
-        <div id="absenceList">
+        <div class="table-container">
+            <div class="table-head">
+                <span>Mitarbeiter</span>
+                <span>Zeitraum</span>
+                <span>Grund</span>
+                <span style="text-align: right;">Aktion</span>
             </div>
+
+            <div id="absenceList"></div>
+        </div>
     </div>
 </section>
 
 <div class="modal-backdrop" id="absenceModal" style="display:none;">
     <div class="modal">
-        <h2>Neue Abmeldung</h2>
-        <p>Trage hier deine Abwesenheit ein.</p>
-        
-        <input type="text" id="inName" placeholder="Dein Name" style="width:100%; padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid #faac15; background:#111; color:white;">
-        
-        <input type="text" id="inTime" placeholder="Zeitraum (z.B. 25.02. - 02.03.)" style="width:100%; padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid #faac15; background:#111; color:white;">
-        
-        <textarea id="inReason" placeholder="Grund (optional)" style="width:100%; padding:10px; margin-bottom:20px; border-radius:8px; border:1px solid #faac15; background:#111; color:white; height:80px;"></textarea>
-        
-        <div style="display:flex; gap:10px;">
-            <button class="add-btn" style="flex:1; height:40px;" onclick="addEntry()">Eintragen</button>
-            <button class="delete-btn" style="flex:1; height:40px;" onclick="closeModal()">Abbrechen</button>
+        <h3>Neue Abmeldung</h3>
+        <div class="input-group">
+            <input type="text" id="inName" placeholder="Dein Name">
+            <input type="text" id="inTime" placeholder="Zeitraum (z.B. 25.02. - 01.03.)">
+            <textarea id="inReason" placeholder="Grund der Abwesenheit (optional)"></textarea>
+        </div>
+        <div class="modal-actions">
+            <button class="add-btn" onclick="addEntry()" style="flex:1;">Eintragen</button>
+            <button class="logout-btn" onclick="closeModal()" style="flex:1;">Abbrechen</button>
         </div>
     </div>
 </div>
@@ -54,82 +52,62 @@
 <script>
     requireLogin();
 
-    function openModal() { document.getElementById("absenceModal").style.display = "flex"; }
-    function closeModal() { document.getElementById("absenceModal").style.display = "none"; }
+    const openModal = () => document.getElementById("absenceModal").style.display = "flex";
+    const closeModal = () => document.getElementById("absenceModal").style.display = "none";
 
-    // Funktion zum Hinzufügen
     function addEntry() {
         const name = document.getElementById("inName").value.trim();
         const time = document.getElementById("inTime").value.trim();
-        const reason = document.getElementById("inReason").value.trim() || "Kein Grund angegeben";
+        const reason = document.getElementById("inReason").value.trim() || "Kein Grund";
 
-        if (name === "" || time === "") {
-            alert("Bitte Name und Zeitraum ausfüllen!");
-            return;
-        }
+        if (!name || !time) return alert("Bitte Name und Zeitraum ausfüllen!");
 
-        // 1. Daten holen (aus script.js Funktion)
-        const currentAbsences = getAbsences();
+        const list = getAbsences();
+        list.push({ id: Date.now(), name, time, reason });
+        saveAbsences(list);
 
-        // 2. Neuen Eintrag erstellen
-        const newEntry = {
-            id: Date.now(),
-            name: name,
-            time: time,
-            reason: reason
-        };
-
-        // 3. Hinzufügen und Speichern
-        currentAbsences.push(newEntry);
-        saveAbsences(currentAbsences);
-
-        // 4. UI aufräumen
+        // Inputs leeren & schießen
         document.getElementById("inName").value = "";
         document.getElementById("inTime").value = "";
         document.getElementById("inReason").value = "";
         closeModal();
-        
-        // 5. Liste neu laden
         renderList();
     }
 
-    // Funktion zum Löschen
     function deleteEntry(id) {
         if(confirm("Eintrag wirklich löschen?")) {
-            let list = getAbsences();
-            list = list.filter(item => item.id !== id);
+            const list = getAbsences().filter(item => item.id !== id);
             saveAbsences(list);
             renderList();
         }
     }
 
-    // Liste anzeigen
     function renderList() {
         const container = document.getElementById("absenceList");
         const data = getAbsences();
         container.innerHTML = "";
 
         if (data.length === 0) {
-            container.innerHTML = "<p style='text-align:center; padding:20px; color:#555;'>Keine Abmeldungen vorhanden.</p>";
+            container.innerHTML = "<p class='empty-msg'>Aktuell liegen keine Abmeldungen vor.</p>";
             return;
         }
 
+        // Wir gehen die Liste rückwärts durch (neueste oben)
         data.reverse().forEach(item => {
             const row = document.createElement("div");
-            row.className = "account-row";
+            row.className = "table-row";
             row.innerHTML = `
-                <span>${item.name}</span>
+                <span class="bold">${item.name}</span>
                 <span>${item.time}</span>
-                <span style="color:#888; font-size:0.8rem;">${item.reason}</span>
+                <span class="reason-text">${item.reason}</span>
                 <div style="text-align:right;">
-                    <button class="delete-btn" onclick="deleteEntry(${item.id})">Löschen</button>
+                    <button class="delete-btn-small" onclick="deleteEntry(${item.id})">🗑️</button>
                 </div>
             `;
             container.appendChild(row);
         });
     }
 
-    // Beim Laden der Seite Liste zeigen
     window.onload = renderList;
 </script>
 </body>
