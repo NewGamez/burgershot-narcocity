@@ -9,7 +9,7 @@
 
 <header>
     <a href="index.html" class="brand-link">🍔 BURGERSHOT INTERN</a>
-    <div style="display: flex; align-items: center; gap: 20px;">
+    <div>
         <span id="welcomeUser" style="color: var(--primary); font-weight: bold;"></span>
         <button onclick="logout()">Logout</button>
     </div>
@@ -17,33 +17,36 @@
 
 <section class="dashboard">
     <div class="dashboard-grid">
-        <div class="panel" onclick="location.href='abmeldungen.html'">
+
+        <div class="panel">
             <div class="panel-header">📅 Abmeldungen</div>
-            <p style="opacity: 0.7;">Verwalte deine Abwesenheiten.</p>
+            <p>Verwalte deine Abwesenheiten.</p>
         </div>
 
-        <div class="panel" onclick="location.href='bewerber.html'">
+        <div class="panel">
             <div class="panel-header">📝 Bewerber</div>
-            <p style="opacity: 0.7;">Neue Anfragen sichten.</p>
+            <p>Neue Anfragen sichten.</p>
         </div>
 
-        <div class="panel" onclick="location.href='lager.html'">
-            <div class="panel-header">🛒 Lager & Einkäufe</div>
-            <p style="opacity: 0.7;">Bestand kontrollieren.</p>
+        <div class="panel">
+            <div class="panel-header">📦 Lager & Einkäufe</div>
+            <p>Bestand kontrollieren.</p>
         </div>
 
-        <div id="adminPanel" class="panel" style="display:none; border: 1px solid var(--primary);" onclick="location.href='management.html'">
+        <div id="adminPanel" class="panel" style="display:none; border:1px solid var(--primary);" onclick="location.href='management.html'">
             <div class="panel-header">⭐ MANAGEMENT</div>
             <p style="color: var(--primary);">Personalverwaltung & System</p>
         </div>
+
     </div>
 </section>
 
 <div class="modal-backdrop" id="pinModal" style="display:none;">
     <div class="modal">
         <h2 style="color: var(--primary); margin-bottom: 20px;">🔒 PIN ändern</h2>
-        <p style="margin-bottom: 20px;">Bitte setze deine persönliche 4-stellige PIN.</p>
-        <input type="password" id="newPin" maxlength="4" style="width: 120px; text-align: center; font-size: 1.5rem;">
+        <p>Bitte setze deine persönliche 4-stellige PIN.</p>
+        <br>
+        <input type="password" id="newPin" maxlength="4" style="width:120px; text-align:center; font-size:1.5rem;">
         <br><br>
         <button onclick="savePin()">Speichern</button>
     </div>
@@ -51,35 +54,39 @@
 
 <script src="script.js"></script>
 <script>
-    requireLogin();
-    window.onload = () => {
-        const user = sessionStorage.getItem("loggedInUser");
-        document.getElementById("welcomeUser").innerText = user;
-        
-        if (isAdmin()) {
-            document.getElementById("adminPanel").style.display = "block";
-        }
+requireLogin();
 
-        const accs = getAccounts();
-        if (accs[user] && accs[user].isFirstLogin) {
-            document.getElementById("pinModal").style.display = "flex";
-        }
-    };
+window.onload = () => {
+    const user = sessionStorage.getItem("loggedInUser");
+    const accs = getAccounts();
 
-    function savePin() {
-        const pin = document.getElementById("newPin").value;
-        const user = sessionStorage.getItem("loggedInUser");
-        const accs = getAccounts();
-        if (pin.length === 4 && !isNaN(pin)) {
-            accs[user].password = pin;
-            accs[user].isFirstLogin = false;
-            saveAccounts(accs);
-            document.getElementById("pinModal").style.display = "none";
-            alert("PIN erfolgreich gesetzt!");
-        } else {
-            alert("Bitte 4 Zahlen eingeben!");
-        }
+    document.getElementById("welcomeUser").innerText = "Willkommen, " + user;
+
+    if (isAdmin()) {
+        document.getElementById("adminPanel").style.display = "block";
     }
+
+    if (accs[user].isFirstLogin) {
+        document.getElementById("pinModal").style.display = "flex";
+    }
+};
+
+function savePin() {
+    const pin = document.getElementById("newPin").value.trim();
+    const user = sessionStorage.getItem("loggedInUser");
+    const accs = getAccounts();
+
+    if (/^\d{4}$/.test(pin)) {
+        accs[user].password = pin;
+        accs[user].isFirstLogin = false;
+        saveAccounts(accs);
+        document.getElementById("pinModal").style.display = "none";
+        alert("PIN erfolgreich gesetzt!");
+    } else {
+        alert("Bitte genau 4 Zahlen eingeben!");
+    }
+}
 </script>
+
 </body>
 </html>
