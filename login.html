@@ -68,6 +68,27 @@ function handleLogin() {
     sessionStorage.setItem("loggedInUser", u);
     window.location.href = "index.html";
 }
+
+    <script type="module">
+
+import { auth, db } from "./firebase.js";
+import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+window.handleLogin = async function() {
+
+    const username = document.getElementById("username").value.trim();
+    const pin = document.getElementById("password").value.trim();
+
+    const email = username + "@burgershot.de";
+
+    try {
+        await signInWithEmailAndPassword(auth, email, pin);
+        window.location.href = "index.html";
+    } catch (err) {
+        alert("Login fehlgeschlagen.");
+    }
+}
+
 </script>
 
 </body>
