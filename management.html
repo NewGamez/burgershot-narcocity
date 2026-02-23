@@ -28,29 +28,24 @@
 
         <h2>👤 Accountverwaltung</h2>
 
-        <details class="account-dropdown" open>
-            <summary>Personalverwaltung</summary>
+        <div class="add-user-bar">
+            <input type="text" id="newName" placeholder="Name">
+            <select id="newRole">
+                <option value="Mitarbeiter">Mitarbeiter</option>
+                <option value="Management">Management</option>
+                <option value="Cheffe">Cheffe</option>
+            </select>
+            <button onclick="addUser()">Einstellen</button>
+        </div>
 
-            <div class="add-user-bar">
-                <input type="text" id="newName" placeholder="Name">
-                <select id="newRole">
-                    <option value="Mitarbeiter">Mitarbeiter</option>
-                    <option value="Management">Management</option>
-                    <option value="Cheffe">Cheffe</option>
-                </select>
-                <button onclick="addUser()">Einstellen</button>
+        <div class="account-table">
+            <div class="table-head">
+                <span>Name</span>
+                <span>Rang</span>
+                <span style="text-align:right;">Aktionen</span>
             </div>
-
-            <div class="account-table">
-                <div class="table-head">
-                    <span>Name</span>
-                    <span>Rang</span>
-                    <span style="text-align:right;">Aktionen</span>
-                </div>
-                <div id="userList"></div>
-            </div>
-
-        </details>
+            <div id="userList"></div>
+        </div>
 
     </div>
 
