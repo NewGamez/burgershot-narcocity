@@ -12,97 +12,82 @@
 </header>
 
 <section class="dashboard">
-
 <div class="panel">
 
-    <!-- ================= TABS ================= -->
-    <div class="management-tabs">
-        <button class="tab-btn active" onclick="showSection('accounts', this)">Accountverwaltung</button>
-        <button class="tab-btn" onclick="showSection('mitarbeiter', this)">Mitarbeiterliste</button>
-        <button class="tab-btn" onclick="showSection('abmeldungen', this)">Abmeldungen</button>
-        <button class="tab-btn" onclick="showSection('dokumente', this)">Dokumente</button>
-        <button class="tab-btn" onclick="showSection('sheets', this)">Sheets</button>
-    </div>
+<!-- ================= TABS ================= -->
+<div class="management-tabs">
+    <button class="tab-btn active" onclick="showSection('accounts', this)">Accountverwaltung</button>
+    <button class="tab-btn" onclick="showSection('mitarbeiter', this)">Mitarbeiterliste</button>
+    <button class="tab-btn" onclick="showSection('abmeldungen', this)">Abmeldungen</button>
+</div>
 
-    <!-- ================= ACCOUNTVERWALTUNG ================= -->
-    <div id="accounts" class="management-section">
+<!-- ================= ACCOUNTS ================= -->
+<div id="accounts" class="management-section">
 
-        <h2>👤 Personalverwaltung</h2>
+<h2>👤 Personalverwaltung</h2>
 
-        <div class="add-user-bar">
-            <input type="text" id="newName" placeholder="Name">
-            <select id="newRole">
-                <option value="Mitarbeiter">Mitarbeiter</option>
-                <option value="Management">Management</option>
-                <option value="Cheffe">Cheffe</option>
-            </select>
-            <button onclick="addUser()">Einstellen</button>
-        </div>
+<div class="add-user-bar">
+    <input type="text" id="newName" placeholder="Name">
+    <select id="newRole">
+        <option value="Mitarbeiter">Mitarbeiter</option>
+        <option value="Management">Management</option>
+        <option value="Cheffe">Cheffe</option>
+    </select>
+    <button onclick="addUser()">Einstellen</button>
+</div>
 
-        <div class="account-table">
-            <div class="table-head">
-                <span>Name</span>
-                <span>Rang</span>
-                <span style="text-align:right;">Aktionen</span>
-            </div>
-            <div id="userList"></div>
-        </div>
+<div class="account-table">
+<div class="table-head">
+    <span>Name</span>
+    <span>Rang</span>
+    <span style="text-align:right;">Aktionen</span>
+</div>
+<div id="userList"></div>
+</div>
 
-    </div>
+</div>
 
-    <!-- ================= MITARBEITERLISTE ================= -->
-    <div id="mitarbeiter" class="management-section" style="display:none;">
+<!-- ================= MITARBEITER ================= -->
+<div id="mitarbeiter" class="management-section" style="display:none;">
 
-        <h2>📋 Mitarbeiterliste</h2>
+<h2>📋 Mitarbeiterliste</h2>
 
-        <div class="add-user-bar">
-            <input type="text" id="vorname" placeholder="Vorname">
-            <input type="text" id="nachname" placeholder="Nachname">
-            <input type="text" id="telefon" placeholder="Telefon">
-            <input type="number" id="gehalt" placeholder="Gehalt">
-            <button onclick="addMitarbeiter()">Eintragen</button>
-        </div>
+<div class="add-user-bar">
+    <input type="text" id="vorname" placeholder="Vorname">
+    <input type="text" id="nachname" placeholder="Nachname">
+    <input type="text" id="telefon" placeholder="Telefon">
+    <input type="number" id="gehalt" placeholder="Gehalt">
+    <button onclick="addMitarbeiterUI()">Eintragen</button>
+</div>
 
-        <div class="account-table">
-            <div class="table-head">
-                <span>Name</span>
-                <span>Telefon</span>
-                <span>Gehalt</span>
-                <span style="text-align:right;">Aktionen</span>
-            </div>
-            <div id="mitarbeiterList"></div>
-        </div>
+<div class="account-table">
+<div class="table-head">
+    <span>Name</span>
+    <span>Telefon</span>
+    <span>Gehalt</span>
+    <span style="text-align:right;">Aktionen</span>
+</div>
+<div id="mitarbeiterList"></div>
+</div>
 
-    </div>
+</div>
 
-    <!-- ================= ABMELDUNGEN ================= -->
-    <div id="abmeldungen" class="management-section" style="display:none;">
+<!-- ================= ABMELDUNGEN ================= -->
+<div id="abmeldungen" class="management-section" style="display:none;">
 
-        <h2>📅 Abmeldungen verwalten</h2>
+<h2>📅 Abmeldungen</h2>
 
-        <div class="account-table">
-            <div class="table-head">
-                <span>User</span>
-                <span>Zeitraum</span>
-                <span>Status</span>
-                <span style="text-align:right;">Aktionen</span>
-            </div>
-            <div id="abmList"></div>
-        </div>
+<div class="account-table">
+<div class="table-head">
+    <span>User</span>
+    <span>Zeitraum</span>
+    <span>Status</span>
+    <span style="text-align:right;">Aktionen</span>
+</div>
+<div id="abmList"></div>
+</div>
 
-    </div>
-
-    <!-- ================= DOKUMENTE ================= -->
-    <div id="dokumente" class="management-section" style="display:none;">
-        <h2>📂 Dokumente</h2>
-        <p>Hier kommen später interne Dokumente rein.</p>
-    </div>
-
-    <!-- ================= SHEETS ================= -->
-    <div id="sheets" class="management-section" style="display:none;">
-        <h2>📊 Sheets</h2>
-        <p>Hier kannst du externe Google Sheets verlinken.</p>
-    </div>
+</div>
 
 </div>
 </section>
@@ -110,13 +95,11 @@
 <script src="script.js"></script>
 
 <script>
-
 requireLogin();
 if(!isAdmin()) window.location.href = "index.html";
 
-/* ================= TAB SYSTEM ================= */
-
-function showSection(id, btn) {
+/* TAB SYSTEM */
+function showSection(id, btn){
     document.querySelectorAll(".management-section")
         .forEach(sec => sec.style.display = "none");
 
@@ -125,181 +108,126 @@ function showSection(id, btn) {
     document.querySelectorAll(".tab-btn")
         .forEach(b => b.classList.remove("active"));
 
-    if(btn) btn.classList.add("active");
+    btn.classList.add("active");
 
+    if(id === "accounts") renderUsers();
+    if(id === "mitarbeiter") renderMitarbeiter();
     if(id === "abmeldungen") renderAbmeldungen();
 }
 
-/* ================= ACCOUNT SYSTEM ================= */
+/* ACCOUNT RENDER */
+const roleOrder = ["Cheffe","Management","Mitarbeiter"];
 
-const roleOrder = ["Cheffe", "Management", "Mitarbeiter"];
-
-function renderUsers() {
-
+function renderUsers(){
     const list = document.getElementById("userList");
     list.innerHTML = "";
 
     const accs = getAccounts();
 
-    const sorted = Object.keys(accs).sort((a,b) =>
-        roleOrder.indexOf(accs[a].role) -
-        roleOrder.indexOf(accs[b].role)
-    );
-
-    sorted.forEach(name => {
-
-        const row = document.createElement("div");
-        row.className = "table-row";
-
-        row.innerHTML = `
+    Object.keys(accs)
+    .sort((a,b)=>roleOrder.indexOf(accs[a].role)-roleOrder.indexOf(accs[b].role))
+    .forEach(name=>{
+        const row=document.createElement("div");
+        row.className="table-row";
+        row.innerHTML=`
             <span>${name}</span>
-            <span class="role-badge ${accs[name].role.toLowerCase()}">
-                ${accs[name].role}
-            </span>
-            <div style="text-align:right;">
-                <button class="rank-btn" onclick="uprankUser('${name}')">⬆</button>
-                <button class="rank-btn" onclick="derankUser('${name}')">⬇</button>
-                <button class="delete-btn" onclick="delUser('${name}')">Kündigen</button>
-            </div>
-        `;
-
+            <span class="role-badge ${accs[name].role.toLowerCase()}">${accs[name].role}</span>
+            <div class="action-cell">
+                <button class="rank-btn" onclick="uprank('${name}')">⬆</button>
+                <button class="rank-btn" onclick="derank('${name}')">⬇</button>
+                <button class="delete-btn" onclick="removeUser('${name}')">Kündigen</button>
+            </div>`;
         list.appendChild(row);
     });
 }
 
-function addUser() {
-    const name = document.getElementById("newName").value.trim();
-    const role = document.getElementById("newRole").value;
-    const accs = getAccounts();
-
-    if(name && !accs[name]) {
-        accs[name] = { password:"0000", role:role, isFirstLogin:true };
-        saveAccounts(accs);
-        renderUsers();
-        document.getElementById("newName").value = "";
-    }
-}
-
-function delUser(name) {
-    if(confirm(name + " kündigen?")) {
-        const accs = getAccounts();
-        delete accs[name];
+function addUser(){
+    const name=document.getElementById("newName").value.trim();
+    const role=document.getElementById("newRole").value;
+    const accs=getAccounts();
+    if(name && !accs[name]){
+        accs[name]={password:"0000",role,isFirstLogin:true};
         saveAccounts(accs);
         renderUsers();
     }
 }
 
-function uprankUser(name) {
-    const accs = getAccounts();
-    const i = roleOrder.indexOf(accs[name].role);
-    if(i > 0) {
-        accs[name].role = roleOrder[i-1];
+function removeUser(name){
+    const accs=getAccounts();
+    delete accs[name];
+    saveAccounts(accs);
+    renderUsers();
+}
+
+function uprank(name){
+    const accs=getAccounts();
+    const i=roleOrder.indexOf(accs[name].role);
+    if(i>0){
+        accs[name].role=roleOrder[i-1];
         saveAccounts(accs);
         renderUsers();
     }
 }
 
-function derankUser(name) {
-    const accs = getAccounts();
-    const i = roleOrder.indexOf(accs[name].role);
-    if(i < roleOrder.length-1) {
-        accs[name].role = roleOrder[i+1];
+function derank(name){
+    const accs=getAccounts();
+    const i=roleOrder.indexOf(accs[name].role);
+    if(i<roleOrder.length-1){
+        accs[name].role=roleOrder[i+1];
         saveAccounts(accs);
         renderUsers();
     }
 }
 
-/* ================= MITARBEITER ================= */
-
-const getMitarbeiter = () =>
-    JSON.parse(localStorage.getItem("bs_mitarbeiter")) || [];
-
-const saveMitarbeiter = data =>
-    localStorage.setItem("bs_mitarbeiter", JSON.stringify(data));
-
-function addMitarbeiter() {
-    const vor = document.getElementById("vorname").value;
-    const nach = document.getElementById("nachname").value;
-    const tel = document.getElementById("telefon").value;
-    const geh = document.getElementById("gehalt").value;
-
-    if(!vor || !nach) return;
-
-    const list = getMitarbeiter();
-    list.push({ vorname:vor, nachname:nach, telefon:tel, gehalt:geh });
-    saveMitarbeiter(list);
+/* MITARBEITER RENDER */
+function addMitarbeiterUI(){
+    addMitarbeiter(
+        document.getElementById("vorname").value,
+        document.getElementById("nachname").value,
+        document.getElementById("telefon").value,
+        document.getElementById("gehalt").value
+    );
     renderMitarbeiter();
 }
 
-function renderMitarbeiter() {
-    const c = document.getElementById("mitarbeiterList");
-    c.innerHTML = "";
-
+function renderMitarbeiter(){
+    const c=document.getElementById("mitarbeiterList");
+    c.innerHTML="";
     getMitarbeiter().forEach((m,i)=>{
-        const row = document.createElement("div");
-        row.className = "table-row";
-        row.innerHTML = `
+        const row=document.createElement("div");
+        row.className="table-row";
+        row.innerHTML=`
             <span>${m.vorname} ${m.nachname}</span>
-            <span>${m.telefon || "-"}</span>
-            <span>${m.gehalt ? m.gehalt + " €" : "-"}</span>
+            <span>${m.telefon||"-"}</span>
+            <span>${m.gehalt?m.gehalt+" €":"-"}</span>
             <div>
-                <button class="delete-btn" onclick="deleteMitarbeiter(${i})">
-                    Entfernen
-                </button>
-            </div>
-        `;
-
-function deleteMitarbeiter(i){
-    const list = getMitarbeiter();
-    list.splice(i,1);
-    saveMitarbeiter(list);
-    renderMitarbeiter();
+                <button class="delete-btn" onclick="deleteMitarbeiter(${i});renderMitarbeiter();">Entfernen</button>
+            </div>`;
+        c.appendChild(row);
+    });
 }
 
-/* ================= ABMELDUNGEN ================= */
-
+/* ABMELDUNGEN RENDER */
 function renderAbmeldungen(){
-    const c = document.getElementById("abmList");
-    c.innerHTML = "";
-
+    const c=document.getElementById("abmList");
+    c.innerHTML="";
     getAbmeldungen().forEach((a,i)=>{
-        const row = document.createElement("div");
+        const row=document.createElement("div");
         row.className="table-row";
         row.innerHTML=`
             <span>${a.user}</span>
             <span>${a.von} - ${a.bis}</span>
             <span>${a.status}</span>
-            <div style="text-align:right;">
-                ${a.status==="offen"?`
-                <button class="rank-btn" onclick="approveAbm(${i})">✔</button>
-                <button class="delete-btn" onclick="rejectAbm(${i})">✖</button>
-                `:""}
-            </div>
-        `;
+            <div>
+                ${a.status==="offen"?
+                `<button class="rank-btn" onclick="approveAbm(${i});renderAbmeldungen();">✔</button>
+                 <button class="delete-btn" onclick="rejectAbm(${i});renderAbmeldungen();">✖</button>`:""}
+            </div>`;
         c.appendChild(row);
     });
 }
 
-function approveAbm(i){
-    const list=getAbmeldungen();
-    list[i].status="genehmigt";
-    saveAbmeldungen(list);
-    renderAbmeldungen();
-}
-
-function rejectAbm(i){
-    const list=getAbmeldungen();
-    list[i].status="abgelehnt";
-    saveAbmeldungen(list);
-    renderAbmeldungen();
-}
-
-/* INIT */
-document.addEventListener("DOMContentLoaded", ()=>{
-    renderUsers();
-    renderMitarbeiter();
-});
-
+document.addEventListener("DOMContentLoaded",renderUsers);
 </script>
 
 </body>
