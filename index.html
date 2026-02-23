@@ -19,20 +19,22 @@
 
     <div class="grid-top">
 
+        <!-- NEWS -->
         <div class="panel big">
             <div class="panel-header">📢 NEWS & INFOS</div>
             <p>Wichtige Ankündigungen.</p>
         </div>
 
-        <div class="panel big">
-            <div class="panel big" onclick="openAbmeldungModal()">
-                <div class="panel-top">
-                    <span class="panel-header">📅 ABMELDUNGEN</span>
-                    <span id="abmCounter" class="badge">0 aktiv</span>
-                </div>
-                <p>Abwesenheiten & Urlaubsanträge.</p>
+        <!-- ABMELDUNGEN -->
+        <div class="panel big" onclick="openAbmeldungModal()">
+            <div class="panel-top">
+                <span class="panel-header">📅 ABMELDUNGEN</span>
+                <span id="abmCounter" class="badge">0 aktiv</span>
             </div>
+            <p>Abwesenheiten & Urlaubsanträge.</p>
+        </div>
 
+        <!-- BEWERBER -->
         <div class="panel big">
             <div class="panel-top">
                 <span class="panel-header">📝 BEWERBER</span>
@@ -41,28 +43,24 @@
             <p>Neue Bewerbungen prüfen.</p>
         </div>
 
+        <!-- SERVICE -->
         <div class="panel big center">
             <div class="panel-header">📋 Service</div>
         </div>
 
     </div>
 
-    <div class="grid-bottom">
-        <div class="panel small">🍔<br>Orders</div>
-        <div class="panel small">🛒<br>Lager</div>
-        <div class="panel small">🎵<br>Musik</div>
-        <div class="panel small">👕<br>Kleidung</div>
-    </div>
-
-    <div id="adminPanel" class="management-bar"
-         onclick="location.href='management.html'">
-        <div>⭐ Management Center</div>
-        <div>Personalverwaltung & Systemsteuerung</div>
+    <!-- MANAGEMENT BAR -->
+    <div id="adminPanel"
+         class="management-bar"
+         onclick="location.href='management.html'"
+         style="display:none;">
+        ⭐ Management Center
     </div>
 
 </section>
 
-<!-- PIN MODAL -->
+<!-- ================= PIN MODAL ================= -->
 <div class="modal-backdrop" id="pinModal">
     <div class="modal">
         <h2>🔒 PIN ändern</h2>
@@ -72,7 +70,7 @@
     </div>
 </div>
 
-    <!-- ================= ABMELDUNG MODAL ================= -->
+<!-- ================= ABMELDUNG MODAL ================= -->
 <div class="modal-backdrop" id="abmModal">
     <div class="modal">
         <h2>📅 Neue Abmeldung</h2>
@@ -83,12 +81,15 @@
 
         <div style="margin-top:15px;">
             <button onclick="submitAbmeldung()">Einreichen</button>
-            <button onclick="closeAbmModal()" style="margin-left:10px;">Abbrechen</button>
+            <button onclick="closeAbmModal()" style="margin-left:10px;">
+                Abbrechen
+            </button>
         </div>
     </div>
 </div>
 
 <script src="script.js"></script>
+
 <script>
 requireLogin();
 
@@ -113,17 +114,12 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("pinModal").classList.add("active");
     }
 
-    // ✅ Live Counter sauber über Funktion
     updateAbmCounter();
-
-    const bewerberBadge = document.getElementById("bewerberCounter");
-    if (bewerberBadge) {
-        bewerberBadge.innerText =
-            getNeueBewerberCount() + " neu";
-    }
 });
 
+/* PIN SETZEN */
 function savePin() {
+
     const pin = document.getElementById("newPin").value.trim();
     const user = sessionStorage.getItem("loggedInUser");
     const accs = getAccounts();
@@ -135,9 +131,12 @@ function savePin() {
 
     accs[user].password = pin;
     accs[user].isFirstLogin = false;
+
     saveAccounts(accs);
 
-    document.getElementById("pinModal").classList.remove("active");
+    document.getElementById("pinModal")
+        .classList.remove("active");
+
     alert("PIN erfolgreich gesetzt!");
 }
 </script>
