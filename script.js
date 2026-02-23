@@ -1,11 +1,23 @@
+const getAccounts = () => {
+    const data = localStorage.getItem("bs_accounts");
+    if (data) return JSON.parse(data);
 
-/* --- SPEICHER-FUNKTIONEN --- */
-const getAccounts = () => JSON.parse(localStorage.getItem("bs_accounts")) || {
-    "Admin": { password: "123", role: "Cheffe", isFirstLogin: false }
+    const defaultAccounts = {
+        "Admin": {
+            password: "1234",
+            role: "Cheffe",
+            isFirstLogin: false
+        }
+    };
+
+    localStorage.setItem("bs_accounts", JSON.stringify(defaultAccounts));
+    return defaultAccounts;
 };
-const saveAccounts = (accs) => localStorage.setItem("bs_accounts", JSON.stringify(accs));
 
-/* --- AUTH-LOGIK --- */
+const saveAccounts = (accs) => {
+    localStorage.setItem("bs_accounts", JSON.stringify(accs));
+};
+
 const requireLogin = () => {
     if (!sessionStorage.getItem("loggedInUser")) {
         window.location.href = "login.html";
@@ -22,10 +34,4 @@ const isAdmin = () => {
     const accs = getAccounts();
     const user = accs[username];
     return user && (user.role === "Management" || user.role === "Cheffe");
-};
-
-const setHeaderUser = () => {
-    const user = sessionStorage.getItem("loggedInUser");
-    const el = document.getElementById("welcomeUser");
-    if (el && user) el.innerText = `Willkommen, ${user}`;
 };
