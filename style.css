@@ -363,3 +363,41 @@ select:focus {
     box-shadow: 0 0 12px rgba(250, 172, 21, 0.4);
     background: rgba(0, 0, 0, 0.7);
 }
+
+/* ============================= */
+/*        RANK BUTTONS           */
+/* ============================= */
+
+.action-cell {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.rank-btn {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: white;
+    padding: 4px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.rank-btn:hover {
+    background: var(--primary);
+    color: black;
+}
+
+.delete-btn {
+    background: #b33;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    color: white;
+}
+
+.delete-btn:hover {
+    background: #d44;
+}
