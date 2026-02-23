@@ -56,9 +56,9 @@ const getAbmeldungen = () =>
 const saveAbmeldungen = data =>
     localStorage.setItem("bs_abmeldungen", JSON.stringify(data));
 
-function getAktiveAbmeldungenCount() {
+function getOffeneAbmeldungenCount() {
     return getAbmeldungen()
-        .filter(a => a.status === "genehmigt").length;
+        .filter(a => a.status === "offen").length;
 }
 
 function submitAbmeldung(von, bis, grund) {
