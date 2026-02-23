@@ -134,28 +134,16 @@ function addMitarbeiter() {
     renderMitarbeiter();
 }
 
-function renderMitarbeiter() {
-    const container = document.getElementById("mitarbeiterList");
-    container.innerHTML = "";
-
-    const list = getMitarbeiter();
-
-    list.forEach((m, index) => {
-        const row = document.createElement("div");
-        row.className = "table-row";
-
-        row.innerHTML = `
-            <span>${m.vorname} ${m.nachname}</span>
-            <span>${m.telefon}</span>
-            <span>${m.gehalt} €</span>
-            <div style="text-align:right;">
-                <button class="delete-btn" onclick="deleteMitarbeiter(${index})">Entfernen</button>
-            </div>
-        `;
-
-        container.appendChild(row);
-    });
-}
+row.innerHTML = `
+    <span>${m.vorname} ${m.nachname}</span>
+    <span>${m.telefon}</span>
+    <span style="text-align:right;">${m.gehalt} €</span>
+    <div class="action-cell">
+        <button class="delete-btn" onclick="deleteMitarbeiter(${index})">
+            Entfernen
+        </button>
+    </div>
+`;
 
 function deleteMitarbeiter(index) {
     const list = getMitarbeiter();
