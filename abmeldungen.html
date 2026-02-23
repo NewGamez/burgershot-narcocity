@@ -1,40 +1,93 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="UTF-8">
-<title>Business Announcements</title>
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <title>Abmeldungen - Burgershot</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <header>
-    <div class="header-left">
-        <a href="index.html" class="brand-link">← Zurück</a>
-    </div>
-    <div class="header-right">
-        <span id="welcomeUser"></span>
-        <button class="logout-btn" onclick="logout()">Logout</button>
-    </div>
+    <div class="header-left"><a href="index.html" class="brand-link">🍔 Burgershot Intern</a></div>
+    <button class="add-btn" onclick="openAbsenceModal()">+ Neue Abmeldung</button>
 </header>
 
 <section class="dashboard">
-
-    <div class="panel big">
-        <h2>📢 Business Announcements</h2>
-        <p>Hier werden offizielle Mitteilungen veröffentlicht.</p>
+    <div class="panel large management-container">
+        <h2>📅 Aktuelle Abmeldungen</h2>
+        <div class="account-table-header">
+            <span>Name</span>
+            <span>Zeitraum</span>
+            <span>Grund</span>
+            <span style="text-align: right;">Aktion</span>
+        </div>
+        <div id="absenceList"></div>
     </div>
-
 </section>
 
-<footer>
-    Burgershot Internal System © 2026
-</footer>
+<div class="modal-backdrop" id="absenceModal" style="display:none;">
+    <div class="modal">
+        <h2>Neue Abmeldung</h2>
+        <input type="text" id="absName" placeholder="Dein Name" style="width:100%; margin-bottom:10px;">
+        <input type="text" id="absTime" placeholder="Zeitraum (z.B. 24.02. - 01.03.)" style="width:100%; margin-bottom:10px;">
+        <textarea id="absReason" placeholder="Grund (optional)" style="width:100%; height:80px; margin-bottom:10px; background:rgba(0,0,0,0.2); color:white; border:1px solid #faac15; border-radius:8px; padding:10px;"></textarea>
+        <div style="display:flex; gap:10px;">
+            <button class="add-btn" onclick="saveNewAbsence()" style="flex:1;">Eintragen</button>
+            <button class="delete-btn" onclick="closeAbsenceModal()" style="flex:1;">Abbrechen</button>
+        </div>
+    </div>
+</div>
 
 <script src="script.js"></script>
 <script>
-requireLogin();
-setHeaderUser();
-</script>
+    requireLogin();
 
+    function openAbsenceModal() { document.getElementById("absenceModal").style.display = "flex"; }
+    function closeAbsenceModal() { document.getElementById("absenceModal").style.display = "none"; }
+
+    function saveNewAbsence() {
+        const name = document.getElementById("absName").value.trim();
+        const time = document.getElementById("absTime").value.trim();
+        const reason = document.getElementById("absReason").value.trim() || "Kein Grund";
+
+        if (!name || !time) return alert("Name und Zeitraum fehlen!");
+
+        const absences = getAbsences();
+        absences.push({ id: Date.now(), name, time, reason });
+        saveAbsences(absences);
+        
+        closeAbsenceModal();
+        loadAbsences();
+    }
+
+    function deleteAbsence(id) {
+        let absences = getAbsences();
+        absences = absences.filter(a => a.id !== id);
+        saveAbsences(absences);
+        loadAbsences();
+    }
+
+    function loadAbsences() {
+        const list = document.getElementById("absenceList");
+        const data = getAbsences();
+        list.innerHTML = "";
+
+        data.forEach(abs => {
+            const div = document.createElement("div");
+            div.className = "account-row";
+            div.innerHTML = `
+                <span>${abs.name}</span>
+                <span>${abs.time}</span>
+                <span style="color:#888; font-size:0.8rem;">${abs.reason}</span>
+                <div style="text-align:right;">
+                    <button class="delete-btn" onclick="deleteAbsence(${abs.id})">Löschen</button>
+                </div>
+            `;
+            list.appendChild(div);
+        });
+    }
+
+    loadAbsences();
+</script>
 </body>
 </html>
