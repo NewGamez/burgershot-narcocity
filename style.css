@@ -1,156 +1,94 @@
 :root {
     --primary: #faac15;
-    --primary-hover: #ffbd3d;
-    --glass-bg: rgba(255, 255, 255, 0.07);
-    --glass-border: rgba(255, 255, 255, 0.15);
-    --glass-blur: blur(20px);
-    --text-color: #ffffff;
-    --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+    --primary-glow: rgba(250, 172, 21, 0.3);
+    --glass: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --blur: blur(20px);
 }
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    color: var(--text-color);
+    font-family: 'Segoe UI', sans-serif;
+    color: white;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    overflow-x: hidden;
 }
 
-/* Hintergrund-Layer */
 body::before {
     content: "";
     position: fixed;
     inset: 0;
     background: url("assets/burgershot-bg.png") center/cover no-repeat;
-    filter: brightness(0.35);
+    filter: brightness(0.3);
     z-index: -1;
 }
 
-/* Header Glas-Optik */
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 40px;
-    background: rgba(0, 0, 0, 0.3);
-    backdrop-filter: var(--glass-blur);
-    border-bottom: 1px solid var(--glass-border);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-}
-
-.brand-link {
-    text-decoration: none;
-    color: var(--primary);
-    font-weight: 800;
-    font-size: 1.4rem;
-    text-shadow: 0 0 15px rgba(250, 172, 21, 0.4);
-}
-
-/* Buttons im Glas-Stil */
-button, .add-btn, .logout-btn {
-    background: linear-gradient(135deg, rgba(250, 172, 21, 0.9), rgba(250, 172, 21, 0.6));
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    padding: 10px 22px;
-    border-radius: 12px;
-    color: #000;
-    font-weight: 700;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    backdrop-filter: blur(5px);
-}
-
-button:hover, .add-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 20px rgba(250, 172, 21, 0.4);
-    background: var(--primary);
-}
-
-/* Dashboard Grid */
-.dashboard {
-    flex: 1;
-    max-width: 1300px;
-    margin: 40px auto;
-    padding: 0 20px;
-    width: 100%;
-}
-
-.dashboard-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 25px;
-}
-
-/* Panel Design */
-.panel {
-    background: var(--glass-bg);
-    backdrop-filter: var(--glass-blur);
+/* Container für Management & Login */
+.glass-card {
+    background: var(--glass);
+    backdrop-filter: var(--blur);
     border: 1px solid var(--glass-border);
     border-radius: 25px;
-    padding: 30px;
-    box-shadow: var(--shadow);
-    cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    padding: 40px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    margin: 20px auto;
+    max-width: 900px;
+    width: 95%;
 }
 
-.panel:hover {
-    transform: scale(1.03);
-    border-color: var(--primary);
-    background: rgba(255, 255, 255, 0.12);
-}
-
-.panel-header {
-    color: var(--primary);
-    font-weight: 700;
-    font-size: 1.2rem;
-    margin-bottom: 15px;
-    display: flex;
+/* Die Tabellen-Logik: Verhindert das Verrutschen */
+.mgmt-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 120px; /* Name, Rang, Button festbreite */
     align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
     gap: 10px;
 }
 
-/* Input Styles */
+.table-head {
+    color: var(--primary);
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+}
+
+/* Schicke Buttons */
+.btn-gold {
+    background: linear-gradient(135deg, #faac15 0%, #d48c00 100%);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 12px;
+    color: black;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-danger {
+    background: rgba(255, 70, 70, 0.15);
+    border: 1px solid rgba(255, 70, 70, 0.4);
+    color: #ff6b6b;
+    padding: 8px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 11px;
+}
+
+.btn-danger:hover {
+    background: #ff4646;
+    color: white;
+}
+
 input, select {
-    background: rgba(0, 0, 0, 0.3);
+    background: rgba(0, 0, 0, 0.4);
     border: 1px solid var(--glass-border);
     color: white;
     padding: 12px;
-    border-radius: 12px;
-    backdrop-filter: blur(10px);
-    outline: none;
-}
-
-input:focus {
-    border-color: var(--primary);
-}
-
-/* Modal */
-.modal-backdrop {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.8);
-    backdrop-filter: blur(10px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-}
-
-.modal {
-    background: var(--glass-bg);
-    backdrop-filter: var(--glass-blur);
-    padding: 40px;
-    border-radius: 30px;
-    border: 1px solid var(--primary);
-    text-align: center;
-    width: 400px;
+    border-radius: 10px;
 }
