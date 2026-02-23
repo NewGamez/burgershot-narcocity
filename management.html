@@ -50,6 +50,8 @@
 requireLogin();
 if(!isAdmin()) window.location.href = "index.html";
 
+document.addEventListener("DOMContentLoaded", renderUsers);
+
 function renderUsers() {
     const list = document.getElementById("userList");
     list.innerHTML = "";
@@ -60,9 +62,9 @@ function renderUsers() {
         row.className = "table-row";
 
         row.innerHTML = `
-            <span class="name-cell">${name}</span>
+            <span>${name}</span>
             <span class="role-badge ${accs[name].role.toLowerCase()}">${accs[name].role}</span>
-            <div class="action-cell">
+            <div style="text-align:right;">
                 ${name !== "Admin" 
                     ? `<button class="delete-btn" onclick="delUser('${name}')">Kündigen</button>`
                     : `<span class="owner-label">Inhaber</span>`}
@@ -79,7 +81,11 @@ function addUser() {
     const accs = getAccounts();
 
     if(name && !accs[name]) {
-        accs[name] = { password: "0000", role: role, isFirstLogin: true };
+        accs[name] = {
+            password: "0000",
+            role: role,
+            isFirstLogin: true
+        };
         saveAccounts(accs);
         renderUsers();
         document.getElementById("newName").value = "";
@@ -96,8 +102,6 @@ function delUser(name) {
         renderUsers();
     }
 }
-
-window.onload = renderUsers;
 </script>
 
 </body>
