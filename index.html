@@ -1,43 +1,140 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Burgershot Intern - Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+    <div class="header-left"><a href="index.html" class="brand-link">🍔 Burgershot Intern</a></div>
+    <div class="header-right">
+        <span id="welcomeUser"></span>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+</header>
+
 <section class="dashboard">
     <div class="dashboard-grid">
         
         <div class="panel scrollable" onclick="location.href='abmeldungen.html'">
-            <div class="panel-header"><span>📅 Abmeldungen</span></div>
+            <div class="panel-header">
+                <span>📅 Abmeldungen</span>
+                <div class="count-badge">2 aktiv</div>
+            </div>
             <div class="panel-content">
-                <p>• Max Mustermann (bis 24.02.)</p>
-                <p>• Lisa Lustig (bis 01.03.)</p>
+                <div class="list-item">
+                    <span>Max Mustermann</span>
+                    <span class="date">bis 24.02.</span>
+                </div>
+                <div class="list-item">
+                    <span>Lisa Lustig</span>
+                    <span class="date">bis 01.03.</span>
+                </div>
             </div>
         </div>
 
         <div class="panel highlight" onclick="location.href='announcements.html'">
-            <span>📢 Business Announcements</span>
+            <div class="panel-header"><span>📢 Announcements</span></div>
+            <p style="font-size: 0.9rem; color: #bbb; text-align: left;">Neue Dienstvorschrift online! Bitte im Archiv lesen.</p>
         </div>
 
         <div class="panel scrollable" onclick="location.href='bewerber.html'">
-            <div class="panel-header"><span>📝 Bewerber</span></div>
+            <div class="panel-header">
+                <span>📝 Bewerber</span>
+                <div class="count-badge">1 neu</div>
+            </div>
             <div class="panel-content">
-                <p>• Kevin Ketchup (Offen)</p>
-                <p>• Sarah Salat (In Prüfung)</p>
+                <div class="list-item">
+                    <span>Kevin Ketchup</span>
+                    <span class="role-badge badge-mitarbeiter" style="font-size: 0.7rem;">OFFEN</span>
+                </div>
+                <div class="list-item" style="opacity: 0.3;">
+                    <span>Keine weiteren Bewerbungen</span>
+                </div>
             </div>
         </div>
 
         <div class="panel" onclick="location.href='einkaeufe.html'">
-            <span>🛒 Einkäufe / Lager</span>
+            <span style="font-size: 1.5rem; display: block; margin-bottom: 5px;">🛒</span>
+            <span>Einkäufe / Lager</span>
         </div>
 
         <div class="panel" onclick="location.href='kleidung.html'">
-            <span>👔 Kleiderordnung</span>
+            <span style="font-size: 1.5rem; display: block; margin-bottom: 5px;">👔</span>
+            <span>Kleiderordnung</span>
         </div>
 
         <div class="panel" onclick="location.href='musik.html'">
-            <span>🎵 Musik-Playlist</span>
+            <span style="font-size: 1.5rem; display: block; margin-bottom: 5px;">🎵</span>
+            <span>Musik-Playlist</span>
         </div>
 
-        <div class="panel" onclick="location.href='service.html'">📋 Service-Übersicht</div>
-        <div class="panel" onclick="location.href='orders.html'">🍔 Bestellungen</div>
+        <div class="panel" onclick="location.href='service.html'">
+            <span style="font-size: 1.5rem; display: block; margin-bottom: 5px;">📋</span>
+            <span>Service-Übersicht</span>
+        </div>
+
+        <div class="panel" onclick="location.href='orders.html'">
+            <span style="font-size: 1.5rem; display: block; margin-bottom: 5px;">🍔</span>
+            <span>Bestellungen</span>
+        </div>
 
         <div class="panel full-width" id="adminPanel" style="display:none;" onclick="location.href='management.html'">
-            <span>⭐ Management Center</span>
+            <span style="font-size: 1.4rem; color: #faac15; font-weight: bold;">⭐ Management Center</span>
+            <p style="color: #888; font-size: 0.8rem; margin-top: 5px;">Personalverwaltung, Kündigungen & Beförderungen</p>
         </div>
     </div>
 </section>
+
+<div class="modal-backdrop" id="firstLoginModal" style="display:none;">
+    <div class="modal">
+        <h2>🔒 Passwort ändern</h2>
+        <p>Bitte lege eine eigene 4-stellige PIN fest.</p>
+        <input type="password" id="newPinInput" maxlength="4" style="margin: 20px 0; padding: 10px; text-align: center; font-size: 20px; width: 100px; border-radius: 8px; border: 1px solid #faac15; background: #000; color: #fff;">
+        <br>
+        <button class="add-btn" style="height: 40px; width: 200px;" onclick="saveNewPassword()">Speichern</button>
+    </div>
+</div>
+
+<script src="script.js"></script>
+<script>
+    requireLogin();
+    setHeaderUser();
+
+    // Management Panel Logik
+    if (isAdmin()) {
+        const adminPanel = document.getElementById("adminPanel");
+        if (adminPanel) {
+            adminPanel.style.display = "flex"; 
+        }
+    }
+
+    function checkPasswordStatus() {
+        const username = sessionStorage.getItem("loggedInUser");
+        const accounts = getAccounts();
+        if (accounts[username] && accounts[username].isFirstLogin) {
+            document.getElementById("firstLoginModal").style.display = "flex";
+        }
+    }
+
+    function saveNewPassword() {
+        const pin = document.getElementById("newPinInput").value;
+        const user = sessionStorage.getItem("loggedInUser");
+        const accounts = getAccounts();
+        if (pin.length === 4 && !isNaN(pin) && pin !== "0000") {
+            accounts[user].password = pin;
+            accounts[user].isFirstLogin = false;
+            saveAccounts(accounts);
+            document.getElementById("firstLoginModal").style.display = "none";
+            alert("PIN erfolgreich gesetzt!");
+        } else {
+            alert("Ungültige PIN (4 Zahlen erforderlich, nicht 0000)");
+        }
+    }
+
+    window.onload = checkPasswordStatus;
+</script>
+</body>
+</html>
