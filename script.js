@@ -1,3 +1,7 @@
+/* ============================= */
+/*         ACCOUNT SYSTEM        */
+/* ============================= */
+
 const getAccounts = () => {
     const data = localStorage.getItem("bs_accounts");
     if (data) return JSON.parse(data);
@@ -18,6 +22,10 @@ const saveAccounts = (accs) => {
     localStorage.setItem("bs_accounts", JSON.stringify(accs));
 };
 
+/* ============================= */
+/*         AUTH LOGIC            */
+/* ============================= */
+
 const requireLogin = () => {
     if (!sessionStorage.getItem("loggedInUser")) {
         window.location.href = "login.html";
@@ -37,36 +45,17 @@ const isAdmin = () => {
 };
 
 /* ============================= */
-/*      ABMELDUNGEN SYSTEM       */
+/*        COUNTER SYSTEM         */
 /* ============================= */
 
-const getAbmeldungen = () => {
-    return JSON.parse(localStorage.getItem("bs_abmeldungen")) || [];
-};
+const getAbmeldungen = () =>
+    JSON.parse(localStorage.getItem("bs_abmeldungen")) || [];
 
-const saveAbmeldungen = (data) => {
-    localStorage.setItem("bs_abmeldungen", JSON.stringify(data));
-};
+const getBewerber = () =>
+    JSON.parse(localStorage.getItem("bs_bewerber")) || [];
 
-const getAktiveAbmeldungenCount = () => {
-    const list = getAbmeldungen();
-    return list.filter(a => a.status === "aktiv").length;
-};
+const getAktiveAbmeldungenCount = () =>
+    getAbmeldungen().filter(a => a.status === "aktiv").length;
 
-
-/* ============================= */
-/*       BEWERBER SYSTEM         */
-/* ============================= */
-
-const getBewerber = () => {
-    return JSON.parse(localStorage.getItem("bs_bewerber")) || [];
-};
-
-const saveBewerber = (data) => {
-    localStorage.setItem("bs_bewerber", JSON.stringify(data));
-};
-
-const getNeueBewerberCount = () => {
-    const list = getBewerber();
-    return list.filter(b => b.status === "neu").length;
-};
+const getNeueBewerberCount = () =>
+    getBewerber().filter(b => b.status === "neu").length;
