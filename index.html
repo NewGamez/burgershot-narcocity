@@ -92,7 +92,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (accs[user].isFirstLogin === true) {
-        document.getElementById("pinModal").style.display = "flex";
+        document.getElementById("pinModal").classList.add("active");
     }
 
     document.getElementById("abmCounter").innerText =
@@ -116,7 +116,7 @@ function savePin() {
     accs[user].isFirstLogin = false;
     saveAccounts(accs);
 
-    document.getElementById("pinModal").style.display = "none";
+    document.getElementById("pinModal").classList.remove("active");
     alert("PIN erfolgreich gesetzt!");
 }
 </script>
