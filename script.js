@@ -172,3 +172,47 @@ function submitAbmeldungUI(){
     document.getElementById("abmBis").value = "";
     document.getElementById("abmGrund").value = "";
 }
+
+/* ===================================================== */
+/* ============== MEINE ABMELDUNGEN ==================== */
+/* ===================================================== */
+
+function renderMeineAbmeldungen(){
+
+    const container = document.getElementById("meineAbmeldungenList");
+    if(!container) return;
+
+    container.innerHTML = "";
+
+    const user = sessionStorage.getItem("loggedInUser");
+    const list = getAbmeldungen()
+        .filter(a => a.user === user);
+
+    if(list.length === 0){
+        container.innerHTML = "<p style='opacity:0.6'>Keine Abmeldungen vorhanden.</p>";
+        return;
+    }
+
+    list.forEach(a => {
+
+        let color = "#aaa";
+
+        if(a.status === "genehmigt") color = "#4CAF50";
+        if(a.status === "abgelehnt") color = "#ff4d4d";
+        if(a.status === "offen") color = "#faac15";
+
+        const row = document.createElement("div");
+        row.style.marginBottom = "8px";
+
+        row.innerHTML = `
+            <div style="display:flex;justify-content:space-between;">
+                <span>${a.von} - ${a.bis}</span>
+                <span style="color:${color};font-weight:bold;">
+                    ${a.status.toUpperCase()}
+                </span>
+            </div>
+        `;
+
+        container.appendChild(row);
+    });
+}
