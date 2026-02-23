@@ -35,3 +35,38 @@ const isAdmin = () => {
     const user = accs[username];
     return user && (user.role === "Management" || user.role === "Cheffe");
 };
+
+/* ============================= */
+/*      ABMELDUNGEN SYSTEM       */
+/* ============================= */
+
+const getAbmeldungen = () => {
+    return JSON.parse(localStorage.getItem("bs_abmeldungen")) || [];
+};
+
+const saveAbmeldungen = (data) => {
+    localStorage.setItem("bs_abmeldungen", JSON.stringify(data));
+};
+
+const getAktiveAbmeldungenCount = () => {
+    const list = getAbmeldungen();
+    return list.filter(a => a.status === "aktiv").length;
+};
+
+
+/* ============================= */
+/*       BEWERBER SYSTEM         */
+/* ============================= */
+
+const getBewerber = () => {
+    return JSON.parse(localStorage.getItem("bs_bewerber")) || [];
+};
+
+const saveBewerber = (data) => {
+    localStorage.setItem("bs_bewerber", JSON.stringify(data));
+};
+
+const getNeueBewerberCount = () => {
+    const list = getBewerber();
+    return list.filter(b => b.status === "neu").length;
+};
