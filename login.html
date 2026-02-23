@@ -16,52 +16,59 @@
             backdrop-filter: var(--glass-blur);
             border: 1px solid var(--glass-border);
             padding: 50px;
-            border-radius: 35px;
-            width: 400px;
+            border-radius: 30px;
+            width: 380px;
             text-align: center;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.6);
+            box-shadow: var(--shadow);
         }
         .login-card h1 {
             color: var(--primary);
-            margin-bottom: 35px;
-            letter-spacing: 2px;
+            margin-bottom: 30px;
         }
         .login-card input {
             width: 100%;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             text-align: center;
             font-size: 1.1rem;
         }
         .login-card button {
             width: 100%;
-            font-size: 1.1rem;
             margin-top: 10px;
         }
     </style>
 </head>
 <body>
-    <div class="login-wrapper">
-        <div class="login-card">
-            <h1>🍔 BURGERSHOT</h1>
-            <input type="text" id="username" placeholder="Mitarbeiter-Name">
-            <input type="password" id="password" placeholder="PIN" maxlength="4">
-            <button onclick="handleLogin()">Einloggen</button>
-        </div>
-    </div>
 
-    <script src="script.js"></script>
-    <script>
-        function handleLogin() {
-            const u = document.getElementById("username").value.trim();
-            const p = document.getElementById("password").value.trim();
-            const accs = getAccounts();
-            if (accs[u] && accs[u].password === p) {
-                sessionStorage.setItem("loggedInUser", u);
-                window.location.href = "index.html";
-            } else {
-                alert("Login fehlgeschlagen!");
-            }
-        }
-    </script>
+<div class="login-wrapper">
+    <div class="login-card">
+        <h1>🍔 BURGERSHOT</h1>
+        <input type="text" id="username" placeholder="Benutzername">
+        <input type="password" id="password" placeholder="PIN" maxlength="4">
+        <button onclick="handleLogin()">Einloggen</button>
+    </div>
+</div>
+
+<script src="script.js"></script>
+<script>
+function handleLogin() {
+    const u = document.getElementById("username").value.trim();
+    const p = document.getElementById("password").value.trim();
+    const accs = getAccounts();
+
+    if (!accs[u]) {
+        alert("Benutzer existiert nicht.");
+        return;
+    }
+
+    if (accs[u].password !== p) {
+        alert("Falsche PIN.");
+        return;
+    }
+
+    sessionStorage.setItem("loggedInUser", u);
+    window.location.href = "index.html";
+}
+</script>
+
 </body>
 </html>
