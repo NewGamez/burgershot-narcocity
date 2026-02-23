@@ -1,218 +1,235 @@
 /* ===================================================== */
-/* ================= ACCOUNT SYSTEM ==================== */
+/* ===================== IMPORTS ======================= */
 /* ===================================================== */
 
-const getAccounts = () => {
-    const data = localStorage.getItem("bs_accounts");
-    if (data) return JSON.parse(data);
+import { auth, db } from "./firebase.js";
 
-    const defaultAccounts = {
-        "Admin": {
-            password: "1234",
-            role: "Cheffe",
-            isFirstLogin: false
-        }
-    };
+import {
+  collection,
+  getDocs,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  doc,
+  getDoc
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    localStorage.setItem("bs_accounts", JSON.stringify(defaultAccounts));
-    return defaultAccounts;
-};
-
-const saveAccounts = accs =>
-    localStorage.setItem("bs_accounts", JSON.stringify(accs));
-
+import {
+  signOut,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 /* ===================================================== */
-/* ================= AUTH SYSTEM ======================= */
+/* ===================== AUTH ========================== */
 /* ===================================================== */
 
-const requireLogin = () => {
-    if (!sessionStorage.getItem("loggedInUser")) {
-        window.location.href = "login.html";
+export function requireLogin() {
+  onAuthStateChanged(auth, user => {
+    if (!user) {
+      window.location.href = "login.html";
     }
-};
-
-const logout = () => {
-    sessionStorage.clear();
-    window.location.href = "login.html";
-};
-
-const isAdmin = () => {
-    const user = sessionStorage.getItem("loggedInUser");
-    const accs = getAccounts();
-    return accs[user] &&
-        (accs[user].role === "Management" ||
-         accs[user].role === "Cheffe");
-};
-
-
-/* ===================================================== */
-/* ================= ABMELDUNGEN ======================= */
-/* ===================================================== */
-
-const getAbmeldungen = () =>
-    JSON.parse(localStorage.getItem("bs_abmeldungen")) || [];
-
-const saveAbmeldungen = data =>
-    localStorage.setItem("bs_abmeldungen", JSON.stringify(data));
-
-function getOffeneAbmeldungenCount() {
-    return getAbmeldungen()
-        .filter(a => a.status === "offen").length;
+  });
 }
 
-function submitAbmeldung(von, bis, grund) {
+window.logout = async function () {
+  await signOut(auth);
+  window.location.href = "login.html";
+};
 
-    const user = sessionStorage.getItem("loggedInUser");
+/* ===================================================== */
+/* ===================== USER DATA ===================== */
+/* ===================================================== */
 
-    if (!von || !bis || !grund) return;
+export async function getCurrentUserData() {
+  const snap = await getDoc(doc(db, "users", auth.currentUser.uid));
+  return snap.data();
+}
 
-    const list = getAbmeldungen();
+export async function isAdmin() {
+  const data = await getCurrentUserData();
+  return data.role === "Management" || data.role === "Cheffe";
+}
 
-    list.push({
-        user,
-        von,
-        bis,
-        grund,
-        status: "offen"
+/* ===================================================== */
+/* ===================== ACCOUNTS ====================== */
+/* ===================================================== */
+
+window.getAccounts = async function () {
+  const snap = await getDocs(collection(db, "users"));
+  const accounts = [];
+
+  snap.forEach(d => {
+    accounts.push({
+      id: d.id,
+      ...d.data()
     });
+  });
 
-    saveAbmeldungen(list);
-}
+  return accounts;
+};
 
-function approveAbm(i){
-    const list = getAbmeldungen();
-    list[i].status = "genehmigt";
-    saveAbmeldungen(list);
-}
+window.addUser = async function () {
+  const name = document.getElementById("newName").value.trim();
+  const role = document.getElementById("newRole").value;
 
-function rejectAbm(i){
-    const list = getAbmeldungen();
-    list[i].status = "abgelehnt";
-    saveAbmeldungen(list);
-}
+  if (!name) return;
 
+  await addDoc(collection(db, "users"), {
+    name,
+    role
+  });
+
+  location.reload();
+};
+
+window.removeUser = async function (id) {
+  await deleteDoc(doc(db, "users", id));
+  location.reload();
+};
+
+window.updateUserRole = async function (id, newRole) {
+  await updateDoc(doc(db, "users", id), {
+    role: newRole
+  });
+  location.reload();
+};
 
 /* ===================================================== */
-/* ================= MITARBEITER ======================= */
+/* ===================== ABMELDUNGEN =================== */
 /* ===================================================== */
 
-const getMitarbeiter = () =>
-    JSON.parse(localStorage.getItem("bs_mitarbeiter")) || [];
+window.getAbmeldungen = async function () {
+  const snap = await getDocs(collection(db, "abmeldungen"));
+  const list = [];
 
-const saveMitarbeiter = data =>
-    localStorage.setItem("bs_mitarbeiter", JSON.stringify(data));
-
-function addMitarbeiter(vor, nach, tel, geh) {
-
-    if (!vor || !nach) return;
-
-    const list = getMitarbeiter();
-
+  snap.forEach(d => {
     list.push({
-        vorname: vor,
-        nachname: nach,
-        telefon: tel,
-        gehalt: geh
+      id: d.id,
+      ...d.data()
     });
+  });
 
-    saveMitarbeiter(list);
-}
+  return list;
+};
 
-function deleteMitarbeiter(i){
-    const list = getMitarbeiter();
-    list.splice(i,1);
-    saveMitarbeiter(list);
-}
+window.submitAbmeldung = async function (von, bis, grund) {
 
+  if (!von || !bis || !grund) return;
+
+  await addDoc(collection(db, "abmeldungen"), {
+    userId: auth.currentUser.uid,
+    von,
+    bis,
+    grund,
+    status: "offen",
+    createdAt: new Date()
+  });
+};
+
+window.approveAbm = async function (id) {
+  await updateDoc(doc(db, "abmeldungen", id), {
+    status: "genehmigt"
+  });
+  location.reload();
+};
+
+window.rejectAbm = async function (id) {
+  await updateDoc(doc(db, "abmeldungen", id), {
+    status: "abgelehnt"
+  });
+  location.reload();
+};
+
+window.getOffeneAbmeldungenCount = async function () {
+  const list = await window.getAbmeldungen();
+  return list.filter(a => a.status === "offen").length;
+};
 
 /* ===================================================== */
-/* ================= BEWERBER COUNT ==================== */
+/* ===================== MITARBEITER =================== */
 /* ===================================================== */
 
-function getNeueBewerberCount() {
-    return JSON.parse(localStorage.getItem("bs_bewerber"))?.length || 0;
-}
+window.getMitarbeiter = async function () {
+  const snap = await getDocs(collection(db, "mitarbeiter"));
+  const list = [];
+
+  snap.forEach(d => {
+    list.push({
+      id: d.id,
+      ...d.data()
+    });
+  });
+
+  return list;
+};
+
+window.addMitarbeiter = async function (vor, nach, tel, geh) {
+
+  if (!vor || !nach) return;
+
+  await addDoc(collection(db, "mitarbeiter"), {
+    vorname: vor,
+    nachname: nach,
+    telefon: tel,
+    gehalt: geh
+  });
+
+  location.reload();
+};
+
+window.deleteMitarbeiter = async function (id) {
+  await deleteDoc(doc(db, "mitarbeiter", id));
+  location.reload();
+};
 
 /* ===================================================== */
-/* ================= ABMELDUNG UI ====================== */
+/* ===================== MODAL UI ====================== */
 /* ===================================================== */
 
-function openAbmModal(){
-    document.getElementById("abmModal").classList.add("active");
-}
+window.openAbmModal = function () {
+  document.getElementById("abmModal")?.classList.add("active");
+};
 
-function closeAbmModal(){
-    document.getElementById("abmModal").classList.remove("active");
-}
+window.closeAbmModal = function () {
+  document.getElementById("abmModal")?.classList.remove("active");
+};
 
-function submitAbmeldungUI(){
+/* ===================================================== */
+/* ===================== INIT ========================== */
+/* ===================================================== */
 
-    const von = document.getElementById("abmVon").value;
-    const bis = document.getElementById("abmBis").value;
-    const grund = document.getElementById("abmGrund").value;
+document.addEventListener("DOMContentLoaded", async () => {
 
-    if(!von || !bis || !grund){
-        alert("Bitte alles ausfüllen.");
-        return;
+  if (!auth) return;
+
+  onAuthStateChanged(auth, async user => {
+
+    if (!user) return;
+
+    // Welcome Text
+    const userData = await getCurrentUserData();
+    const welcome = document.getElementById("welcomeUser");
+
+    if (welcome) {
+      welcome.innerText = "Eingeloggt als: " + userData.name;
     }
 
-    submitAbmeldung(von, bis, grund);
+    // Admin Panel anzeigen
+    const adminPanel = document.getElementById("adminPanel");
 
-    closeAbmModal();
+    if (adminPanel) {
+      if (userData.role === "Management" || userData.role === "Cheffe") {
+        adminPanel.style.display = "flex";
+      }
+    }
 
-    // Counter aktualisieren
+    // Abmeldungen Counter
     const counter = document.getElementById("abmCounter");
-    if(counter){
-        counter.innerText = getOffeneAbmeldungenCount() + " offen";
+    if (counter) {
+      const count = await window.getOffeneAbmeldungenCount();
+      counter.innerText = count + " offen";
     }
 
-    // Felder leeren
-    document.getElementById("abmVon").value = "";
-    document.getElementById("abmBis").value = "";
-    document.getElementById("abmGrund").value = "";
-}
+  });
 
-/* ===================================================== */
-/* ============== MEINE ABMELDUNGEN ==================== */
-/* ===================================================== */
-
-function renderMeineAbmeldungen(){
-
-    const container = document.getElementById("meineAbmeldungenList");
-    if(!container) return;
-
-    container.innerHTML = "";
-
-    const user = sessionStorage.getItem("loggedInUser");
-    const list = getAbmeldungen()
-        .filter(a => a.user === user);
-
-    if(list.length === 0){
-        container.innerHTML = "<p style='opacity:0.6'>Keine Abmeldungen vorhanden.</p>";
-        return;
-    }
-
-    list.forEach(a => {
-
-        let color = "#aaa";
-
-        if(a.status === "genehmigt") color = "#4CAF50";
-        if(a.status === "abgelehnt") color = "#ff4d4d";
-        if(a.status === "offen") color = "#faac15";
-
-        const row = document.createElement("div");
-        row.style.marginBottom = "8px";
-
-        row.innerHTML = `
-            <div style="display:flex;justify-content:space-between;">
-                <span>${a.von} - ${a.bis}</span>
-                <span style="color:${color};font-weight:bold;">
-                    ${a.status.toUpperCase()}
-                </span>
-            </div>
-        `;
-
-        container.appendChild(row);
-    });
-}
+});
