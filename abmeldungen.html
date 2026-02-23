@@ -2,48 +2,36 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>Abmeldungen - Burgershot</title>
+    <title>Abmeldungen</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
 <header>
-    <div class="header-left"><a href="index.html" class="brand-link">← Zurück zum Dashboard</a></div>
-    <div class="header-right">
-        <button class="add-btn" onclick="openModal()">+ Neue Abmeldung</button>
-    </div>
+    <a href="index.html" class="brand-link">← Zurück</a>
+    <button class="add-btn" onclick="document.getElementById('modal').style.display='flex'">+ Neue Abmeldung</button>
 </header>
 
 <section class="dashboard">
-    <div class="panel full-width" style="display: block; height: auto;">
-        <div class="panel-header">
-            <span>📅 Aktuelle Abmeldungen</span>
+    <div class="panel full-width">
+        <div class="table-head">
+            <span>Mitarbeiter</span>
+            <span>Zeitraum</span>
+            <span>Grund</span>
+            <span style="text-align:right;">Aktion</span>
         </div>
-        
-        <div class="table-container">
-            <div class="table-head">
-                <span>Mitarbeiter</span>
-                <span>Zeitraum</span>
-                <span>Grund</span>
-                <span style="text-align: right;">Aktion</span>
-            </div>
-
-            <div id="absenceList"></div>
-        </div>
+        <div id="absenceList"></div>
     </div>
 </section>
 
-<div class="modal-backdrop" id="absenceModal" style="display:none;">
+<div class="modal-backdrop" id="modal" style="display:none;">
     <div class="modal">
-        <h3>Neue Abmeldung</h3>
-        <div class="input-group">
-            <input type="text" id="inName" placeholder="Dein Name">
-            <input type="text" id="inTime" placeholder="Zeitraum (z.B. 25.02. - 01.03.)">
-            <textarea id="inReason" placeholder="Grund der Abwesenheit (optional)"></textarea>
-        </div>
-        <div class="modal-actions">
-            <button class="add-btn" onclick="addEntry()" style="flex:1;">Eintragen</button>
-            <button class="logout-btn" onclick="closeModal()" style="flex:1;">Abbrechen</button>
+        <h3 style="margin-bottom:15px; color:var(--accent);">Neue Abmeldung</h3>
+        <input type="text" id="inName" class="input-field" placeholder="Dein Name" style="width:100%; margin-bottom:10px;">
+        <input type="text" id="inTime" class="input-field" placeholder="Zeitraum (z.B. 24.02.-01.03.)" style="width:100%; margin-bottom:10px;">
+        <textarea id="inReason" class="input-field" placeholder="Grund" style="width:100%; height:80px; margin-bottom:15px;"></textarea>
+        <div style="display:flex; gap:10px;">
+            <button class="add-btn" onclick="addEntry()" style="flex:1;">Speichern</button>
+            <button class="add-btn" style="background:#444; color:white; flex:1;" onclick="document.getElementById('modal').style.display='none'">Abbrechen</button>
         </div>
     </div>
 </div>
@@ -51,64 +39,38 @@
 <script src="script.js"></script>
 <script>
     requireLogin();
-
-    const openModal = () => document.getElementById("absenceModal").style.display = "flex";
-    const closeModal = () => document.getElementById("absenceModal").style.display = "none";
-
-    function addEntry() {
-        const name = document.getElementById("inName").value.trim();
-        const time = document.getElementById("inTime").value.trim();
-        const reason = document.getElementById("inReason").value.trim() || "Kein Grund";
-
-        if (!name || !time) return alert("Bitte Name und Zeitraum ausfüllen!");
-
-        const list = getAbsences();
-        list.push({ id: Date.now(), name, time, reason });
-        saveAbsences(list);
-
-        // Inputs leeren & schießen
-        document.getElementById("inName").value = "";
-        document.getElementById("inTime").value = "";
-        document.getElementById("inReason").value = "";
-        closeModal();
-        renderList();
-    }
-
-    function deleteEntry(id) {
-        if(confirm("Eintrag wirklich löschen?")) {
-            const list = getAbsences().filter(item => item.id !== id);
-            saveAbsences(list);
-            renderList();
-        }
-    }
-
-    function renderList() {
-        const container = document.getElementById("absenceList");
-        const data = getAbsences();
-        container.innerHTML = "";
-
-        if (data.length === 0) {
-            container.innerHTML = "<p class='empty-msg'>Aktuell liegen keine Abmeldungen vor.</p>";
-            return;
-        }
-
-        // Wir gehen die Liste rückwärts durch (neueste oben)
-        data.reverse().forEach(item => {
+    function render() {
+        const list = document.getElementById("absenceList");
+        list.innerHTML = "";
+        getAbsences().reverse().forEach(item => {
             const row = document.createElement("div");
             row.className = "table-row";
             row.innerHTML = `
                 <span class="bold">${item.name}</span>
                 <span>${item.time}</span>
                 <span class="reason-text">${item.reason}</span>
-                <div style="text-align:right;">
-                    <button class="delete-btn-small" onclick="deleteEntry(${item.id})">🗑️</button>
-                </div>
+                <div style="text-align:right;"><button class="delete-btn-small" onclick="del(${item.id})">🗑️</button></div>
             `;
-            container.appendChild(row);
+            list.appendChild(row);
         });
     }
-
-    window.onload = renderList;
+    function addEntry() {
+        const name = document.getElementById("inName").value;
+        const time = document.getElementById("inTime").value;
+        const reason = document.getElementById("inReason").value;
+        if(!name || !time) return alert("Name/Zeitraum fehlt!");
+        const data = getAbsences();
+        data.push({ id: Date.now(), name, time, reason });
+        saveAbsences(data);
+        location.reload();
+    }
+    function del(id) {
+        if(confirm("Löschen?")) {
+            saveAbsences(getAbsences().filter(i => i.id !== id));
+            render();
+        }
+    }
+    window.onload = render;
 </script>
 </body>
 </html>
