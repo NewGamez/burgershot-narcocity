@@ -6,14 +6,14 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header><a href="index.html" class="brand-link">← Zurück</a></header>
+<header><a href="index.html" class="brand-link">← Zurück zum Dashboard</a></header>
 
 <section class="dashboard">
     <div class="panel full-width">
-        <h3 style="margin-bottom:20px;">👤 Personalverwaltung</h3>
+        <h3 style="margin-bottom:20px; color:gold;">👤 Personalverwaltung</h3>
         
         <div style="display:flex; gap:10px; margin-bottom:30px; background:rgba(255,255,255,0.05); padding:15px; border-radius:10px;">
-            <input type="text" id="newName" class="input-field" placeholder="Name..." style="flex:2;">
+            <input type="text" id="newName" class="input-field" placeholder="Name des neuen Mitarbeiters" style="flex:2;">
             <select id="newRole" class="input-field" style="flex:1;">
                 <option value="Mitarbeiter_in">Mitarbeiter/in</option>
                 <option value="Management">Management</option>
@@ -34,6 +34,8 @@
 <script src="script.js"></script>
 <script>
     requireLogin();
+    if(!isAdmin()) window.location.href = "index.html";
+
     function renderUsers() {
         const list = document.getElementById("userList");
         list.innerHTML = "";
@@ -43,25 +45,30 @@
             row.className = "table-row mgmt-grid";
             row.innerHTML = `
                 <span class="bold">${name}</span>
-                <span style="color:var(--accent);">${accs[name].role}</span>
+                <span style="color:var(--accent); font-size:0.9rem;">${accs[name].role}</span>
                 <div style="text-align:right;">
-                    <button class="add-btn" style="background:#ff4646; color:white; padding:5px 10px;" onclick="delUser('${name}')">Kündigen</button>
+                    <button class="add-btn" style="background:#ff4646; color:white; padding:5px 12px; font-size:0.8rem;" onclick="delUser('${name}')">Kündigen</button>
                 </div>
             `;
             list.appendChild(row);
         });
     }
     function addUser() {
-        const name = document.getElementById("newName").value;
+        const name = document.getElementById("newName").value.trim();
         const role = document.getElementById("newRole").value;
-        if(!name) return alert("Name fehlt!");
+        if(!name) return alert("Bitte einen Namen eingeben!");
+        
         const accs = getAccounts();
+        if(accs[name]) return alert("Dieser Name existiert bereits!");
+        
         accs[name] = { password: "0000", role: role, isFirstLogin: true };
         saveAccounts(accs);
+        document.getElementById("newName").value = "";
         renderUsers();
     }
     function delUser(name) {
-        if(confirm(name + " kündigen?")) {
+        if(name === "Admin") return alert("Der Haupt-Admin kann nicht gelöscht werden!");
+        if(confirm(name + " wirklich kündigen?")) {
             const accs = getAccounts();
             delete accs[name];
             saveAccounts(accs);
