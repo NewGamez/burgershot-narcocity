@@ -138,6 +138,13 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
+    // HERO STATS
+document.getElementById("statUsers").innerText =
+    Object.keys(getAccounts()).length;
+
+document.getElementById("statOffen").innerText =
+    getOffeneAbmeldungenCount();
+
     document.getElementById("welcomeUser").innerText =
         "Eingeloggt als: " + user;
 
