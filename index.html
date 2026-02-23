@@ -104,6 +104,8 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
+    renderMeineAbmeldungen();
+
     document.getElementById("welcomeUser").innerText = "Eingeloggt als: " + user;
 
     if (isAdmin()) {
