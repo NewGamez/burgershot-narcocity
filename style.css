@@ -192,3 +192,102 @@ button:hover {
         grid-template-columns: 1fr;
     }
 }
+
+/* ============================= */
+/*      MANAGEMENT DESIGN        */
+/* ============================= */
+
+.management-wrapper {
+    padding: 30px;
+}
+
+.management-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.management-header h2 {
+    color: var(--primary);
+}
+
+.add-user-bar {
+    display: flex;
+    gap: 10px;
+}
+
+.add-user-bar input,
+.add-user-bar select {
+    padding: 8px 12px;
+    border-radius: 10px;
+    border: 1px solid var(--glass-border);
+    background: rgba(0,0,0,0.4);
+    color: white;
+}
+
+.account-table {
+    margin-top: 10px;
+}
+
+.table-head {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--glass-border);
+    font-weight: bold;
+    opacity: 0.8;
+}
+
+.table-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    align-items: center;
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.role-badge {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    width: fit-content;
+}
+
+/* Rollenfarben */
+.role-badge.mitarbeiter {
+    background: rgba(255,255,255,0.1);
+}
+
+.role-badge.management {
+    background: rgba(250, 172, 21, 0.25);
+    color: var(--primary);
+}
+
+.role-badge.cheffe {
+    background: rgba(250, 172, 21, 0.4);
+    color: var(--primary);
+}
+
+.action-cell {
+    text-align: right;
+}
+
+.delete-btn {
+    background: #b33;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    color: white;
+}
+
+.delete-btn:hover {
+    background: #d44;
+}
+
+.owner-label {
+    color: var(--primary);
+    font-weight: bold;
+}
