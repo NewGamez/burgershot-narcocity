@@ -8,7 +8,9 @@
 <body>
 
 <header>
-    <div class="header-left"><a href="index.html" class="brand-link">🍔 Burgershot Intern</a></div>
+    <div class="header-left">
+        <a href="index.html" class="brand-link">🍔 Burgershot Intern</a>
+    </div>
     <div class="header-right">
         <span id="welcomeUser"></span>
         <button class="logout-btn" onclick="logout()">Logout</button>
@@ -28,8 +30,10 @@
         </div>
 
         <div class="panel highlight" onclick="location.href='announcements.html'">
-            <div class="panel-header"><span>📢 Announcements</span></div>
-            <p style="font-size: 0.9rem; color: #bbb; text-align: left;">Willkommen im neuen Intranetsystem!</p>
+            <div class="panel-header"><span>📢 News & Infos</span></div>
+            <div class="list-item">
+                <p style="font-size: 0.85rem; color: #ccc;">Das neue Intranet-System ist ab heute für alle Mitarbeiter aktiv.</p>
+            </div>
         </div>
 
         <div class="panel scrollable" onclick="location.href='bewerber.html'">
@@ -41,98 +45,90 @@
                 </div>
         </div>
 
-        <div class="panel" onclick="location.href='einkaeufe.html'">
-            <span style="font-size: 1.5rem; margin-bottom: 5px;">🛒</span>
-            <span>Einkäufe / Lager</span>
+        <div class="panel center-content" onclick="location.href='service.html'">
+            <span class="icon">📋</span><span>Service</span>
         </div>
-
-        <div class="panel" onclick="location.href='kleidung.html'">
-            <span style="font-size: 1.5rem; margin-bottom: 5px;">👔</span>
-            <span>Kleiderordnung</span>
-        </div>
-
-        <div class="panel" onclick="location.href='musik.html'">
-            <span style="font-size: 1.5rem; margin-bottom: 5px;">🎵</span>
-            <span>Musik-Playlist</span>
-        </div>
-
-        <div class="panel" onclick="location.href='service.html'">📋 Service-Übersicht</div>
         
-        <div class="panel" onclick="location.href='orders.html'">🍔 Bestellungen</div>
+        <div class="panel center-content" onclick="location.href='orders.html'">
+            <span class="icon">🍔</span><span>Orders</span>
+        </div>
+
+        <div class="panel center-content" onclick="location.href='einkaeufe.html'">
+            <span class="icon">🛒</span><span>Lager</span>
+        </div>
+
+        <div class="panel center-content" onclick="location.href='musik.html'">
+            <span class="icon">🎵</span><span>Musik</span>
+        </div>
+
+        <div class="panel center-content" onclick="location.href='kleidung.html'">
+            <span class="icon">👔</span><span>Kleidung</span>
+        </div>
 
         <div class="panel full-width" id="adminPanel" style="display:none;" onclick="location.href='management.html'">
-            <span style="font-size: 1.4rem; color: #faac15; font-weight: bold;">⭐ Management Center</span>
-            <p style="color: #888; font-size: 0.8rem; margin-top: 5px;">Personalverwaltung & Ränge</p>
+            <span class="mgmt-title">⭐ Management Center</span>
+            <p class="mgmt-sub">Personalverwaltung & Systemsteuerung</p>
         </div>
+
     </div>
 </section>
 
 <div class="modal-backdrop" id="firstLoginModal" style="display:none;">
     <div class="modal">
-        <h2>🔒 Passwort ändern</h2>
-        <p>Bitte lege eine eigene 4-stellige PIN fest.</p>
-        <input type="password" id="newPinInput" maxlength="4" style="margin: 20px 0; padding: 10px; text-align: center; font-size: 20px; width: 100px; border-radius: 8px; border: 1px solid #faac15; background: #000; color: #fff;">
-        <br>
-        <button class="add-btn" style="height: 40px; width: 200px;" onclick="saveNewPassword()">Speichern</button>
+        <h3>🔒 Sicherheitshinweis</h3>
+        <p>Bitte ändere deine Standard-PIN für deinen Account.</p>
+        <input type="password" id="newPinInput" maxlength="4" placeholder="NEUE PIN">
+        <div class="modal-actions">
+            <button class="add-btn" onclick="saveNewPassword()">PIN Speichern</button>
+        </div>
     </div>
 </div>
 
 <script src="script.js"></script>
 <script>
+    // Initialisierung beim Laden
     requireLogin();
     setHeaderUser();
 
-    // Management Panel einblenden
+    // Admin-Panel Check
     if (isAdmin()) {
-        document.getElementById("adminPanel").style.display = "flex";
+        const adminPanel = document.getElementById("adminPanel");
+        if (adminPanel) adminPanel.style.display = "flex";
     }
 
-    // --- VORSCHAU LADEN ---
+    // Vorschau-Daten rendern
     function renderPreviews() {
-        // 1. Abmeldungen Vorschau
+        // Abmeldungen
         const absences = getAbsences();
         const absList = document.getElementById("absencePreview");
-        document.getElementById("absCount").innerText = absences.length + " aktiv";
-        absList.innerHTML = absences.length ? "" : "<p style='color: #444;'>Keine Einträge</p>";
+        document.getElementById("absCount").innerText = `${absences.length} aktiv`;
+        
+        absList.innerHTML = absences.length ? "" : "<p class='empty-msg'>Keine Abmeldungen</p>";
         absences.slice(-3).reverse().forEach(a => {
-            absList.innerHTML += `<div class="list-item"><span>${a.name}</span><span class="date">${a.time}</span></div>`;
+            absList.innerHTML += `
+                <div class="list-item">
+                    <span class="item-name">${a.name}</span>
+                    <span class="item-date">${a.time}</span>
+                </div>`;
         });
 
-        // 2. Bewerber Vorschau
+        // Bewerber (Statisch oder aus Speicher)
         const applicants = getApplicants();
         const appList = document.getElementById("applicantPreview");
-        document.getElementById("appCount").innerText = applicants.length + " neu";
-        appList.innerHTML = applicants.length ? "" : "<p style='color: #444;'>Keine Bewerber</p>";
-        applicants.slice(-3).reverse().forEach(a => {
-            appList.innerHTML += `<div class="list-item"><span>${a.name}</span><span class="date">OFFEN</span></div>`;
-        });
+        document.getElementById("appCount").innerText = `${applicants.length} neu`;
+        appList.innerHTML = applicants.length ? "" : "<p class='empty-msg'>Keine Bewerbungen</p>";
     }
 
-    function checkPasswordStatus() {
-        const username = sessionStorage.getItem("loggedInUser");
-        const accounts = getAccounts();
-        if (accounts[username] && accounts[username].isFirstLogin) {
+    // Check Passwort Status
+    const checkPassword = () => {
+        const user = getAccounts()[sessionStorage.getItem("loggedInUser")];
+        if (user && user.isFirstLogin) {
             document.getElementById("firstLoginModal").style.display = "flex";
         }
-    }
+    };
 
-    function saveNewPassword() {
-        const pin = document.getElementById("newPinInput").value;
-        const user = sessionStorage.getItem("loggedInUser");
-        const accounts = getAccounts();
-        if (pin.length === 4 && !isNaN(pin)) {
-            accounts[user].password = pin;
-            accounts[user].isFirstLogin = false;
-            saveAccounts(accounts);
-            document.getElementById("firstLoginModal").style.display = "none";
-        } else {
-            alert("Bitte 4 Zahlen eingeben!");
-        }
-    }
-
-    // Beim Start alles laden
-    window.onload = function() {
-        checkPasswordStatus();
+    window.onload = () => {
+        checkPassword();
         renderPreviews();
     };
 </script>
