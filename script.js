@@ -1,5 +1,5 @@
 /* ============================= */
-/*         ACCOUNT SYSTEM        */
+/*        ACCOUNT SYSTEM         */
 /* ============================= */
 
 const getAccounts = () => {
@@ -18,12 +18,11 @@ const getAccounts = () => {
     return defaultAccounts;
 };
 
-const saveAccounts = (accs) => {
+const saveAccounts = (accs) =>
     localStorage.setItem("bs_accounts", JSON.stringify(accs));
-};
 
 /* ============================= */
-/*         AUTH LOGIC            */
+/*        AUTH SYSTEM            */
 /* ============================= */
 
 const requireLogin = () => {
@@ -40,28 +39,13 @@ const logout = () => {
 const isAdmin = () => {
     const username = sessionStorage.getItem("loggedInUser");
     const accs = getAccounts();
-    const user = accs[username];
-    return user && (user.role === "Management" || user.role === "Cheffe");
+    return accs[username] &&
+        (accs[username].role === "Management" ||
+         accs[username].role === "Cheffe");
 };
 
 /* ============================= */
-/*        COUNTER SYSTEM         */
-/* ============================= */
-
-const getAbmeldungen = () =>
-    JSON.parse(localStorage.getItem("bs_abmeldungen")) || [];
-
-const getBewerber = () =>
-    JSON.parse(localStorage.getItem("bs_bewerber")) || [];
-
-const getAktiveAbmeldungenCount = () =>
-    getAbmeldungen().filter(a => a.status === "aktiv").length;
-
-const getNeueBewerberCount = () =>
-    getBewerber().filter(b => b.status === "neu").length;
-
-/* ============================= */
-/*       ABMELDUNGEN SYSTEM      */
+/*        ABMELDUNGEN            */
 /* ============================= */
 
 const getAbmeldungen = () =>
@@ -70,24 +54,6 @@ const getAbmeldungen = () =>
 const saveAbmeldungen = (data) =>
     localStorage.setItem("bs_abmeldungen", JSON.stringify(data));
 
-function openAbmeldungModal() {
-    document.getElementById("abmModal").classList.add("active");
-}
-
-function closeAbmModal() {
-    document.getElementById("abmModal").classList.remove("active");
-}
-
-function updateAbmCounter() {
-
-    const list = getAbmeldungen();
-
-    const activeCount = list.filter(a => a.status === "genehmigt").length;
-
-    const badge = document.getElementById("abmCounter");
-    if(badge) badge.innerText = activeCount + " aktiv";
-}
-
 function submitAbmeldung() {
 
     const von = document.getElementById("abmVon").value;
@@ -95,12 +61,13 @@ function submitAbmeldung() {
     const grund = document.getElementById("abmGrund").value;
     const user = sessionStorage.getItem("loggedInUser");
 
-    if(!von || !bis || !grund) {
+    if (!von || !bis || !grund) {
         alert("Bitte alles ausfüllen.");
         return;
     }
 
     const list = getAbmeldungen();
+
     list.push({
         user,
         von,
@@ -112,4 +79,23 @@ function submitAbmeldung() {
     saveAbmeldungen(list);
     closeAbmModal();
     updateAbmCounter();
+}
+
+function updateAbmCounter() {
+
+    const list = getAbmeldungen();
+
+    const activeCount =
+        list.filter(a => a.status === "genehmigt").length;
+
+    const badge = document.getElementById("abmCounter");
+    if (badge) badge.innerText = activeCount + " aktiv";
+}
+
+function openAbmeldungModal() {
+    document.getElementById("abmModal").classList.add("active");
+}
+
+function closeAbmModal() {
+    document.getElementById("abmModal").classList.remove("active");
 }
