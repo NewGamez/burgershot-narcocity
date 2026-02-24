@@ -424,3 +424,39 @@ select:focus {
 .delete-btn:hover {
     background: rgba(255, 60, 60, 0.2);
 }
+
+/* OFFEN (Grau) */
+.status-badge-offen {
+    color: #aaa;
+    border: 1px solid #666;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* GENEHMIGT (Grün) */
+.status-badge-genehmigt {
+    color: #2ecc71;
+    border: 1px solid #2ecc71;
+    background: rgba(46, 204, 113, 0.15);
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* ABGELEHNT (Rot) */
+.status-badge-abgelehnt {
+    color: #e74c3c;
+    border: 1px solid #e74c3c;
+    background: rgba(231, 76, 60, 0.15);
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
