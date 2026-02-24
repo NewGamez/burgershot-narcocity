@@ -647,3 +647,23 @@ textarea::placeholder {
     text-align: center;
     line-height: 1.4;
 }
+
+/* Flexibleres Management-Grid */
+.grid-row {
+    display: grid;
+    gap: 10px;
+    align-items: center;
+    padding: 12px 15px;
+    border-bottom: 1px solid var(--glass-border);
+    transition: background 0.2s;
+}
+
+.grid-row:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+/* Falls die Buttons zu groß werden */
+.action-cell button {
+    padding: 4px 8px;
+    font-size: 0.8rem;
+}
