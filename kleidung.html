@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Kleiderordnung | Burgershot</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .dresscode-container { max-width: 1000px; margin: 0 auto; padding: 20px; }
+        
+        /* Admin-Bereich zum Hinzufügen */
+        .admin-only { 
+            display: none; 
+            background: rgba(250, 172, 21, 0.1); 
+            padding: 20px; 
+            border-radius: 15px; 
+            border: 1px dashed var(--primary);
+            margin-bottom: 40px;
+        }
+
+        .outfit-card {
+            display: flex; gap: 30px; align-items: center;
+            margin-bottom: 40px; background: rgba(255, 255, 255, 0.05);
+            padding: 25px; border-radius: 15px; border: 1px solid var(--glass-border);
+            position: relative;
+        }
+
+        .outfit-info { flex: 1; }
+        .outfit-image { flex: 1; text-align: center; }
+        .outfit-image img { 
+            max-width: 100%; max-height: 400px; border-radius: 10px; 
+            border: 2px solid var(--primary); 
+        }
+
+        .delete-outfit {
+            position: absolute; top: 10px; right: 10px;
+            background: #e74c3c; color: white; border: none;
+            padding: 5px 10px; border-radius: 5px; cursor: pointer; display: none;
+        }
+
+        input, textarea {
+            width: 100%; padding: 10px; margin-bottom: 10px;
+            background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border);
+            color: white; border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="index.html" class="brand-link">🍔 Burgershot Intern</a>
+    <button onclick="location.href='index.html'" style="background: #222;">🏠 Dashboard</button>
+</header>
+
+<section class="dresscode-container">
+    <h1 style="text-align: center; margin-bottom: 10px;">👔 Kleiderordnung</h1>
+    <p style="text-align: center; opacity: 0.6; margin-bottom: 40px;">Offizielle Outfits für den Dienst</p>
+
+    <div id="adminOutfitPanel" class="admin-only">
+        <h3>➕ Neues Outfit hinzufügen</h3>
+        <input type="text" id="outfitRole" placeholder="Rollen-Name (z.B. Service)">
+        <textarea id="outfitDesc" placeholder="Beschreibung & Regeln (Stichpunkte mit Komma trennen)"></textarea>
+        <label style="display: block; margin-bottom: 5px; font-size: 0.8rem;">Outfit-Bild hochladen:</label>
+        <input type="file" id="outfitImgFile" accept="image/*">
+        <button onclick="addOutfit()" style="width: 100%; margin-top: 10px;">Outfit Speichern</button>
+    </div>
+
+    <div id="outfitList">
+        </div>
+</section>
+
+<script src="script.js"></script>
+<script>
+    requireLogin();
+
+    // Outfits aus Speicher laden oder Standard setzen
+    let outfits = JSON.parse(localStorage.getItem("bs_outfits")) || [
+        {
+            id: 1,
+            role: "Management",
+            desc: "Weißes Hemd, Schwarze Anzughose, Gepflegte Schuhe",
+            img: "https://via.placeholder.com/400x500?text=Beispiel+Bild"
+        }
+    ];
+
+    function renderOutfits() {
+        const list = document.getElementById("outfitList");
+        list.innerHTML = "";
+        const admin = isAdmin();
+
+        // Admin-Panel anzeigen, wenn berechtigt
+        if(admin) document.getElementById("adminOutfitPanel").style.display = "block";
+
+        outfits.forEach((o, index) => {
+            const div = document.createElement("div");
+            div.className = "outfit-card";
+            
+            // Beschreibung in Liste umwandeln
+            const items = o.desc.split(',').map(item => `<li>${item.trim()}</li>`).join('');
+
+            div.innerHTML = `
+                ${admin ? `<button class="delete-outfit" style="display:block" onclick="deleteOutfit(${index})">Löschen</button>` : ''}
+                <div class="outfit-info">
+                    <h2>${o.role}</h2>
+                    <ul>${items}</ul>
+                </div>
+                <div class="outfit-image">
+                    <img src="${o.img}" alt="${o.role}">
+                </div>
+            `;
+            list.appendChild(div);
+        });
+    }
+
+    function addOutfit() {
+        const role = document.getElementById("outfitRole").value;
+        const desc = document.getElementById("outfitDesc").value;
+        const fileInput = document.getElementById("outfitImgFile");
+        
+        if(!role || !desc || !fileInput.files[0]) return alert("Bitte alles ausfüllen!");
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const base64Image = e.target.result; // Das Bild als Code
+            
+            outfits.push({
+                id: Date.now(),
+                role: role,
+                desc: desc,
+                img: base64Image
+            });
+
+            localStorage.setItem("bs_outfits", JSON.stringify(outfits));
+            renderOutfits();
+            
+            // Felder leeren
+            document.getElementById("outfitRole").value = "";
+            document.getElementById("outfitDesc").value = "";
+            fileInput.value = "";
+        };
+        reader.readAsDataURL(fileInput.files[0]);
+    }
+
+    function deleteOutfit(index) {
+        if(!confirm("Outfit wirklich entfernen?")) return;
+        outfits.splice(index, 1);
+        localStorage.setItem("bs_outfits", JSON.stringify(outfits));
+        renderOutfits();
+    }
+
+    renderOutfits();
+</script>
+</body>
+</html>
