@@ -1,275 +1,280 @@
-/* ================= CORE FUNCTIONS & DATA ==================== */
+
+/* ================= ACCOUNT & AUTH ==================== */
 const getAccounts = () => JSON.parse(localStorage.getItem("bs_accounts")) || {};
 const saveAccounts = accs => localStorage.setItem("bs_accounts", JSON.stringify(accs));
 
-const getAbmeldungen = () => JSON.parse(localStorage.getItem("bs_abmeldungen")) || [];
-const saveAbmeldungen = data => localStorage.setItem("bs_abmeldungen", JSON.stringify(data));
-
-const getMitarbeiter = () => {
-    const data = localStorage.getItem("bs_mitarbeiter");
-    return data ? JSON.parse(data) : [];
-};
-const saveMitarbeiter = data => localStorage.setItem("bs_mitarbeiter", JSON.stringify(data));
-
-const requireLogin = () => { if (!sessionStorage.getItem("loggedInUser")) window.location.href = "login.html"; };
-const logout = () => { sessionStorage.clear(); window.location.href = "login.html"; };
-
-// Rang-Priorität für die Account-Sortierung
-const getRankPriority = (role) => {
-    const ränge = { "Cheffe": 1, "Management": 2, "Mitarbeiter": 3 };
-    return ränge[role] || 4;
+const requireLogin = () => {
+    if (!sessionStorage.getItem("loggedInUser")) window.location.href = "login.html";
 };
 
-/* ================= TABS & UI NAVIGATION ==================== */
-function showTab(tabId, btn) {
-    document.querySelectorAll(".mgmt-tab").forEach(t => t.classList.remove("active"));
-    const targetTab = document.getElementById(tabId);
-    if(targetTab) targetTab.classList.add("active");
-    
-    document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
-    if(btn) btn.classList.add("active");
+const logout = () => {
+    sessionStorage.clear();
+    window.location.href = "login.html";
+};
 
-    if(tabId === 'tab-accounts') renderUsers();
-    if(tabId === 'tab-mitarbeiter') renderMitarbeiter();
-    if(tabId === 'tab-abmeldungen') renderAbmeldungen();
-    if(tabId === 'tab-bewerber') renderBewerbungen();
-}
-
-function closeModal(id) { 
-    const modal = document.getElementById(id);
-    if(modal) modal.classList.remove("active"); 
-}
-
-/* ================= DASHBOARD STATS ==================== */
-function updateDashboardStats() {
+const isAdmin = () => {
+    const user = sessionStorage.getItem("loggedInUser");
     const accs = getAccounts();
-    const abms = getAbmeldungen();
-    const bews = JSON.parse(localStorage.getItem("bs_bewerbungen") || "[]");
+    return accs[user] && (accs[user].role === "Management" || accs[user].role === "Cheffe");
+};
 
-    const offeneAbm = abms.filter(a => a.status === "offen").length;
-    const offeneBew = bews.filter(b => b.status === "offen").length;
+/* PRÜFUNG BEIM LOGIN */
+function checkFirstLogin() {
+    const username = sessionStorage.getItem("loggedInUser");
+    const accs = getAccounts();
+    const userAcc = accs[username];
 
-    if(document.getElementById("accCount")) document.getElementById("accCount").innerText = Object.keys(accs).length;
-    if(document.getElementById("heroAbmCount")) document.getElementById("heroAbmCount").innerText = offeneAbm;
-    if(document.getElementById("abmCounter")) document.getElementById("abmCounter").innerText = offeneAbm + " offen";
-    if(document.getElementById("bewerberCounter")) document.getElementById("bewerberCounter").innerText = offeneBew + " neu";
+    if (userAcc && userAcc.isFirstLogin) {
+        // Zeige das Modal, falls es der erste Login ist
+        const modal = document.getElementById("firstLoginModal");
+        if (modal) modal.style.display = "flex";
+    }
 }
 
-/* ================= MITARBEITERLISTE (IC - FINANZEN) ==================== */
-function uiAddMitarbeiter() {
-    const nameInput = document.getElementById("maName");
-    const telInput = document.getElementById("maTel");
-    const gehaltInput = document.getElementById("maGehalt");
+/* PASSWORT ÄNDERN FUNKTION */
+function changeFirstPassword() {
+    const newPass = document.getElementById("newInitialPassword").value.trim();
+    const confirmPass = document.getElementById("confirmInitialPassword").value.trim();
+    const username = sessionStorage.getItem("loggedInUser");
 
-    if(!nameInput || !nameInput.value.trim()) {
-        alert("Bitte einen Namen eingeben!");
+    if (newPass.length < 4) {
+        alert("Das Passwort muss mindestens 4 Zeichen lang sein!");
         return;
     }
 
-    let maList = getMitarbeiter();
-    
-    // Sicherstellen, dass keine korrupten Daten gepusht werden
-    maList.push({
-        id: Date.now(),
-        name: nameInput.value.trim(),
-        tel: telInput ? telInput.value.trim() : "-",
-        gehalt: gehaltInput ? parseInt(gehaltInput.value) : 10000
-    });
+    if (newPass !== confirmPass) {
+        alert("Die Passwörter stimmen nicht überein!");
+        return;
+    }
 
-    saveMitarbeiter(maList);
-    
-    // Felder leeren
-    nameInput.value = "";
-    if(telInput) telInput.value = "";
-    if(gehaltInput) gehaltInput.value = "10000";
+    if (newPass === "0000") {
+        alert("Bitte wähle ein anderes Passwort als das Standard-Passwort!");
+        return;
+    }
 
-    renderMitarbeiter();
+    // Speichern im System
+    const accs = getAccounts();
+    accs[username].password = newPass;
+    accs[username].isFirstLogin = false; // Flag auf false setzen
+    saveAccounts(accs);
+
+    alert("Passwort erfolgreich geändert! Du kannst das System nun nutzen.");
+    document.getElementById("firstLoginModal").style.display = "none";
 }
 
-function renderMitarbeiter() {
-    const list = document.getElementById("mitarbeiterList");
-    if(!list) return;
-    list.innerHTML = "";
-
-    let ma = getMitarbeiter();
+function showTab(tabId) {
+    // Alle Tabs verstecken
+    document.querySelectorAll('.mgmt-tab').forEach(tab => {
+        tab.style.display = 'none';
+    });
     
-    // Sicherheits-Sortierung: Falls ein Name fehlt, wird er ignoriert, um den Fehler aus image_622b76 zu vermeiden
-    ma = ma.filter(m => m && m.name).sort((a,b) => a.name.localeCompare(b.name));
+    // Gewünschten Tab zeigen
+    document.getElementById(tabId).style.display = 'block';
 
-    ma.forEach(m => {
+    // Button-Styling anpassen
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    // Findet den Button, der die Funktion aufgerufen hat und markiert ihn
+    event.currentTarget.classList.add('active');
+}
+
+function addUser() {
+    const name = document.getElementById("newName").value.trim();
+    const role = document.getElementById("newRole").value;
+    const accs = getAccounts();
+    
+    if (!name) return alert("Bitte einen Namen eingeben!");
+    if (accs[name]) return alert("Dieser Account existiert bereits!");
+
+    // Account erstellen
+    accs[name] = { 
+        password: "0000", 
+        role: role, 
+        isFirstLogin: true 
+    };
+    
+    saveAccounts(accs);
+    
+    // UI Update: Falls wir auf der Management-Seite sind, Liste neu zeichnen
+    if (typeof renderUsers === "function") {
+        renderUsers();
+    }
+
+    // Felder leeren
+    document.getElementById("newName").value = "";
+    alert("Mitarbeiter " + name + " wurde angelegt. Standard-PW: 0000");
+}
+
+/* ANNOUNCEMENTS LOGIK */
+const getAnnouncements = () => JSON.parse(localStorage.getItem("bs_announcements")) || [
+    { id: 1, text: "/businessannounce BURGERSHOT – Wo Geschmack über den Dächern von Los Santos lebt\nSaftige Burger, kalte Drinks & die beste Aussicht der Stadt auf unserer Dachterrasse!\nOb Date, Feierabend oder einfach Hunger – wir servieren Good Vibes & Great Burgers!\nBurgerShot – Come hungry, leave happy!" }
+];
+const saveAnnouncements = (data) => localStorage.setItem("bs_announcements", JSON.stringify(data));
+
+function addAnnouncement() {
+    const text = document.getElementById("newAnnounceText").value.trim();
+    if (!text) return alert("Bitte Text eingeben!");
+
+    const list = getAnnouncements();
+    list.push({ id: Date.now(), text: text });
+    saveAnnouncements(list);
+    
+    document.getElementById("newAnnounceText").value = "";
+    renderAnnounceDetails(); // Liste aktualisieren
+}
+
+function deleteAnnouncement(id) {
+    if (!confirm("Diese Vorlage wirklich löschen?")) return;
+    const list = getAnnouncements().filter(a => a.id !== id);
+    saveAnnouncements(list);
+    renderAnnounceDetails();
+}
+
+function copyText(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        alert("Kopiert!");
+    });
+}
+
+function renderAnnounceDetails() {
+    const container = document.getElementById("announceGrid");
+    if (!container) return;
+    container.innerHTML = "";
+    
+    const list = getAnnouncements();
+    const admin = isAdmin();
+
+    list.forEach(a => {
         const div = document.createElement("div");
-        div.className = "grid-row";
-        // Header-Struktur laut deinem Bild: Name | Gehalt | Telefon | Aktion
-        div.style.gridTemplateColumns = "1.5fr 1.2fr 1.5fr 1fr";
+        div.className = "panel"; 
         
+        // Wir escapen den Text für den Button-Klick sauber
+        const cleanText = a.text.replace(/`/g, "\\`").replace(/\n/g, "\\n");
+
         div.innerHTML = `
-            <span><b>${m.name}</b></span>
-            <input type="number" class="table-input" value="${m.gehalt}" onchange="updateMAGehalt(${m.id}, this.value)">
-            <span>${m.tel}</span>
-            <div class="action-cell">
-                <button class="fire-btn" onclick="deleteMA(${m.id})">Kündigen</button>
+            <p style="font-size: 0.85rem; white-space: pre-line; margin-bottom: 15px; opacity: 0.9; line-height: 1.5;">${a.text}</p>
+            <div style="display: flex; gap: 8px; margin-top: auto;">
+                <button onclick="copyText(\`${cleanText}\`)" style="flex: 2; font-size: 0.75rem;">Text kopieren</button>
+                ${admin ? `<button onclick="deleteAnnouncement(${a.id})" style="background: rgba(231, 76, 60, 0.2); border: 1px solid #e74c3c; color: #e74c3c; flex: 1; font-size: 0.75rem;">Löschen</button>` : ''}
             </div>
         `;
-        list.appendChild(div);
+        container.appendChild(div);
     });
 }
 
-function updateMAGehalt(id, wert) {
-    let ma = getMitarbeiter();
-    const i = ma.findIndex(x => x.id === id);
-    if(i !== -1) {
-        ma[i].gehalt = parseInt(wert) || 0;
-        saveMitarbeiter(ma);
-    }
+// Funktion zum Öffnen des Panels vom Dashboard aus
+function openAnnouncePanel() {
+    document.getElementById('announceDetailsModal').style.display = 'flex';
+    renderAnnounceDetails();
 }
 
-function deleteMA(id) {
-    if(!confirm("Mitarbeiter wirklich kündigen?")) return;
-    const gefiltert = getMitarbeiter().filter(m => m.id !== id);
-    saveMitarbeiter(gefiltert);
-    renderMitarbeiter();
+/* ================= ABMELDUNGEN LOGIK ================= */
+const getAbmeldungen = () => JSON.parse(localStorage.getItem("bs_abmeldungen")) || [];
+const saveAbmeldungen = data => localStorage.setItem("bs_abmeldungen", JSON.stringify(data));
+
+function getOffeneAbmeldungenCount() {
+    return getAbmeldungen().filter(a => a.status === "offen").length;
 }
 
-/* ================= ACCOUNTS (MANAGEMENT-TAB) ==================== */
-function renderUsers() {
-    const list = document.getElementById("userList");
-    if(!list) return;
-    list.innerHTML = "";
-    const accs = getAccounts();
+// Stats auf dem Dashboard aktualisieren
+function updateDashboardStats() {
+    const accCount = Object.keys(getAccounts()).length;
+    const offeneCount = getOffeneAbmeldungenCount();
 
-    const sortedNames = Object.keys(accs).sort((a, b) => {
-        const prioA = getRankPriority(accs[a].role);
-        const prioB = getRankPriority(accs[b].role);
-        return prioA !== prioB ? prioA - prioB : a.localeCompare(b);
-    });
-
-    sortedNames.forEach(name => {
-        const userData = accs[name];
-        const div = document.createElement("div");
-        div.className = "grid-row";
-        div.style.gridTemplateColumns = "1.5fr 1.2fr 1fr 1.5fr";
-
-        const rangClass = userData.role.toLowerCase().includes('cheffe') ? 'cheffe' : 
-                         (userData.role.toLowerCase().includes('management') ? 'management' : 'mitarbeiter');
-
-        div.innerHTML = `
-            <span><b>${name}</b></span>
-            <div><span class="role-badge ${rangClass}">${userData.role}</span></div>
-            <span style="color: #2ecc71;">Aktiv</span>
-            <div class="action-cell">
-                <button class="rank-btn" onclick="changeRank('${name}', 'up')">↑</button>
-                <button class="rank-btn" onclick="changeRank('${name}', 'down')">↓</button>
-                <button class="fire-btn" onclick="deleteUser('${name}')">Kündigen</button>
-            </div>`;
-        list.appendChild(div);
-    });
-}
-
-function changeRank(username, direction) {
-    const accs = getAccounts();
-    const ränge = ["Mitarbeiter", "Management", "Cheffe"];
-    let idx = ränge.indexOf(accs[username].role);
-    if(direction === 'up' && idx < 2) idx++;
-    if(direction === 'down' && idx > 0) idx--;
-    accs[username].role = ränge[idx];
-    saveAccounts(accs);
-    renderUsers();
-}
-
-function deleteUser(name) {
-    if(!confirm(`${name} wirklich löschen?`)) return;
-    const accs = getAccounts();
-    delete accs[name];
-    saveAccounts(accs);
-    renderUsers();
-}
-
-/* ================= BEWERBUNGEN & ABMELDUNGEN ==================== */
-function renderBewerbungen() {
-    const list = document.getElementById("bewManagementList");
-    if(!list) return;
-    list.innerHTML = "";
-    const bews = JSON.parse(localStorage.getItem("bs_bewerbungen") || "[]");
-
-    bews.reverse().forEach(b => {
-        const div = document.createElement("div");
-        div.className = "grid-row";
-        div.style.gridTemplateColumns = "1.2fr 0.8fr 1fr 1fr 0.8fr 0.8fr";
-        div.innerHTML = `
-            <span><b>${b.name}</b> (V: ${b.visum || '?'})</span>
-            <span>${b.geb || '-'}</span>
-            <span>${b.tel || '-'}</span>
-            <span>${b.zivi === 'Ja' ? '✅ Zivi' : (b.fraktion || 'Keine')}</span>
-            <span><span class="status-badge-${b.status}">${b.status}</span></span>
-            <div class="action-cell">
-                <button class="btn-check" onclick="setBewStatus(${b.id}, 'angenommen')">✔</button>
-                <button class="btn-delete" onclick="deleteBewerbung(${b.id})">🗑</button>
-            </div>`;
-        list.appendChild(div);
-    });
-}
-
-function setBewStatus(id, s) {
-    let bews = JSON.parse(localStorage.getItem("bs_bewerbungen"));
-    const i = bews.findIndex(b => b.id === id);
-    if(i !== -1) {
-        bews[i].status = s;
-        if(s === 'angenommen') {
-            let ma = getMitarbeiter();
-            ma.push({ id: Date.now(), name: bews[i].name, tel: bews[i].tel, gehalt: 10000 });
-            saveMitarbeiter(ma);
-        }
-        localStorage.setItem("bs_bewerbungen", JSON.stringify(bews));
-        renderBewerbungen();
-        updateDashboardStats();
-    }
-}
-
-function renderAbmeldungen() {
-    const list = document.getElementById("abmList");
-    if(!list) return;
-    list.innerHTML = "";
-    getAbmeldungen().reverse().forEach(a => {
-        const div = document.createElement("div");
-        div.className = "grid-row";
-        div.innerHTML = `
-            <span>${a.user}</span>
-            <span>${a.von} - ${a.bis}</span>
-            <span class="status-badge-${a.status}">${a.status}</span>
-            <div class="action-cell">
-                <button class="btn-check" onclick="approveAbm(${a.id})">✔</button>
-                <button class="btn-delete" onclick="deleteAbm(${a.id})">🗑</button>
-            </div>`;
-        list.appendChild(div);
-    });
-}
-
-function approveAbm(id) {
-    const list = getAbmeldungen();
-    const i = list.findIndex(a => a.id === id);
-    if(i !== -1) {
-        list[i].status = "genehmigt";
-        saveAbmeldungen(list);
-        renderAbmeldungen();
-    }
+    if(document.getElementById("accCount")) document.getElementById("accCount").innerText = accCount;
+    if(document.getElementById("heroAbmCount")) document.getElementById("heroAbmCount").innerText = offeneCount;
+    if(document.getElementById("abmCounter")) document.getElementById("abmCounter").innerText = offeneCount + " offen";
 }
 
 function deleteAbm(id) {
-    saveAbmeldungen(getAbmeldungen().filter(a => a.id !== id));
-    renderAbmeldungen();
-    updateDashboardStats();
+    if (confirm("Möchtest du diese Abmeldung wirklich dauerhaft aus dem System löschen?")) {
+        const list = getAbmeldungen();
+        // Wir behalten alle außer die ID, die gelöscht werden soll
+        const newList = list.filter(a => a.id !== id);
+        saveAbmeldungen(newList);
+        
+        // UI aktualisieren falls wir auf der Management Seite sind
+        if (typeof renderAbmeldungen === "function") {
+            renderAbmeldungen();
+        }
+        // Stats auf dem Dashboard (Hero-Banner) aktualisieren
+        if (typeof updateDashboardStats === "function") {
+            updateDashboardStats();
+        }
+    }
 }
 
-function deleteBewerbung(id) {
-    let bews = JSON.parse(localStorage.getItem("bs_bewerbungen")).filter(b => b.id !== id);
-    localStorage.setItem("bs_bewerbungen", JSON.stringify(bews));
-    renderBewerbungen();
+/* ================= UI FUNKTIONEN ===================== */
+function openAbmModal() { document.getElementById("abmModal").classList.add("active"); }
+function closeAbmModal() { document.getElementById("abmModal").classList.remove("active"); }
+
+function submitAbmeldungUI() {
+    const von = document.getElementById("abmVon").value;
+    const bis = document.getElementById("abmBis").value;
+    const grund = document.getElementById("abmGrund").value;
+    const user = sessionStorage.getItem("loggedInUser");
+
+    if(!von || !bis || !grund) return alert("Bitte alle Felder ausfüllen!");
+
+    const list = getAbmeldungen();
+    list.push({ user, von, bis, grund, status: "offen", id: Date.now() });
+    saveAbmeldungen(list);
+
+    closeAbmModal();
     updateDashboardStats();
+    renderMeineAbmeldungen();
+    
+    // Felder leeren
+    document.getElementById("abmVon").value = "";
+    document.getElementById("abmBis").value = "";
+    document.getElementById("abmGrund").value = "";
 }
 
-/* ================= INITIALISIERUNG ==================== */
-document.addEventListener("DOMContentLoaded", () => {
-    updateDashboardStats();
-    if(document.getElementById("userList")) renderUsers();
-    if(document.getElementById("mitarbeiterList")) renderMitarbeiter();
-});
+// Zeigt dem User seine eigenen Anträge und deren Status
+function renderMeineAbmeldungen() {
+    const container = document.getElementById("meineAbmeldungenList");
+    if(!container) return;
+
+    container.innerHTML = "";
+    const user = sessionStorage.getItem("loggedInUser");
+    const meine = getAbmeldungen().filter(a => a.user === user);
+
+    if(meine.length === 0) {
+        container.innerHTML = "<p style='opacity:0.5;'>Du hast aktuell keine Abmeldungen eingereicht.</p>";
+        return;
+    }
+
+    meine.reverse().forEach(a => {
+        let color = "#faac15"; // offen
+        if(a.status === "genehmigt") color = "#2ecc71";
+        if(a.status === "abgelehnt") color = "#e74c3c";
+
+        const div = document.createElement("div");
+        div.style.cssText = "background: rgba(255,255,255,0.05); padding: 12px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid " + color;
+        div.innerHTML = `
+            <div>
+                <span style="font-weight:bold;">${a.von} - ${a.bis}</span>
+                <br><small style="opacity:0.7;">Grund: ${a.grund}</small>
+            </div>
+            <span style="color:${color}; font-weight:bold; text-transform:uppercase; font-size:0.8rem;">${a.status}</span>
+        `;
+        container.appendChild(div);
+    });
+}
+
+/* ================= ADMIN MANAGEMENT ================= */
+// Diese Funktionen werden in der management.html genutzt
+function approveAbm(id) {
+    const list = getAbmeldungen();
+    const index = list.findIndex(a => a.id === id);
+    if(index !== -1) list[index].status = "genehmigt";
+    saveAbmeldungen(list);
+}
+
+function rejectAbm(id) {
+    const list = getAbmeldungen();
+    const index = list.findIndex(a => a.id === id);
+    if(index !== -1) list[index].status = "abgelehnt";
+    saveAbmeldungen(list);
+}
