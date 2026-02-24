@@ -534,3 +534,30 @@ select:focus {
     opacity: 1;
     color: #ffcc00;
 }
+
+/* Die "Grund"-Box (Textarea) für Abmeldungen */
+textarea {
+    width: 100%;
+    min-height: 100px;
+    background: rgba(0, 0, 0, 0.3); /* Dunkles Grau mit Transparenz */
+    border: 1px solid rgba(255, 255, 255, 0.1); /* Dezenter Rahmen */
+    border-radius: 12px; /* Schön abgerundet wie die anderen Boxen */
+    color: white; /* Weißer Text */
+    padding: 12px;
+    font-family: inherit;
+    resize: vertical; /* Erlaubt nur vertikales Ziehen */
+    outline: none;
+    transition: border-color 0.3s ease;
+    margin-top: 10px;
+}
+
+/* Effekt, wenn man in die Box klickt */
+textarea:focus {
+    border-color: #ffcc00; /* Goldener Rahmen beim Tippen */
+    background: rgba(0, 0, 0, 0.4);
+}
+
+/* Platzhalter-Text Farbe (das "Grund für die Abwesenheit...") */
+textarea::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+}
