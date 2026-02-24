@@ -219,15 +219,20 @@ function renderAbmeldungen() {
         const row = document.createElement("div");
         row.className = "table-row";
         
-        // Status-Farbe für die Badge
-        let badgeClass = "mitarbeiter"; // grau
-        if(a.status === "genehmigt") badgeClass = "cheffe"; // rot/grün (je nach CSS)
-        if(a.status === "offen") badgeClass = "management"; // orange
+        // FARB-LOGIK ANPASSUNG
+        let badgeClass = "";
+        if (a.status === "genehmigt") {
+            badgeClass = "mitarbeiter"; // In deinem CSS ist das grau
+        } else if (a.status === "abgelehnt") {
+            badgeClass = "cheffe";      // In deinem CSS ist das rot
+        } else {
+            badgeClass = "management";  // In deinem CSS ist das orange (für offen)
+        }
 
         row.innerHTML = `
             <span>${a.user}</span>
             <span>${a.von} - ${a.bis}</span>
-            <span class="role-badge ${badgeClass.toLowerCase()}">${a.status.toUpperCase()}</span>
+            <span class="role-badge ${badgeClass}">${a.status.toUpperCase()}</span>
             <div class="action-cell">
                 ${a.status === "offen" ? `
                     <button class="rank-btn" onclick="approveAbm(${a.id}); renderAbmeldungen();">✔</button>
@@ -238,6 +243,7 @@ function renderAbmeldungen() {
         c.appendChild(row);
     });
 }
+    
 document.addEventListener("DOMContentLoaded",renderUsers);
 </script>
 
