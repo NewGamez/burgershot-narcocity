@@ -68,19 +68,49 @@ function renderBewerbungen() {
     if(!list) return;
     list.innerHTML = "";
     const bews = JSON.parse(localStorage.getItem("bs_bewerbungen") || "[]");
+
     bews.reverse().forEach(b => {
         const div = document.createElement("div");
         div.className = "grid-row";
+        // Wir nutzen hier das gleiche Spalten-Verhältnis wie im Header oben
+        div.style.gridTemplateColumns = "1.2fr 0.8fr 1fr 1fr 0.8fr 0.8fr";
+        div.style.fontSize = "0.85rem"; // Etwas kleiner, damit alles reinpasst
+
         div.innerHTML = `
-            <span><b>${b.name}</b> (V: ${b.visum})</span>
-            <span>${b.tel}</span>
-            <span class="status-badge-${b.status}">${b.status}</span>
+            <span><b>${b.name}</b> (V: ${b.visum || '?'})</span>
+            <span>${b.geb || '-'}</span>
+            <span>${b.tel || '-'}</span>
+            <span>${b.zivi === 'Ja' ? '✅ Zivi' : (b.fraktion || 'Keine')}</span>
+            <span><span class="status-badge-${b.status}">${b.status}</span></span>
             <div class="action-cell">
-                <button onclick="setBewStatus(${b.id}, 'angenommen')">✔</button>
-                <button onclick="deleteBewerbung(${b.id})">🗑</button>
+                <button onclick="setBewStatus(${b.id}, 'angenommen')" title="Annehmen">✔</button>
+                <button onclick="deleteBewerbung(${b.id})" title="Löschen">🗑</button>
             </div>`;
         list.appendChild(div);
     });
+}
+
+/* Stelle sicher, dass deine Absende-Funktion auch alle Daten sammelt: */
+function submitBewerbungUI() {
+    const bews = JSON.parse(localStorage.getItem("bs_bewerbungen") || "[]");
+    const neueBew = {
+        id: Date.now(),
+        name: document.getElementById("bewName").value,
+        geb: document.getElementById("bewGeb").value,    // NEU
+        tel: document.getElementById("bewTel").value,
+        zivi: document.getElementById("bewZivi").value,  // NEU
+        fraktion: document.getElementById("bewFraktion").value, // NEU
+        visum: document.getElementById("bewVisum").value,
+        status: "offen"
+    };
+    
+    if(!neueBew.name) return alert("Name fehlt!");
+    
+    bews.push(neueBew);
+    localStorage.setItem("bs_bewerbungen", JSON.stringify(bews));
+    closeModal('bewModal');
+    updateDashboardStats();
+    alert("Bewerbung erfolgreich eingereicht!");
 }
 
 function setBewStatus(id, s) {
