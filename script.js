@@ -61,6 +61,23 @@ function changeFirstPassword() {
     document.getElementById("firstLoginModal").style.display = "none";
 }
 
+function showTab(tabId) {
+    // Alle Tabs verstecken
+    document.querySelectorAll('.mgmt-tab').forEach(tab => {
+        tab.style.display = 'none';
+    });
+    
+    // Gewünschten Tab zeigen
+    document.getElementById(tabId).style.display = 'block';
+
+    // Button-Styling anpassen
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    // Findet den Button, der die Funktion aufgerufen hat und markiert ihn
+    event.currentTarget.classList.add('active');
+}
+
 /* ANNOUNCEMENTS LOGIK */
 const getAnnouncements = () => JSON.parse(localStorage.getItem("bs_announcements")) || [
     { id: 1, text: "/businessannounce BURGERSHOT – Wo Geschmack über den Dächern von Los Santos lebt\nSaftige Burger, kalte Drinks & die beste Aussicht der Stadt auf unserer Dachterrasse!\nOb Date, Feierabend oder einfach Hunger – wir servieren Good Vibes & Great Burgers!\nBurgerShot – Come hungry, leave happy!" }
