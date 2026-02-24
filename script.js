@@ -61,6 +61,37 @@ function changeFirstPassword() {
     document.getElementById("firstLoginModal").style.display = "none";
 }
 
+/* ANNOUNCEMENTS LOGIK */
+const getAnnouncements = () => JSON.parse(localStorage.getItem("bs_announcements")) || [
+    { id: 1, text: "/businessannounce BURGERSHOT – Wo Geschmack über den Dächern von Los Santos lebt\nSaftige Burger, kalte Drinks & die beste Aussicht der Stadt auf unserer Dachterrasse!\nOb Date, Feierabend oder einfach Hunger – wir servieren Good Vibes & Great Burgers!\nBurgerShot – Come hungry, leave happy!" }
+];
+const saveAnnouncements = (data) => localStorage.setItem("bs_announcements", JSON.stringify(data));
+
+function addAnnouncement() {
+    const text = document.getElementById("newAnnounceText").value.trim();
+    if (!text) return alert("Bitte Text eingeben!");
+
+    const list = getAnnouncements();
+    list.push({ id: Date.now(), text: text });
+    saveAnnouncements(list);
+    
+    document.getElementById("newAnnounceText").value = "";
+    renderAnnounceDetails(); // Liste aktualisieren
+}
+
+function deleteAnnouncement(id) {
+    if (!confirm("Diese Vorlage wirklich löschen?")) return;
+    const list = getAnnouncements().filter(a => a.id !== id);
+    saveAnnouncements(list);
+    renderAnnounceDetails();
+}
+
+function copyText(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        alert("Kopiert!");
+    });
+}
+
 /* ================= ABMELDUNGEN LOGIK ================= */
 const getAbmeldungen = () => JSON.parse(localStorage.getItem("bs_abmeldungen")) || [];
 const saveAbmeldungen = data => localStorage.setItem("bs_abmeldungen", JSON.stringify(data));
