@@ -207,26 +207,37 @@ function renderMitarbeiter(){
     });
 }
 
-/* ABMELDUNGEN RENDER */
-function renderAbmeldungen(){
-    const c=document.getElementById("abmList");
-    c.innerHTML="";
-    getAbmeldungen().forEach((a,i)=>{
-        const row=document.createElement("div");
-        row.className="table-row";
-        row.innerHTML=`
+/* ABMELDUNGEN RENDER (Management Seite) */
+function renderAbmeldungen() {
+    const c = document.getElementById("abmList");
+    if (!c) return;
+    c.innerHTML = "";
+    
+    const alleAbmeldungen = getAbmeldungen();
+
+    alleAbmeldungen.forEach((a) => {
+        const row = document.createElement("div");
+        row.className = "table-row";
+        
+        // Status-Farbe für die Badge
+        let badgeClass = "mitarbeiter"; // grau
+        if(a.status === "genehmigt") badgeClass = "cheffe"; // rot/grün (je nach CSS)
+        if(a.status === "offen") badgeClass = "management"; // orange
+
+        row.innerHTML = `
             <span>${a.user}</span>
             <span>${a.von} - ${a.bis}</span>
-            <span>${a.status}</span>
-            <div>
-                ${a.status==="offen"?
-                `<button class="rank-btn" onclick="approveAbm(${i});renderAbmeldungen();">✔</button>
-                 <button class="delete-btn" onclick="rejectAbm(${i});renderAbmeldungen();">✖</button>`:""}
+            <span class="role-badge ${badgeClass.toLowerCase()}">${a.status.toUpperCase()}</span>
+            <div class="action-cell">
+                ${a.status === "offen" ? `
+                    <button class="rank-btn" onclick="approveAbm(${a.id}); renderAbmeldungen();">✔</button>
+                    <button class="rank-btn" onclick="rejectAbm(${a.id}); renderAbmeldungen();">✖</button>
+                ` : ''}
+                <button class="delete-btn" onclick="deleteAbm(${a.id})">Löschen</button>
             </div>`;
         c.appendChild(row);
     });
 }
-
 document.addEventListener("DOMContentLoaded",renderUsers);
 </script>
 
