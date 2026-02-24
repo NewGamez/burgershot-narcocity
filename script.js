@@ -92,6 +92,39 @@ function copyText(text) {
     });
 }
 
+function renderAnnounceDetails() {
+    const container = document.getElementById("announceGrid");
+    if (!container) return;
+    container.innerHTML = "";
+    
+    const list = getAnnouncements();
+    const admin = isAdmin(); // Nutzt deine vorhandene isAdmin Funktion
+
+    list.forEach(a => {
+        const div = document.createElement("div");
+        div.className = "panel"; // Nutzt deine Glas-Optik
+        div.style.textAlign = "left";
+        div.style.display = "flex";
+        div.style.flexDirection = "column";
+        div.style.justifyContent = "space-between";
+        
+        div.innerHTML = `
+            <p style="font-size: 0.85rem; white-space: pre-line; margin-bottom: 15px; opacity: 0.9;">${a.text}</p>
+            <div style="display: flex; gap: 5px;">
+                <button onclick="copyText(\`${a.text}\`)" style="flex: 1; font-size: 0.7rem; padding: 5px;">Kopieren</button>
+                ${admin ? `<button onclick="deleteAnnouncement(${a.id})" style="background: #e74c3c; font-size: 0.7rem; padding: 5px;">Löschen</button>` : ''}
+            </div>
+        `;
+        container.appendChild(div);
+    });
+}
+
+// Funktion zum Öffnen des Panels vom Dashboard aus
+function openAnnouncePanel() {
+    document.getElementById('announceDetailsModal').style.display = 'flex';
+    renderAnnounceDetails();
+}
+
 /* ================= ABMELDUNGEN LOGIK ================= */
 const getAbmeldungen = () => JSON.parse(localStorage.getItem("bs_abmeldungen")) || [];
 const saveAbmeldungen = data => localStorage.setItem("bs_abmeldungen", JSON.stringify(data));
