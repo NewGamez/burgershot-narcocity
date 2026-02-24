@@ -319,34 +319,33 @@ button:hover {
 /* ============================= */
 
 .role-badge {
-    padding: 4px 12px;
-    border-radius: 6px;
-    font-size: 0.75rem;
+    padding: 5px 12px;
+    border-radius: 8px;
+    font-size: 0.8rem;
     font-weight: bold;
-    letter-spacing: 1px;
     text-transform: uppercase;
-    width: fit-content;
     border: 1px solid;
+    display: inline-block;
 }
 
 /* CHEFFE */
 .role-badge.cheffe {
     color: #ff4d4d;
     border-color: #ff4d4d;
-    background: rgba(255, 77, 77, 0.12);
+    background: rgba(255, 77, 77, 0.1);
 }
 
 /* MANAGEMENT */
 .role-badge.management {
     color: #faac15;
     border-color: #faac15;
-    background: rgba(250, 172, 21, 0.12);
+    background: rgba(250, 172, 21, 0.1);
 }
 
 /* MITARBEITER */
 .role-badge.mitarbeiter {
-    color: #aaa;
-    border-color: #666;
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.3);
     background: rgba(255, 255, 255, 0.05);
 }
 
@@ -410,19 +409,23 @@ select:focus {
 /* ============================= */
 
 .delete-btn {
-    background: rgba(255, 60, 60, 0.08);
-    border: 1px solid #ff4d4d;
-    color: #ff4d4d;
-    padding: 6px 14px;
-    border-radius: 6px;
-    font-size: 0.8rem;
-    font-weight: bold;
+    background-color: #faac15 !important; /* Burgershot Gelb */
+    color: #000 !important;
+    border: none;
+    width: 35px;
+    height: 35px;
+    border-radius: 10px;
     cursor: pointer;
-    transition: 0.2s ease;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s, background 0.2s;
 }
 
 .delete-btn:hover {
-    background: rgba(255, 60, 60, 0.2);
+    background-color: #ffbd3d !important;
+    transform: scale(1.05);
 }
 
 /* OFFEN (Grau) */
