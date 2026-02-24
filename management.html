@@ -169,9 +169,12 @@
     function showTab(tabId, btn) {
         document.querySelectorAll(".mgmt-tab").forEach(t => t.classList.remove("active"));
         document.getElementById(tabId).classList.add("active");
+
         document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
         btn.classList.add("active");
 
+        // WICHTIG: Hier wird die Liste beim Klick gerendert
+        if(tabId === 'tab-bewerber') renderBewerberManagement();
         if(tabId === 'tab-accounts') renderUsers();
         if(tabId === 'tab-mitarbeiter') renderMitarbeiter();
         if(tabId === 'tab-abmeldungen') renderAbmeldungen();
