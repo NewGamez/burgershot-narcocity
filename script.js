@@ -190,13 +190,48 @@ function renderUsers() {
     if(!list) return;
     list.innerHTML = "";
     const accs = getAccounts();
+
     Object.keys(accs).forEach(name => {
+        const userData = accs[name];
         const div = document.createElement("div");
         div.className = "grid-row";
-        div.innerHTML = `<span>${name}</span><span>${accs[name].role}</span><span>Aktiv</span>
-            <div class="action-cell"><button onclick="deleteUser('${name}')">🗑</button></div>`;
+        // Wir nutzen 4 Spalten: Name, Rang, Status, Aktion
+        div.style.gridTemplateColumns = "1.5fr 1.2fr 1fr 1fr";
+
+        // Rang-Klasse für die CSS-Farben (Cheffe, Management, Mitarbeiter)
+        const rangClass = userData.role.toLowerCase().includes('cheffe') ? 'cheffe' : 
+                         (userData.role.toLowerCase().includes('management') ? 'management' : 'mitarbeiter');
+
+        div.innerHTML = `
+            <span><b>${name}</b></span>
+            <div><span class="role-badge ${rangClass}">${userData.role}</span></div>
+            <span style="color: #2ecc71;">Aktiv</span>
+            <div class="action-cell">
+                <button class="delete-btn" onclick="deleteUser('${name}')">🗑</button>
+            </div>
+        `;
         list.appendChild(div);
     });
+}
+
+// Falls noch nicht vorhanden, hier auch die addUser Funktion passend dazu:
+function addUser() {
+    const name = document.getElementById("newName").value.trim();
+    const role = document.getElementById("newRole").value;
+    if(!name) return alert("Bitte Benutzernamen eingeben!");
+
+    const accs = getAccounts();
+    accs[name] = { 
+        password: "0000", 
+        role: role, 
+        isFirstLogin: true 
+    };
+    
+    saveAccounts(accs);
+    renderUsers();
+    
+    // Eingabefeld leeren
+    document.getElementById("newName").value = "";
 }
 
 function addUser() {
