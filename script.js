@@ -17,6 +17,50 @@ const isAdmin = () => {
     return accs[user] && (accs[user].role === "Management" || accs[user].role === "Cheffe");
 };
 
+/* PRÜFUNG BEIM LOGIN */
+function checkFirstLogin() {
+    const username = sessionStorage.getItem("loggedInUser");
+    const accs = getAccounts();
+    const userAcc = accs[username];
+
+    if (userAcc && userAcc.isFirstLogin) {
+        // Zeige das Modal, falls es der erste Login ist
+        const modal = document.getElementById("firstLoginModal");
+        if (modal) modal.style.display = "flex";
+    }
+}
+
+/* PASSWORT ÄNDERN FUNKTION */
+function changeFirstPassword() {
+    const newPass = document.getElementById("newInitialPassword").value.trim();
+    const confirmPass = document.getElementById("confirmInitialPassword").value.trim();
+    const username = sessionStorage.getItem("loggedInUser");
+
+    if (newPass.length < 4) {
+        alert("Das Passwort muss mindestens 4 Zeichen lang sein!");
+        return;
+    }
+
+    if (newPass !== confirmPass) {
+        alert("Die Passwörter stimmen nicht überein!");
+        return;
+    }
+
+    if (newPass === "0000") {
+        alert("Bitte wähle ein anderes Passwort als das Standard-Passwort!");
+        return;
+    }
+
+    // Speichern im System
+    const accs = getAccounts();
+    accs[username].password = newPass;
+    accs[username].isFirstLogin = false; // Flag auf false setzen
+    saveAccounts(accs);
+
+    alert("Passwort erfolgreich geändert! Du kannst das System nun nutzen.");
+    document.getElementById("firstLoginModal").style.display = "none";
+}
+
 /* ================= ABMELDUNGEN LOGIK ================= */
 const getAbmeldungen = () => JSON.parse(localStorage.getItem("bs_abmeldungen")) || [];
 const saveAbmeldungen = data => localStorage.setItem("bs_abmeldungen", JSON.stringify(data));
