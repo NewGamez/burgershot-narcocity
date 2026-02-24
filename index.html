@@ -36,7 +36,7 @@
         </div>
     </div>
 
-    <div class="grid-top">
+<div class="grid-top">
         <div class="panel big">
             <div class="panel-header">📢 NEWS & INFOS</div>
             <p>Wichtige Ankündigungen für das Team.</p>
@@ -61,18 +61,29 @@
         <div class="panel big highlight" onclick="openAnnouncePanel()" style="cursor: pointer;">
             <div class="panel-header">📢 BUSINESS ANNOUNCEMENTS</div>
             <p>Vorlagen für Werbetexte ansehen & hinzufügen.</p>
-            <small style="opacity: 0.5;">Klick zum Öffnen</small>
+            <small style="opacity: 0.5; display: block; margin-top: 10px;">Klick zum Öffnen</small>
         </div>
+    </div> <div class="grid-bottom" style="margin-top: 25px;">
+        <div class="panel small">📦 Orders</div>
+        <div class="panel small">🏭 Lager</div>
+        <div class="panel small">🎵 Musik</div>
+        <div class="panel small">👕 Kleidung</div>
+    </div>
 
     <div class="panel full-width" style="margin-top: 30px; cursor: default;">
         <div class="panel-header">🕒 MEINE AKTUELLEN ANTRÄGE</div>
-        <div id="meineAbmeldungenList" style="margin-top: 15px;">
-            </div>
+        <div id="meineAbmeldungenList" style="margin-top: 15px;"></div>
     </div>
 
     <div id="adminPanel" class="management-bar" onclick="location.href='management.html'" style="margin-top: 30px;">
-        <div>⭐ Management Center</div>
-        <div>Personalverwaltung & Systemsteuerung</div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <span>⭐</span>
+            <div>
+                <div style="font-weight: bold;">Management Center</div>
+                <div style="font-size: 0.75rem; opacity: 0.7;">Personalverwaltung & Systemsteuerung</div>
+            </div>
+        </div>
+        <span style="font-size: 1.2rem;">➔</span>
     </div>
 </section>
 
