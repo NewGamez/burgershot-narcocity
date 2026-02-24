@@ -195,10 +195,8 @@ function renderUsers() {
         const userData = accs[name];
         const div = document.createElement("div");
         div.className = "grid-row";
-        // Wir nutzen 4 Spalten: Name, Rang, Status, Aktion
-        div.style.gridTemplateColumns = "1.5fr 1.2fr 1fr 1fr";
+        div.style.gridTemplateColumns = "1.5fr 1.2fr 1fr 1.5fr"; // Mehr Platz für Buttons
 
-        // Rang-Klasse für die CSS-Farben (Cheffe, Management, Mitarbeiter)
         const rangClass = userData.role.toLowerCase().includes('cheffe') ? 'cheffe' : 
                          (userData.role.toLowerCase().includes('management') ? 'management' : 'mitarbeiter');
 
@@ -207,7 +205,58 @@ function renderUsers() {
             <div><span class="role-badge ${rangClass}">${userData.role}</span></div>
             <span style="color: #2ecc71;">Aktiv</span>
             <div class="action-cell">
-                <button class="delete-btn" onclick="deleteUser('${name}')">🗑</button>
+                <button class="rank-btn" onclick="changeRank('${name}', 'up')">↑</button>
+                <button class="rank-btn" onclick="changeRank('${name}', 'down')">↓</button>
+                <button class="fire-btn" onclick="deleteUser('${name}')">Kündigen</button>
+            </div>
+        `;
+        list.appendChild(div);
+    });
+}
+
+// Logik für Uprank / Derank
+function changeRank(username, direction) {
+    const accs = getAccounts();
+    const ränge = ["Mitarbeiter", "Management", "Cheffe"];
+    let aktuellerIndex = ränge.indexOf(accs[username].role);
+
+    if(direction === 'up' && aktuellerIndex < ränge.length - 1) {
+        aktuellerIndex++;
+    } else if(direction === 'down' && aktuellerIndex > 0) {
+        aktuellerIndex--;
+    }
+
+    accs[username].role = ränge[aktuellerIndex];
+    saveAccounts(accs);
+    renderUsers();
+}
+
+/* ================= MITARBEITERLISTE (FINANZEN) ==================== */
+function renderMitarbeiter() {
+    const list = document.getElementById("mitarbeiterList");
+    if(!list) return;
+    
+    list.innerHTML = `
+        <div class="grid-row grid-header" style="grid-template-columns: 1.5fr 1fr 1.2fr 1fr 1fr;">
+            <span>Name</span><span>Rang</span><span>Gehalt ($)</span><span>Telefon</span><span style="text-align:right;">Aktion</span>
+        </div>`;
+    
+    const mitarbeiter = getMitarbeiter();
+    mitarbeiter.forEach(m => {
+        const div = document.createElement("div");
+        div.className = "grid-row";
+        div.style.gridTemplateColumns = "1.5fr 1fr 1.2fr 1fr 1fr";
+        
+        const rangClass = m.rang.toLowerCase().includes('cheffe') ? 'cheffe' : 
+                         (m.rang.toLowerCase().includes('management') ? 'management' : 'mitarbeiter');
+
+        div.innerHTML = `
+            <span><b>${m.name}</b></span>
+            <div><span class="role-badge ${rangClass}">${m.rang}</span></div>
+            <input type="number" class="table-input" value="${m.gehalt}" onchange="updateMA(${m.id}, 'gehalt', this.value)">
+            <span>${m.tel}</span>
+            <div class="action-cell">
+                <button class="fire-btn" onclick="deleteMA(${m.id})">Kündigen</button>
             </div>
         `;
         list.appendChild(div);
