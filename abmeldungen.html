@@ -2,36 +2,50 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>Abmeldungen</title>
+    <title>Abmeldungen | Burgershot</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
 <header>
     <a href="index.html" class="brand-link">← Zurück zum Dashboard</a>
-    <button class="add-btn" onclick="document.getElementById('modal').style.display='flex'">+ Neue Abmeldung</button>
+    <button onclick="document.getElementById('modal').style.display='flex'">+ Neue Abmeldung</button>
 </header>
 
 <section class="dashboard">
-    <div class="panel full-width">
-        <div class="table-head">
-            <span>Mitarbeiter</span>
-            <span>Zeitraum</span>
-            <span>Grund</span>
-            <span style="text-align:right;">Aktion</span>
+    <div class="panel big full-width" style="margin-bottom: 30px; cursor: default;">
+        <div class="panel-header">📋 MEINE ABMELDUNGEN & STATUS</div>
+        <p style="margin-bottom: 20px; opacity: 0.7;">Hier siehst du den aktuellen Status deiner Anträge.</p>
+        
+        <div id="meineAbmeldungenList">
+            </div>
+    </div>
+
+    <div id="adminArea" style="display:none;">
+        <div class="panel big full-width" style="cursor: default;">
+            <div class="panel-header">🛡️ ADMIN-VERWALTUNG (Alle Anträge)</div>
+            <div class="account-table">
+                <div class="table-head">
+                    <span>Mitarbeiter</span>
+                    <span>Zeitraum</span>
+                    <span>Status</span>
+                    <span style="text-align:right;">Aktionen</span>
+                </div>
+                <div id="absenceList"></div>
+            </div>
         </div>
-        <div id="absenceList"></div>
     </div>
 </section>
 
-<div class="modal-backdrop" id="modal" style="display:none;">
+<div class="modal-backdrop" id="modal">
     <div class="modal">
-        <h3 style="margin-bottom:15px; color:var(--accent);">Neue Abmeldung</h3>
-        <input type="text" id="inName" class="input-field" placeholder="Dein Name" style="width:100%; margin-bottom:10px;">
-        <input type="text" id="inTime" class="input-field" placeholder="Zeitraum (z.B. 24.02.-01.03.)" style="width:100%; margin-bottom:10px;">
-        <textarea id="inReason" class="input-field" placeholder="Grund für die Abmeldung" style="width:100%; height:80px; margin-bottom:15px;"></textarea>
-        <div style="display:flex; gap:10px;">
-            <button class="add-btn" onclick="addEntry()" style="flex:1;">Speichern</button>
-            <button class="add-btn" style="background:#444; color:white; flex:1;" onclick="document.getElementById('modal').style.display='none'">Abbrechen</button>
+        <h2>📅 Neue Abmeldung</h2>
+        <input type="text" id="abmVon" placeholder="Von (z.B. 24.02.)">
+        <input type="text" id="abmBis" placeholder="Bis (z.B. 01.03.)">
+        <textarea id="abmGrund" class="input-field" placeholder="Grund..." style="width:100%; height:80px; margin-top:10px;"></textarea>
+        <div style="display:flex; gap:10px; margin-top:20px;">
+            <button onclick="submitAbmeldungUI()" style="flex:1;">Absenden</button>
+            <button onclick="document.getElementById('modal').style.display='none'" style="background:#444; flex:1;">Abbrechen</button>
         </div>
     </div>
 </div>
@@ -39,42 +53,38 @@
 <script src="script.js"></script>
 <script>
     requireLogin();
-    function render() {
-        const list = document.getElementById("absenceList");
-        list.innerHTML = "";
-        const data = getAbsences();
-        if(data.length === 0) list.innerHTML = "<p class='reason-text' style='padding:20px; text-align:center;'>Keine Abmeldungen vorhanden.</p>";
+
+    // Seite initialisieren
+    window.onload = () => {
+        renderMeineAbmeldungen(); // Zeigt dem User seine eigenen Sachen
         
-        data.reverse().forEach(item => {
+        if(isAdmin()) {
+            document.getElementById("adminArea").style.display = "block";
+            renderAdminList(); // Zeigt Admins alle Anträge
+        }
+    };
+
+    // Hilfsfunktion für die Admin-Tabelle auf dieser Seite
+    function renderAdminList() {
+        const list = document.getElementById("absenceList");
+        if(!list) return;
+        list.innerHTML = "";
+        
+        getAbmeldungen().forEach((a, i) => {
             const row = document.createElement("div");
             row.className = "table-row";
             row.innerHTML = `
-                <span class="bold">${item.name}</span>
-                <span>${item.time}</span>
-                <span class="reason-text">${item.reason}</span>
-                <div style="text-align:right;"><button style="background:none; border:none; cursor:pointer; font-size:1.2rem;" onclick="del(${item.id})">🗑️</button></div>
+                <span>${a.user}</span>
+                <span>${a.von} - ${a.bis}</span>
+                <span class="role-badge" style="border-color: currentColor;">${a.status}</span>
+                <div class="action-cell">
+                    <button class="rank-btn" onclick="approveAbm(${i}); location.reload();">✔</button>
+                    <button class="rank-btn" onclick="rejectAbm(${i}); location.reload();" style="color:#ff4d4d;">✖</button>
+                </div>
             `;
             list.appendChild(row);
         });
     }
-    function addEntry() {
-        const name = document.getElementById("inName").value;
-        const time = document.getElementById("inTime").value;
-        const reason = document.getElementById("inReason").value || "Kein Grund";
-        if(!name || !time) return alert("Bitte Name und Zeitraum ausfüllen!");
-        
-        const data = getAbsences();
-        data.push({ id: Date.now(), name, time, reason });
-        saveAbsences(data);
-        location.reload();
-    }
-    function del(id) {
-        if(confirm("Diesen Eintrag wirklich löschen?")) {
-            saveAbsences(getAbsences().filter(i => i.id !== id));
-            render();
-        }
-    }
-    window.onload = render;
 </script>
 </body>
 </html>
