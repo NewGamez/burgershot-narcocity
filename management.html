@@ -1,273 +1,168 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="UTF-8">
-<title>Management Center</title>
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <title>Management Center | Burgershot Intern</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <header>
     <a href="index.html" class="brand-link">🍔 Burgershot Intern</a>
+    <button onclick="location.href='index.html'" style="background: #222; margin-left: auto;">🏠 Home</button>
 </header>
 
 <section class="dashboard">
-<div class="panel">
+    <section class="management-wrapper">
+        
+        <div class="panel full-width" style="margin-bottom: 20px; padding: 15px;">
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <button class="nav-btn active" onclick="showTab('tab-personal', this)">👥 Personalverwaltung</button>
+                <button class="nav-btn" onclick="showTab('tab-abmeldungen', this)">📅 Alle Abmeldungen</button>
+                <button class="nav-btn" onclick="showTab('tab-bewerber', this)">📝 Bewerbungen</button>
+                <button class="nav-btn" onclick="location.href='announcements.html'" style="background: #444;">📢 Werbetexte</button>
+            </div>
+        </div>
 
-<!-- ================= TABS ================= -->
-<div class="management-tabs">
-    <button class="tab-btn active" onclick="showSection('accounts', this)">Accountverwaltung</button>
-    <button class="tab-btn" onclick="showSection('mitarbeiter', this)">Mitarbeiterliste</button>
-    <button class="tab-btn" onclick="showSection('abmeldungen', this)">Abmeldungen</button>
-</div>
+        <div id="tab-personal" class="mgmt-tab">
+            <div class="panel" style="margin-bottom: 20px;">
+                <div class="management-header">
+                    <h2>👥 Personalverwaltung</h2>
+                    <div class="add-user-bar">
+                        <input type="text" id="newName" placeholder="Name für Account">
+                        <select id="newRole">
+                            <option value="Mitarbeiter">Mitarbeiter</option>
+                            <option value="Management">Management</option>
+                            <option value="Cheffe">Cheffe</option>
+                        </select>
+                        <button onclick="addUser()">Einstellen</button>
+                    </div>
+                </div>
+            </div>
 
-<!-- ================= ACCOUNTS ================= -->
-<div id="accounts" class="management-section">
+            <div class="panel">
+                <div class="panel-header">🔍 Mitarbeiter suchen</div>
+                <input type="text" id="userSearch" placeholder="Name eingeben..." onkeyup="filterUsers()" style="width: 100%; margin: 10px 0;">
+                
+                <div id="userList" class="account-table">
+                    </div>
+            </div>
+        </div>
 
-<h2>👤 Personalverwaltung</h2>
+        <div id="tab-abmeldungen" class="mgmt-tab" style="display: none;">
+            <div class="panel">
+                <div class="panel-header">📅 Alle Team-Abmeldungen</div>
+                <div id="abmList" class="account-table" style="margin-top: 20px;">
+                    </div>
+            </div>
+        </div>
 
-<div class="add-user-bar">
-    <input type="text" id="newName" placeholder="Name">
-    <select id="newRole">
-        <option value="Mitarbeiter">Mitarbeiter</option>
-        <option value="Management">Management</option>
-        <option value="Cheffe">Cheffe</option>
-    </select>
-    <button onclick="addUser()">Einstellen</button>
-</div>
+        <div id="tab-bewerber" class="mgmt-tab" style="display: none;">
+            <div class="panel">
+                <div class="panel-header">📝 Bewerbungen im System</div>
+                <div id="bewerberList">
+                    <p style="opacity: 0.5; padding: 20px; text-align: center;">Aktuell liegen keine neuen Bewerbungen vor.</p>
+                </div>
+            </div>
+        </div>
 
-<div class="account-table">
-<div class="table-head">
-    <span>Name</span>
-    <span>Rang</span>
-    <span style="text-align:right;">Aktionen</span>
-</div>
-<div id="userList"></div>
-</div>
-
-</div>
-
-<!-- ================= MITARBEITER ================= -->
-<div id="mitarbeiter" class="management-section" style="display:none;">
-
-<h2>📋 Mitarbeiterliste</h2>
-
-<div class="add-user-bar">
-    <input type="text" id="vorname" placeholder="Vorname">
-    <input type="text" id="nachname" placeholder="Nachname">
-    <input type="text" id="telefon" placeholder="Telefon">
-    <input type="number" id="gehalt" placeholder="Gehalt">
-    <button onclick="addMitarbeiterUI()">Eintragen</button>
-</div>
-
-<div class="account-table">
-<div class="table-head">
-    <span>Name</span>
-    <span>Telefon</span>
-    <span>Gehalt</span>
-    <span style="text-align:right;">Aktionen</span>
-</div>
-<div id="mitarbeiterList"></div>
-</div>
-
-</div>
-
-<!-- ================= ABMELDUNGEN ================= -->
-<div id="abmeldungen" class="management-section" style="display:none;">
-
-<h2>📅 Abmeldungen</h2>
-
-<div class="account-table">
-<div class="table-head">
-    <span>User</span>
-    <span>Zeitraum</span>
-    <span>Status</span>
-    <span style="text-align:right;">Aktionen</span>
-</div>
-<div id="abmList"></div>
-</div>
-
-</div>
-
-</div>
+    </section>
 </section>
 
 <script src="script.js"></script>
-
 <script>
-requireLogin();
-if(!isAdmin()) window.location.href = "index.html";
-
-/* TAB SYSTEM */
-function showSection(id, btn){
-    document.querySelectorAll(".management-section")
-        .forEach(sec => sec.style.display = "none");
-
-    document.getElementById(id).style.display = "block";
-
-    document.querySelectorAll(".tab-btn")
-        .forEach(b => b.classList.remove("active"));
-
-    btn.classList.add("active");
-
-    if(id === "accounts") renderUsers();
-    if(id === "mitarbeiter") renderMitarbeiter();
-    if(id === "abmeldungen") renderAbmeldungen();
-}
-
-/* ACCOUNT RENDER */
-const roleOrder = ["Cheffe","Management","Mitarbeiter"];
-
-function renderUsers(){
-    const list = document.getElementById("userList");
-    list.innerHTML = "";
-
-    const accs = getAccounts();
-
-    Object.keys(accs)
-    .sort((a,b)=>roleOrder.indexOf(accs[a].role)-roleOrder.indexOf(accs[b].role))
-    .forEach(name=>{
-        const row=document.createElement("div");
-        row.className="table-row";
-        row.innerHTML=`
-            <span>${name}</span>
-            <span class="role-badge ${accs[name].role.toLowerCase()}">${accs[name].role}</span>
-            <div class="action-cell">
-                <button class="rank-btn" onclick="uprank('${name}')">⬆</button>
-                <button class="rank-btn" onclick="derank('${name}')">⬇</button>
-                <button class="delete-btn" onclick="removeUser('${name}')">Kündigen</button>
-            </div>`;
-        list.appendChild(row);
-    });
-}
-
-<div class="panel" style="margin-bottom: 20px;">
-    <div class="panel-header">🔍 Mitarbeiter suchen</div>
-    <input type="text" id="userSearch" placeholder="Name eingeben..." onkeyup="filterUsers()" style="margin-top: 10px;">
-</div>
-
-function addUser() {
-    const name = document.getElementById("newName").value.trim();
-    const role = document.getElementById("newRole").value;
-    const accs = getAccounts();
-    
-    if (name && !accs[name]) {
-        // Neues Konto mit Standard-PW und Pflicht zur Änderung
-        accs[name] = { 
-            password: "0000", 
-            role: role, 
-            isFirstLogin: true 
-        };
-        saveAccounts(accs);
-        renderUsers();
-        alert("Mitarbeiter " + name + " wurde angelegt. Standard-PW: 0000");
+    // 1. Zugriffsschutz: Nur eingeloggte Admins/Management
+    requireLogin();
+    if(!isAdmin()) {
+        window.location.href = "index.html";
     }
-}
 
+    // 2. Tab-Logik: Schaltet zwischen den Bereichen um
+    function showTab(tabId, btn) {
+        // Alle Bereiche verstecken
+        document.querySelectorAll(".mgmt-tab").forEach(tab => tab.style.display = "none");
+        // Gewählten Bereich zeigen
+        document.getElementById(tabId).style.display = "block";
+        // Button-Styling (Farbe) anpassen
+        document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+
+        // Daten beim Wechsel frisch laden
+        if(tabId === 'tab-personal') renderUsers();
+        if(tabId === 'tab-abmeldungen') renderAbmeldungen();
+    }
+
+    // 3. Mitarbeiter-Liste rendern
+    const roleOrder = ["Cheffe", "Management", "Mitarbeiter"];
+
+    function renderUsers() {
+        const list = document.getElementById("userList");
+        if(!list) return;
+        list.innerHTML = "";
+        
+        const accs = getAccounts(); // Funktion aus script.js
+
+        // Sortieren nach Rang und Anzeigen
+        Object.keys(accs)
+            .sort((a,b) => roleOrder.indexOf(accs[a].role) - roleOrder.indexOf(accs[b].role))
+            .forEach(name => {
+                const row = document.createElement("div");
+                row.className = "table-row";
+                row.innerHTML = `
+                    <span>${name}</span>
+                    <span class="role-badge ${accs[name].role.toLowerCase()}">${accs[name].role}</span>
+                    <div class="action-cell">
+                        <button class="rank-btn" onclick="uprank('${name}'); renderUsers();">⬆</button>
+                        <button class="rank-btn" onclick="derank('${name}'); renderUsers();">⬇</button>
+                        <button class="delete-btn" onclick="removeUser('${name}'); renderUsers();">Kündigen</button>
+                    </div>`;
+                list.appendChild(row);
+            });
+    }
+
+    // 4. Abmeldungen für das Team verwalten
+    function renderAbmeldungen() {
+        const c = document.getElementById("abmList");
+        if (!c) return;
+        c.innerHTML = "";
+        
+        const alleAbmeldungen = getAbmeldungen(); // Funktion aus script.js
+
+        alleAbmeldungen.reverse().forEach((a) => {
+            const row = document.createElement("div");
+            row.className = "table-row";
+            
+            let statusClass = "status-badge-offen";
+            if (a.status === "genehmigt") statusClass = "status-badge-genehmigt";
+            if (a.status === "abgelehnt") statusClass = "status-badge-abgelehnt";
+
+            row.innerHTML = `
+                <span>${a.user}</span>
+                <span>${a.von} - ${a.bis}</span>
+                <span class="${statusClass}">${a.status.toUpperCase()}</span>
+                <div class="action-cell">
+                    ${a.status === "offen" ? `
+                        <button class="rank-btn" onclick="approveAbm(${a.id}); renderAbmeldungen();">✔</button>
+                        <button class="rank-btn" onclick="rejectAbm(${a.id}); renderAbmeldungen();">✖</button>
+                    ` : ''}
+                    <button class="delete-btn" onclick="deleteAbm(${a.id}); renderAbmeldungen();">Löschen</button>
+                </div>`;
+            c.appendChild(row);
+        });
+    }
+
+    // 5. Live-Suche
     function filterUsers() {
-    const query = document.getElementById("userSearch").value.toLowerCase();
-    const rows = document.querySelectorAll("#userList .table-row");
-
-    rows.forEach(row => {
-        // Wir schauen uns das erste span in der Zeile an (da steht der Name)
-        const name = row.querySelector("span").innerText.toLowerCase();
-        
-        if (name.includes(query)) {
-            row.style.display = "flex";
-        } else {
-            row.style.display = "none";
-        }
-    });
-}
-
-function removeUser(name){
-    const accs=getAccounts();
-    delete accs[name];
-    saveAccounts(accs);
-    renderUsers();
-}
-
-function uprank(name){
-    const accs=getAccounts();
-    const i=roleOrder.indexOf(accs[name].role);
-    if(i>0){
-        accs[name].role=roleOrder[i-1];
-        saveAccounts(accs);
-        renderUsers();
+        const query = document.getElementById("userSearch").value.toLowerCase();
+        const rows = document.querySelectorAll("#userList .table-row");
+        rows.forEach(row => {
+            const name = row.querySelector("span").innerText.toLowerCase();
+            row.style.display = name.includes(query) ? "flex" : "none";
+        });
     }
-}
 
-function derank(name){
-    const accs=getAccounts();
-    const i=roleOrder.indexOf(accs[name].role);
-    if(i<roleOrder.length-1){
-        accs[name].role=roleOrder[i+1];
-        saveAccounts(accs);
-        renderUsers();
-    }
-}
-
-/* MITARBEITER RENDER */
-function addMitarbeiterUI(){
-    addMitarbeiter(
-        document.getElementById("vorname").value,
-        document.getElementById("nachname").value,
-        document.getElementById("telefon").value,
-        document.getElementById("gehalt").value
-    );
-    renderMitarbeiter();
-}
-
-function renderMitarbeiter(){
-    const c=document.getElementById("mitarbeiterList");
-    c.innerHTML="";
-    getMitarbeiter().forEach((m,i)=>{
-        const row=document.createElement("div");
-        row.className="table-row";
-        row.innerHTML=`
-            <span>${m.vorname} ${m.nachname}</span>
-            <span>${m.telefon||"-"}</span>
-            <span>${m.gehalt?m.gehalt+" €":"-"}</span>
-            <div>
-                <button class="delete-btn" onclick="deleteMitarbeiter(${i});renderMitarbeiter();">Entfernen</button>
-            </div>`;
-        c.appendChild(row);
-    });
-}
-
-/* ABMELDUNGEN RENDER (Management Seite) */
-function renderAbmeldungen() {
-    const c = document.getElementById("abmList");
-    if (!c) return;
-    c.innerHTML = "";
-    
-    const alleAbmeldungen = getAbmeldungen();
-
-    alleAbmeldungen.forEach((a) => {
-        const row = document.createElement("div");
-        row.className = "table-row";
-        
-        // Logik für die NEUEN Status-Klassen
-        let statusClass = "status-badge-offen"; // Standard: Grau
-        if (a.status === "genehmigt") statusClass = "status-badge-genehmigt"; // Grün
-        if (a.status === "abgelehnt") statusClass = "status-badge-abgelehnt"; // Rot
-
-        row.innerHTML = `
-            <span>${a.user}</span>
-            <span>${a.von} - ${a.bis}</span>
-            <span class="${statusClass}">${a.status.toUpperCase()}</span>
-            <div class="action-cell">
-                ${a.status === "offen" ? `
-                    <button class="rank-btn" onclick="approveAbm(${a.id}); renderAbmeldungen();">✔</button>
-                    <button class="rank-btn" onclick="rejectAbm(${a.id}); renderAbmeldungen();">✖</button>
-                ` : ''}
-                <button class="delete-btn" onclick="deleteAbm(${a.id})">Löschen</button>
-            </div>`;
-        c.appendChild(row);
-    });
-}
-    
-document.addEventListener("DOMContentLoaded",renderUsers);
+    // Initiales Laden beim Seitenstart
+    document.addEventListener("DOMContentLoaded", renderUsers);
 </script>
 
 </body>
