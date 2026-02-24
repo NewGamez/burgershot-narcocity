@@ -278,3 +278,59 @@ function rejectAbm(id) {
     if(index !== -1) list[index].status = "abgelehnt";
     saveAbmeldungen(list);
 }
+
+/* ================= BEWERBER LOGIK ==================== */
+const getBewerber = () => JSON.parse(localStorage.getItem("bs_bewerber")) || [];
+const saveBewerber = data => localStorage.setItem("bs_bewerber", JSON.stringify(data));
+
+// Funktion für das Dashboard (Statistik)
+function updateBewerberCount() {
+    const count = getBewerber().filter(b => b.status === "offen").length;
+    if(document.getElementById("bewerberCounter")) {
+        document.getElementById("bewerberCounter").innerText = count + " neu";
+    }
+}
+
+// Neue Bewerbung speichern
+function submitBewerbung() {
+    const name = document.getElementById("bewName").value.trim();
+    const geb = document.getElementById("bewGeb").value.trim();
+    const tel = document.getElementById("bewTel").value.trim();
+    const zivi = document.getElementById("bewZivi").value;
+    const fraktion = document.getElementById("bewFraktion").value.trim();
+    const visum = document.getElementById("bewVisum").value.trim();
+    const aussehen = document.getElementById("bewAussehen").value;
+
+    if(!name || !tel || !visum) return alert("Name, Telefon und Visum müssen ausgefüllt sein!");
+
+    const list = getBewerber();
+    list.push({
+        id: Date.now(),
+        name, geb, tel, zivi, fraktion, visum, aussehen,
+        status: "offen",
+        datum: new Date().toLocaleDateString('de-DE')
+    });
+    
+    saveBewerber(list);
+    alert("Bewerbung für " + name + " wurde registriert!");
+    location.reload(); // Seite neu laden um Felder zu leeren und Stats zu updaten
+}
+
+// Management Aktionen
+function updateBewerberStatus(id, newStatus) {
+    const list = getBewerber();
+    const index = list.findIndex(b => b.id === id);
+    if(index !== -1) {
+        list[index].status = newStatus;
+        saveBewerber(list);
+        renderBewerberManagement();
+        updateBewerberCount();
+    }
+}
+
+function deleteBewerber(id) {
+    if(!confirm("Bewerber endgültig löschen?")) return;
+    const list = getBewerber().filter(b => b.id !== id);
+    saveBewerber(list);
+    renderBewerberManagement();
+}
