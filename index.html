@@ -129,6 +129,39 @@
             <button onclick="document.getElementById('announceDetailsModal').style.display='none'" style="background: #444;">Schließen</button>
         </div>
 
+        <div class="modal-backdrop" id="bewModal">
+    <div class="modal">
+        <h2>📝 Neue Bewerbung</h2>
+        <div class="modal-grid">
+            <input type="text" id="bewName" class="modal-input" placeholder="Name">
+            <input type="text" id="bewGeb" class="modal-input" placeholder="Geburtstag">
+        </div>
+        <div class="modal-grid" style="margin-top:10px;">
+            <input type="text" id="bewTel" class="modal-input" placeholder="Tel. Nr.">
+            <select id="bewZivi" class="modal-input" onchange="document.getElementById('bewFraktion').disabled = (this.value === 'Ja')">
+                <option value="Nein">Zivi? Nein</option>
+                <option value="Ja">Zivi? Ja</option>
+            </select>
+        </div>
+        <input type="text" id="bewFraktion" class="modal-input" placeholder="Vorherige Fraktion" style="width:100%; margin-top:10px;">
+        <div class="modal-grid" style="margin-top:10px;">
+            <input type="number" id="bewVisum" class="modal-input" placeholder="Visumstufe">
+            <select id="bewLook" class="modal-input">
+                <option value="" disabled selected>Erscheinungsbild (1-10)</option>
+                <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+                <option value="4">4</option><option value="5">5</option><option value="6">6</option>
+                <option value="7">7</option><option value="8">8</option><option value="9">9</option>
+                <option value="10">10</option>
+            </select>
+        </div>
+
+        <div class="modal-actions">
+            <button class="submit-btn" onclick="submitBewerbungUI()">Absenden</button>
+            <button class="cancel-btn" onclick="closeModal('bewModal')">Abbrechen</button>
+        </div>
+    </div>
+</div>
+
         <div class="panel" style="background: rgba(255,255,255,0.05); margin-bottom: 20px;">
             <textarea id="newAnnounceText" placeholder="Neuen Text hinzufügen..." style="width: 100%; height: 80px; margin-bottom: 10px;"></textarea>
             <button onclick="addAnnouncement()" style="width: 100%;">Vorlage hinzufügen</button>
