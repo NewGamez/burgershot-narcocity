@@ -74,6 +74,7 @@
                 <button class="nav-btn active" onclick="showTab('tab-accounts', this)">👤 Accountverwaltung</button>
                 <button class="nav-btn" onclick="showTab('tab-mitarbeiter', this)">📋 Mitarbeiterliste</button>
                 <button class="nav-btn" onclick="showTab('tab-abmeldungen', this)">📅 Abmeldungen</button>
+                <button class="nav-btn" onclick="showTab('tab-bewerber', this)">📑 Bewerbungen</button>
             </div>
         </div>
 
@@ -227,6 +228,31 @@
             list.appendChild(div);
         });
     }
+
+    function renderBewerbungen() {
+    const list = document.getElementById("bewManagementList");
+    list.innerHTML = "";
+    const data = JSON.parse(localStorage.getItem("bs_bewerbungen") || "[]");
+
+    data.reverse().forEach(b => {
+        const div = document.createElement("div");
+        div.className = "mgmt-data-row"; // Nutzt dein neues saubere Grid
+        let sClass = b.status === "angenommen" ? "status-badge-genehmigt" : (b.status === "abgelehnt" ? "status-badge-abgelehnt" : "status-badge-offen");
+        
+        div.innerHTML = `
+            <span><b>${b.name}</b> <br><small>Visum: ${b.visum}</small></span>
+            <span>Tel: ${b.tel}<br><small>${b.fraktion}</small></span>
+            <div><span class="role-badge ${sClass}">${b.status}</span></div>
+            <div class="action-cell">
+                ${b.status === 'offen' ? `
+                    <button class="rank-btn" onclick="setBewStatus(${b.id}, 'angenommen')">✔</button>
+                    <button class="rank-btn" onclick="setBewStatus(${b.id}, 'abgelehnt')">✖</button>
+                ` : ''}
+                <button class="delete-btn" onclick="deleteBewerbung(${b.id})">🗑</button>
+            </div>`;
+        list.appendChild(div);
+    });
+}
 
     function deleteMA(i) {
         let list = JSON.parse(localStorage.getItem("bs_ma_list") || "[]");
