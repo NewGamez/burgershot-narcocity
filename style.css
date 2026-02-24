@@ -562,3 +562,52 @@ textarea:focus {
 textarea::placeholder {
     color: rgba(255, 255, 255, 0.3);
 }
+
+/* Container für die Outfits */
+.outfit-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.outfit-card {
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Bild-Fix: Zeigt das ganze Bild ohne Abschneiden */
+.outfit-img {
+    width: 100%;
+    height: auto;
+    max-height: 400px; /* Begrenzt die Höhe, damit es nicht den Screen sprengt */
+    object-fit: contain; /* Zeigt das ganze Bild */
+    background: #111;
+    border-bottom: 2px solid var(--primary);
+}
+
+.outfit-info {
+    padding: 15px;
+}
+
+/* Liste untereinander anzeigen */
+.outfit-list {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0;
+}
+
+.outfit-list li {
+    padding: 4px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    font-size: 0.9rem;
+    color: #ddd;
+}
+
+.outfit-list li:last-child {
+    border-bottom: none;
+}
