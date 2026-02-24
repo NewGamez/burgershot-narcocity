@@ -77,6 +77,17 @@ requireLogin();
 
 document.addEventListener("DOMContentLoaded", () => {
 
+        // In index.html unter dem welcomeUser:
+    const offene = getOffeneAbmeldungenCount();
+    const abmBadge = document.getElementById("abmCounter");
+    if(abmBadge) {
+        abmBadge.innerText = offene + " offen";
+    }
+
+    // Bonus: Account-Zahl berechnen
+    const accounts = Object.keys(getAccounts()).length;
+    // Wenn du ein Element für "30 Accounts" hättest, könntest du es hier füllen
+
     const user = sessionStorage.getItem("loggedInUser");
     const accs = getAccounts();
 
