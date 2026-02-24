@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -6,15 +5,14 @@
     <title>Management Center | Burgershot</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Das Herzstück: Ein festes Grid für alle Listen */
-        /* Spalten: 25% Name, 25% Telefon/Rang, 25% Gehalt/Status, 25% Buttons */
+        /* Grid Layout für Listen */
         .grid-row {
             display: grid;
             grid-template-columns: 1.5fr 1.2fr 1fr 1fr; 
             gap: 15px;
             align-items: center;
             padding: 12px 15px;
-            border-bottom: 1px solid var(--glass-border);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
             color: white;
         }
 
@@ -22,32 +20,35 @@
             background: rgba(255, 255, 255, 0.05);
             font-weight: bold;
             color: var(--primary);
-            border-radius: 8px 8px 0 0;
             border-bottom: 2px solid var(--primary);
         }
 
-        /* Fix für die Badges: Sie brauchen Platz zum Atmen */
         .role-badge, .status-badge {
             display: inline-block;
             padding: 6px 12px;
             border-radius: 6px;
             font-size: 0.75rem;
             text-align: center;
-            min-width: 100px; /* Verhindert das Quetschen aus dem Screenshot */
+            min-width: 100px;
             text-transform: uppercase;
             font-weight: bold;
+            background: rgba(255,255,255,0.1);
         }
+
+        /* Status Farben */
+        .status-badge-offen { color: #faac15; border: 1px solid #faac15; }
+        .status-badge-genehmigt { color: #2ecc71; border: 1px solid #2ecc71; }
+        .status-badge-abgelehnt { color: #e74c3c; border: 1px solid #e74c3c; }
 
         .search-box {
             width: 100%;
             background: rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--glass-border);
+            border: 1px solid rgba(255,255,255,0.1);
             color: white;
             padding: 12px;
             border-radius: 8px;
             margin-bottom: 15px;
             outline: none;
-            font-family: inherit;
         }
 
         .action-btns {
@@ -58,6 +59,11 @@
 
         .mgmt-tab { display: none; }
         .mgmt-tab.active { display: block; }
+        
+        .nav-btn.active {
+            background: var(--primary) !important;
+            color: black !important;
+        }
     </style>
 </head>
 <body>
@@ -71,7 +77,7 @@
     <div class="management-wrapper">
         
         <div class="panel full-width" style="margin-bottom: 20px; padding: 15px;">
-            <div style="display: flex; gap: 10px;">
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                 <button class="nav-btn active" onclick="showTab('tab-accounts', this)">👤 Accountverwaltung</button>
                 <button class="nav-btn" onclick="showTab('tab-mitarbeiter', this)">📋 Mitarbeiterliste</button>
                 <button class="nav-btn" onclick="showTab('tab-abmeldungen', this)">📅 Abmeldungen</button>
@@ -83,7 +89,7 @@
             <div class="panel" style="margin-bottom: 20px;">
                 <div class="management-header">
                     <h2>👤 Accountverwaltung</h2>
-                    <div class="add-user-bar">
+                    <div class="add-user-bar" style="display: flex; gap: 10px; margin-top: 15px;">
                         <input type="text" id="newName" placeholder="Username">
                         <select id="newRole">
                             <option value="Mitarbeiter">Mitarbeiter</option>
@@ -110,8 +116,8 @@
         <div id="tab-mitarbeiter" class="mgmt-tab">
             <div class="panel" style="margin-bottom: 20px;">
                 <div class="management-header">
-                    <h2>📋 Mitarbeiterliste</h2>
-                    <div class="add-user-bar">
+                    <h2>📋 Mitarbeiterliste (Info)</h2>
+                    <div class="add-user-bar" style="display: flex; gap: 10px; margin-top: 15px;">
                         <input type="text" id="maName" placeholder="Name">
                         <input type="text" id="maTel" placeholder="Telefon">
                         <input type="number" id="maGehalt" placeholder="Gehalt">
@@ -119,9 +125,7 @@
                     </div>
                 </div>
             </div>
-
             <div class="panel">
-                <input type="text" class="search-box" placeholder="Mitarbeiter suchen..." onkeyup="filterGrid('mitarbeiterList', this.value)">
                 <div class="grid-row grid-header">
                     <span>Name</span>
                     <span>Telefon</span>
@@ -146,23 +150,24 @@
         </div>
 
         <div id="tab-bewerber" class="mgmt-tab">
-    <div class="panel">
-        <div class="panel-header">📝 Eingegangene Bewerbungen</div>
-        <div class="grid-row grid-header" style="grid-template-columns: 1.5fr 1fr 1fr 1.5fr;">
-            <span>Bewerber</span>
-            <span>Visum / Tel</span>
-            <span>Status</span>
-            <span style="text-align: right;">Aktionen</span>
+            <div class="panel">
+                <div class="panel-header">📝 Eingegangene Bewerbungen</div>
+                <div class="grid-row grid-header" style="grid-template-columns: 1.5fr 1fr 1fr 1.5fr;">
+                    <span>Bewerber</span>
+                    <span>Visum / Tel</span>
+                    <span>Status</span>
+                    <span style="text-align: right;">Aktionen</span>
+                </div>
+                <div id="bewerberListAdmin"></div>
+            </div>
         </div>
-        <div id="bewerberListAdmin"></div>
-    </div>
-</div>
 
     </div>
 </section>
 
 <script src="script.js"></script>
 <script>
+    // Initialisierung
     requireLogin();
     if(!isAdmin()) window.location.href = "index.html";
 
@@ -173,14 +178,12 @@
         document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
         btn.classList.add("active");
 
-        // WICHTIG: Hier wird die Liste beim Klick gerendert
         if(tabId === 'tab-bewerber') renderBewerberManagement();
         if(tabId === 'tab-accounts') renderUsers();
         if(tabId === 'tab-mitarbeiter') renderMitarbeiter();
         if(tabId === 'tab-abmeldungen') renderAbmeldungen();
     }
 
-    // Fix für Suche: Nutzt "grid" beim Einblenden
     function filterGrid(containerId, val) {
         const query = val.toLowerCase();
         const rows = document.getElementById(containerId).children;
@@ -189,55 +192,7 @@
         }
     }
 
-function renderBewerberManagement() {
-    const list = document.getElementById("bewerberListAdmin");
-    if(!list) return;
-    list.innerHTML = "";
-    
-    const bewerbungen = getBewerber(); // Holt die Daten aus dem localStorage
-
-    if(bewerbungen.length === 0) {
-        list.innerHTML = "<p style='padding:20px; opacity:0.5; text-align:center;'>Keine Bewerbungen vorhanden.</p>";
-        return;
-    }
-
-    bewerbungen.reverse().forEach(b => {
-        const div = document.createElement("div");
-        div.className = "grid-row";
-        // Wir nutzen ein 4-Spalten Layout: Name/Geb | Kontakt/Visum | Status/Fraktion | Aktionen
-        div.style.gridTemplateColumns = "1.5fr 1.2fr 1fr 1fr"; 
-        
-        let sClass = b.status === "angenommen" ? "status-badge-genehmigt" : (b.status === "abgelehnt" ? "status-badge-abgelehnt" : "status-badge-offen");
-        
-        div.innerHTML = `
-            <div>
-                <span style="font-weight:bold; color:var(--primary);">${b.name}</span><br>
-                <small style="opacity:0.7;">📅 Geb: ${b.geb || 'Nicht angegeben'}</small>
-            </div>
-            <div style="font-size:0.85rem;">
-                📱 ${b.tel}<br>
-                <small>Visum: <b>${b.visum}</b> | ⭐ Erscheinungsbild: <b>${b.aussehen}/10</b></small>
-            </div>
-            <div>
-                <span class="status-badge ${sClass}">${b.status}</span><br>
-                <small style="opacity:0.6; font-size:0.7rem;">
-                    ${b.zivi === 'Ja' ? '✅ Zivilist' : '🏢 Fraktion: ' + (b.fraktion || 'Keine')}
-                </small>
-            </div>
-            <div class="action-btns">
-                ${b.status === 'offen' ? `
-                    <button class="rank-btn" onclick="updateBewerberStatus(${b.id}, 'angenommen')" title="Annehmen">✔</button>
-                    <button class="rank-btn" onclick="updateBewerberStatus(${b.id}, 'abgelehnt')" title="Ablehnen">✖</button>
-                ` : ''}
-                <button class="delete-btn" onclick="deleteBewerber(${b.id})" title="Löschen">🗑</button>
-            </div>
-        `;
-        list.appendChild(div);
-    });
-}
-
-// In der showTab Funktion der management.html ergänzen:
-if(tabId === 'tab-bewerber') renderBewerberManagement();
+    /* RENDER FUNKTIONEN */
 
     function renderUsers() {
         const list = document.getElementById("userList");
@@ -250,12 +205,30 @@ if(tabId === 'tab-bewerber') renderBewerberManagement();
             div.className = "grid-row";
             div.innerHTML = `
                 <span style="font-weight:bold;">${name}</span>
-                <div><span class="role-badge ${accs[name].role.toLowerCase()}">${accs[name].role}</span></div>
+                <div><span class="role-badge">${accs[name].role}</span></div>
                 <span style="opacity:0.5; font-size:0.8rem;">Aktiv</span>
                 <div class="action-btns">
-                    <button class="rank-btn" onclick="uprank('${name}');renderUsers()">⬆</button>
-                    <button class="rank-btn" onclick="derank('${name}');renderUsers()">⬇</button>
-                    <button class="delete-btn" onclick="removeUser('${name}');renderUsers()">🗑</button>
+                    <button class="rank-btn" onclick="uprank('${name}'); renderUsers();" title="Befördern">⬆</button>
+                    <button class="rank-btn" onclick="derank('${name}'); renderUsers();" title="Degradieren">⬇</button>
+                    <button class="delete-btn" onclick="removeUser('${name}'); renderUsers();" title="Löschen">🗑</button>
+                </div>`;
+            list.appendChild(div);
+        });
+    }
+
+    function renderMitarbeiter() {
+        const list = document.getElementById("mitarbeiterList");
+        list.innerHTML = "";
+        const data = JSON.parse(localStorage.getItem("bs_ma_list") || "[]");
+        data.forEach((m, i) => {
+            const div = document.createElement("div");
+            div.className = "grid-row";
+            div.innerHTML = `
+                <span>${m.name}</span>
+                <span>${m.tel || '-'}</span>
+                <span style="color: #2ecc71;">${m.gehalt ? m.gehalt + ' €' : '-'}</span>
+                <div class="action-btns">
+                    <button class="delete-btn" onclick="deleteMA(${i})">Entfernen</button>
                 </div>`;
             list.appendChild(div);
         });
@@ -266,34 +239,13 @@ if(tabId === 'tab-bewerber') renderBewerberManagement();
         const tel = document.getElementById("maTel").value.trim();
         const gehalt = document.getElementById("maGehalt").value.trim();
         if(!name) return;
-
         let list = JSON.parse(localStorage.getItem("bs_ma_list") || "[]");
         list.push({name, tel, gehalt});
         localStorage.setItem("bs_ma_list", JSON.stringify(list));
-        
         document.getElementById("maName").value = "";
         document.getElementById("maTel").value = "";
         document.getElementById("maGehalt").value = "";
         renderMitarbeiter();
-    }
-
-    function renderMitarbeiter() {
-        const list = document.getElementById("mitarbeiterList");
-        list.innerHTML = "";
-        const data = JSON.parse(localStorage.getItem("bs_ma_list") || "[]");
-
-        data.forEach((m, i) => {
-            const div = document.createElement("div");
-            div.className = "grid-row";
-            div.innerHTML = `
-                <span>${m.name}</span>
-                <span>${m.tel || '-'}</span>
-                <span style="color: #2ecc71; font-weight:bold;">${m.gehalt ? m.gehalt + ' €' : '-'}</span>
-                <div class="action-btns">
-                    <button class="delete-btn" onclick="deleteMA(${i})">Entfernen</button>
-                </div>`;
-            list.appendChild(div);
-        });
     }
 
     function deleteMA(i) {
@@ -309,22 +261,52 @@ if(tabId === 'tab-bewerber') renderBewerberManagement();
         getAbmeldungen().reverse().forEach(a => {
             const div = document.createElement("div");
             div.className = "grid-row";
-            let sClass = a.status === "genehmigt" ? "status-badge-genehmigt" : (a.status === "abgelehnt" ? "status-badge-abgelehnt" : "status-badge-offen");
+            let sClass = `status-badge-${a.status}`;
             div.innerHTML = `
                 <span style="font-weight:bold;">${a.user}</span>
                 <span style="font-size:0.85rem;">${a.von} - ${a.bis}</span>
                 <div><span class="status-badge ${sClass}">${a.status}</span></div>
                 <div class="action-btns">
                     ${a.status === 'offen' ? `
-                        <button class="rank-btn" onclick="approveAbm(${a.id});renderAbmeldungen()">✔</button>
-                        <button class="rank-btn" onclick="rejectAbm(${a.id});renderAbmeldungen()">✖</button>
+                        <button class="rank-btn" onclick="approveAbm(${a.id}); renderAbmeldungen()">✔</button>
+                        <button class="rank-btn" onclick="rejectAbm(${a.id}); renderAbmeldungen()">✖</button>
                     ` : ''}
-                    <button class="delete-btn" onclick="deleteAbm(${a.id});renderAbmeldungen()">🗑</button>
+                    <button class="delete-btn" onclick="deleteAbm(${a.id}); renderAbmeldungen()">🗑</button>
                 </div>`;
             list.appendChild(div);
         });
     }
 
+    function renderBewerberManagement() {
+        const list = document.getElementById("bewerberListAdmin");
+        if(!list) return;
+        list.innerHTML = "";
+        const bewerbungen = getBewerber();
+        if(bewerbungen.length === 0) {
+            list.innerHTML = "<p style='padding:20px; opacity:0.5; text-align:center;'>Keine Bewerbungen vorhanden.</p>";
+            return;
+        }
+        bewerbungen.reverse().forEach(b => {
+            const div = document.createElement("div");
+            div.className = "grid-row";
+            div.style.gridTemplateColumns = "1.5fr 1.2fr 1fr 1fr"; 
+            let sClass = `status-badge-${b.status}`;
+            div.innerHTML = `
+                <div><span style="color:var(--primary); font-weight:bold;">${b.name}</span><br><small>Geb: ${b.geb}</small></div>
+                <div>📱 ${b.tel}<br><small>Visum: ${b.visum}</small></div>
+                <div><span class="status-badge ${sClass}">${b.status}</span></div>
+                <div class="action-btns">
+                    ${b.status === 'offen' ? `
+                        <button class="rank-btn" onclick="updateBewerberStatus(${b.id}, 'genehmigt')">✔</button>
+                        <button class="rank-btn" onclick="updateBewerberStatus(${b.id}, 'abgelehnt')">✖</button>
+                    ` : ''}
+                    <button class="delete-btn" onclick="deleteBewerber(${b.id})">🗑</button>
+                </div>`;
+            list.appendChild(div);
+        });
+    }
+
+    // Beim Laden User anzeigen
     document.addEventListener("DOMContentLoaded", renderUsers);
 </script>
 </body>
