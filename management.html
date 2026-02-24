@@ -141,14 +141,21 @@ function renderUsers(){
     });
 }
 
-function addUser(){
-    const name=document.getElementById("newName").value.trim();
-    const role=document.getElementById("newRole").value;
-    const accs=getAccounts();
-    if(name && !accs[name]){
-        accs[name]={password:"0000",role,isFirstLogin:true};
+function addUser() {
+    const name = document.getElementById("newName").value.trim();
+    const role = document.getElementById("newRole").value;
+    const accs = getAccounts();
+    
+    if (name && !accs[name]) {
+        // Neues Konto mit Standard-PW und Pflicht zur Änderung
+        accs[name] = { 
+            password: "0000", 
+            role: role, 
+            isFirstLogin: true 
+        };
         saveAccounts(accs);
         renderUsers();
+        alert("Mitarbeiter " + name + " wurde angelegt. Standard-PW: 0000");
     }
 }
 
