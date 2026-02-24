@@ -78,6 +78,33 @@ function showTab(tabId) {
     event.currentTarget.classList.add('active');
 }
 
+function addUser() {
+    const name = document.getElementById("newName").value.trim();
+    const role = document.getElementById("newRole").value;
+    const accs = getAccounts();
+    
+    if (!name) return alert("Bitte einen Namen eingeben!");
+    if (accs[name]) return alert("Dieser Account existiert bereits!");
+
+    // Account erstellen
+    accs[name] = { 
+        password: "0000", 
+        role: role, 
+        isFirstLogin: true 
+    };
+    
+    saveAccounts(accs);
+    
+    // UI Update: Falls wir auf der Management-Seite sind, Liste neu zeichnen
+    if (typeof renderUsers === "function") {
+        renderUsers();
+    }
+
+    // Felder leeren
+    document.getElementById("newName").value = "";
+    alert("Mitarbeiter " + name + " wurde angelegt. Standard-PW: 0000");
+}
+
 /* ANNOUNCEMENTS LOGIK */
 const getAnnouncements = () => JSON.parse(localStorage.getItem("bs_announcements")) || [
     { id: 1, text: "/businessannounce BURGERSHOT – Wo Geschmack über den Dächern von Los Santos lebt\nSaftige Burger, kalte Drinks & die beste Aussicht der Stadt auf unserer Dachterrasse!\nOb Date, Feierabend oder einfach Hunger – wir servieren Good Vibes & Great Burgers!\nBurgerShot – Come hungry, leave happy!" }
