@@ -163,30 +163,32 @@
     ];
 
     function renderOutfits() {
-        const list = document.getElementById("outfitList");
-        list.innerHTML = "";
-        const admin = isAdmin();
+    const container = document.getElementById("outfitContainer"); // ID deines Containers
+    if (!container) return;
+    
+    const outfits = JSON.parse(localStorage.getItem("bs_outfits")) || [];
+    container.innerHTML = "";
 
-        if(admin) document.getElementById("adminOutfitPanel").style.display = "block";
-
-        outfits.forEach((o, index) => {
-            const div = document.createElement("div");
-            div.className = "outfit-card";
-            const items = o.desc.split(',').map(item => `<li>${item.trim()}</li>`).join('');
-
-            div.innerHTML = `
-                <div class="outfit-image">
-                    <img src="${o.img}" alt="${o.role}">
-                </div>
-                <div class="outfit-info">
-                    ${admin ? `<button class="delete-outfit" onclick="deleteOutfit(${index})">Löschen</button>` : ''}
-                    <h2>👔 ${o.role}</h2>
-                    <ul>${items}</ul>
-                </div>
-            `;
-            list.appendChild(div);
-        });
-    }
+    outfits.forEach((outfit, index) => {
+        // Trenne die Beschreibung am Komma in ein Array
+        const items = outfit.description.split(',').map(item => item.trim());
+        
+        const card = document.createElement("div");
+        card.className = "outfit-card";
+        
+        card.innerHTML = `
+            <img src="${outfit.image}" class="outfit-img" alt="${outfit.name}">
+            <div class="outfit-info">
+                <h3 style="color:var(--primary); margin-bottom: 5px;">👔 ${outfit.name}</h3>
+                <ul class="outfit-list">
+                    ${items.map(i => `<li>${i}</li>`).join('')}
+                </ul>
+                ${isAdmin() ? `<button onclick="deleteOutfit(${index})" class="delete-btn" style="width:100%; margin-top:10px;">Löschen</button>` : ''}
+            </div>
+        `;
+        container.appendChild(card);
+    });
+}
 
     function addOutfit() {
         const role = document.getElementById("outfitRole").value;
