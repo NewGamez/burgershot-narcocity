@@ -484,3 +484,23 @@ select:focus {
     background: var(--primary);
     border-radius: 10px;
 }
+
+.nav-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--glass-border);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.nav-btn:hover {
+    background: rgba(250, 172, 21, 0.2);
+}
+
+.nav-btn.active {
+    background: var(--primary);
+    color: black;
+    border-color: var(--primary);
+}
