@@ -162,6 +162,56 @@ function renderAnnounceDetails() {
     });
 }
 
+// Initialisierung
+let bewerbungen = JSON.parse(localStorage.getItem("bs_bewerbungen")) || [];
+
+function saveBewerbungen() {
+    localStorage.setItem("bs_bewerbungen", JSON.stringify(bewerbungen));
+    updateCounters(); // Aktualisiert die Zahlen auf dem Dashboard
+}
+
+function submitBewerbungUI() {
+    const name = document.getElementById("bewName").value;
+    const geb = document.getElementById("bewGeb").value;
+    const tel = document.getElementById("bewTel").value;
+    const zivi = document.getElementById("bewZivi").value;
+    const fraktion = document.getElementById("bewFraktion").value;
+    const visum = document.getElementById("bewVisum").value;
+    const look = document.getElementById("bewLook").value;
+
+    if(!name || !geb) return alert("Name und Geburtstag sind Pflicht!");
+
+    const neueBew = {
+        id: Date.now(),
+        name, geb, tel, zivi, 
+        fraktion: zivi === "Ja" ? "Keine (Zivi)" : fraktion,
+        visum, look,
+        status: "offen",
+        datum: new Date().toLocaleDateString()
+    };
+
+    bewerbungen.push(neueBew);
+    saveBewerbungen();
+    closeModal('bewModal');
+    alert("Bewerbung erfolgreich abgesendet!");
+}
+
+// Management Funktionen
+function setBewStatus(id, newStatus) {
+    const index = bewerbungen.findIndex(b => b.id === id);
+    if(index !== -1) {
+        bewerbungen[index].status = newStatus;
+        saveBewerbungen();
+        if(typeof renderBewerbungen === "function") renderBewerbungen();
+    }
+}
+
+function deleteBewerbung(id) {
+    bewerbungen = bewerbungen.filter(b => b.id !== id);
+    saveBewerbungen();
+    if(typeof renderBewerbungen === "function") renderBewerbungen();
+}
+
 // Funktion zum Öffnen des Panels vom Dashboard aus
 function openAnnouncePanel() {
     document.getElementById('announceDetailsModal').style.display = 'flex';
