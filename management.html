@@ -141,6 +141,11 @@ function renderUsers(){
     });
 }
 
+<div class="panel" style="margin-bottom: 20px;">
+    <div class="panel-header">🔍 Mitarbeiter suchen</div>
+    <input type="text" id="userSearch" placeholder="Name eingeben..." onkeyup="filterUsers()" style="margin-top: 10px;">
+</div>
+
 function addUser() {
     const name = document.getElementById("newName").value.trim();
     const role = document.getElementById("newRole").value;
@@ -157,6 +162,22 @@ function addUser() {
         renderUsers();
         alert("Mitarbeiter " + name + " wurde angelegt. Standard-PW: 0000");
     }
+}
+
+    function filterUsers() {
+    const query = document.getElementById("userSearch").value.toLowerCase();
+    const rows = document.querySelectorAll("#userList .table-row");
+
+    rows.forEach(row => {
+        // Wir schauen uns das erste span in der Zeile an (da steht der Name)
+        const name = row.querySelector("span").innerText.toLowerCase();
+        
+        if (name.includes(query)) {
+            row.style.display = "flex";
+        } else {
+            row.style.display = "none";
+        }
+    });
 }
 
 function removeUser(name){
