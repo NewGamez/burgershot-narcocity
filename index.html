@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="UTF-8">
-<title>Burgershot Intern</title>
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <title>Burgershot Intern | Dashboard</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -16,20 +16,38 @@
 </header>
 
 <section class="dashboard">
+    <div class="panel full-width" style="display: flex; justify-content: space-between; align-items: center; padding: 30px; margin-bottom: 30px; cursor: default;">
+        <div style="display: flex; align-items: center; gap: 20px;">
+            <img src="assets/burgershot-logo.png" alt="Logo" style="width: 60px;">
+            <div>
+                <h1 style="color: var(--primary); font-size: 1.5rem;">Willkommen bei Burgershot Intern</h1>
+                <p style="opacity: 0.7;">Teamverwaltung & Organisation auf einen Blick.</p>
+            </div>
+        </div>
+        <div style="display: flex; gap: 40px; text-align: center;">
+            <div>
+                <div id="accCount" style="font-size: 1.8rem; font-weight: bold; color: var(--primary);">0</div>
+                <div style="font-size: 0.7rem; opacity: 0.6; text-transform: uppercase;">Accounts</div>
+            </div>
+            <div>
+                <div id="heroAbmCount" style="font-size: 1.8rem; font-weight: bold; color: var(--primary);">0</div>
+                <div style="font-size: 0.7rem; opacity: 0.6; text-transform: uppercase;">Offene Abmeldungen</div>
+            </div>
+        </div>
+    </div>
 
     <div class="grid-top">
-
         <div class="panel big">
             <div class="panel-header">📢 NEWS & INFOS</div>
-            <p>Wichtige Ankündigungen.</p>
+            <p>Wichtige Ankündigungen für das Team.</p>
         </div>
 
-        <div class="panel big">
+        <div class="panel big" onclick="openAbmModal()" style="cursor: pointer;">
             <div class="panel-top">
                 <span class="panel-header">📅 ABMELDUNGEN</span>
-                <span id="abmCounter" class="badge">0 aktiv</span>
+                <span id="abmCounter" class="badge">0 offen</span>
             </div>
-            <p>Abwesenheiten & Urlaubsanträge.</p>
+            <p>Klicke hier, um eine neue Abmeldung einzureichen.</p>
         </div>
 
         <div class="panel big">
@@ -37,102 +55,55 @@
                 <span class="panel-header">📝 BEWERBER</span>
                 <span id="bewerberCounter" class="badge">0 neu</span>
             </div>
-            <p>Neue Bewerbungen prüfen.</p>
+            <p>Neue Bewerbungen im System.</p>
         </div>
 
         <div class="panel big center">
             <div class="panel-header">📋 Service</div>
         </div>
-
     </div>
 
-    <div class="grid-bottom">
-        <div class="panel small">🍔<br>Orders</div>
-        <div class="panel small">🛒<br>Lager</div>
-        <div class="panel small">🎵<br>Musik</div>
-        <div class="panel small">👕<br>Kleidung</div>
+    <div class="panel full-width" style="margin-top: 30px; cursor: default;">
+        <div class="panel-header">🕒 MEINE AKTUELLEN ANTRÄGE</div>
+        <div id="meineAbmeldungenList" style="margin-top: 15px;">
+            </div>
     </div>
 
-    <div id="adminPanel" class="management-bar"
-         onclick="location.href='management.html'">
+    <div id="adminPanel" class="management-bar" onclick="location.href='management.html'" style="margin-top: 30px;">
         <div>⭐ Management Center</div>
         <div>Personalverwaltung & Systemsteuerung</div>
     </div>
-
 </section>
 
-<!-- PIN MODAL -->
-<div class="modal-backdrop" id="pinModal">
+<div class="modal-backdrop" id="abmModal">
     <div class="modal">
-        <h2>🔒 PIN ändern</h2>
-        <p>Bitte setze deine persönliche 4-stellige PIN.</p>
-        <input type="password" id="newPin" maxlength="4" placeholder="Neue PIN">
-        <button onclick="savePin()">Speichern</button>
+        <h2>📅 Abmeldung schreiben</h2>
+        <input type="text" id="abmVon" placeholder="Von (z.B. 24.02.)">
+        <input type="text" id="abmBis" placeholder="Bis (z.B. 01.03.)">
+        <textarea id="abmGrund" placeholder="Grund für die Abwesenheit..." style="width: 100%; height: 100px; margin-top: 10px; padding: 10px;"></textarea>
+        <div style="display: flex; gap: 10px; margin-top: 20px;">
+            <button onclick="submitAbmeldungUI()" style="flex: 1;">Absenden</button>
+            <button onclick="closeAbmModal()" style="background: #444; flex: 1;">Abbrechen</button>
+        </div>
     </div>
 </div>
 
 <script src="script.js"></script>
 <script>
-requireLogin();
-
-document.addEventListener("DOMContentLoaded", () => {
-    // ... dein bestehender Login-Check ...
-
-    // 1. Zähler für die Kopfzeile (Bild 1)
-    const accountsAnzahl = Object.keys(getAccounts()).length;
-    const offeneAbmeldungen = getOffeneAbmeldungenCount();
-
-    // Diese IDs müssen in deinem HTML existieren (z.B. <span id="accCount">)
-    if(document.getElementById("accCount")) 
-        document.getElementById("accCount").innerText = accountsAnzahl;
+    requireLogin();
     
-    // 2. Zähler für die Abmeldungs-Kachel (Bild 2 - die gelbe Badge)
-    const abmCounter = document.getElementById("abmCounter");
-    if (abmCounter) {
-        abmCounter.innerText = offeneAbmeldungen + " offen";
-    }
+    document.addEventListener("DOMContentLoaded", () => {
+        const user = sessionStorage.getItem("loggedInUser");
+        document.getElementById("welcomeUser").innerText = "Eingeloggt als: " + user;
 
-    // 3. Eigene Abmeldungen rendern (falls das Panel auf dem Dashboard ist)
-    if(typeof renderMeineAbmeldungen === "function") {
+        if (isAdmin()) {
+            document.getElementById("adminPanel").style.display = "flex";
+        }
+
+        // Live-Daten laden
+        updateDashboardStats();
         renderMeineAbmeldungen();
-    }
-});
-
-    document.getElementById("welcomeUser").innerText = "Eingeloggt als: " + user;
-
-    if (isAdmin()) {
-        document.getElementById("adminPanel").style.display = "flex";
-    }
-
-    if (accs[user].isFirstLogin === true) {
-        document.getElementById("pinModal").classList.add("active");
-    }
-
-    document.getElementById("abmCounter").innerText =
-        getAktiveAbmeldungenCount() + " aktiv";
-
-    document.getElementById("bewerberCounter").innerText =
-        getNeueBewerberCount() + " neu";
-});
-
-function savePin() {
-    const pin = document.getElementById("newPin").value.trim();
-    const user = sessionStorage.getItem("loggedInUser");
-    const accs = getAccounts();
-
-    if (!/^\d{4}$/.test(pin)) {
-        alert("PIN muss genau 4 Zahlen enthalten.");
-        return;
-    }
-
-    accs[user].password = pin;
-    accs[user].isFirstLogin = false;
-    saveAccounts(accs);
-
-    document.getElementById("pinModal").classList.remove("active");
-    alert("PIN erfolgreich gesetzt!");
-}
+    });
 </script>
-
 </body>
 </html>
