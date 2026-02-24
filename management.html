@@ -75,6 +75,7 @@
                 <button class="nav-btn active" onclick="showTab('tab-accounts', this)">👤 Accountverwaltung</button>
                 <button class="nav-btn" onclick="showTab('tab-mitarbeiter', this)">📋 Mitarbeiterliste</button>
                 <button class="nav-btn" onclick="showTab('tab-abmeldungen', this)">📅 Abmeldungen</button>
+                <button class="nav-btn" onclick="showTab('tab-bewerber', this)">📝 Bewerbungen</button>
             </div>
         </div>
 
@@ -109,7 +110,7 @@
         <div id="tab-mitarbeiter" class="mgmt-tab">
             <div class="panel" style="margin-bottom: 20px;">
                 <div class="management-header">
-                    <h2>📋 Mitarbeiterliste (IC)</h2>
+                    <h2>📋 Mitarbeiterliste</h2>
                     <div class="add-user-bar">
                         <input type="text" id="maName" placeholder="Name">
                         <input type="text" id="maTel" placeholder="Telefon">
@@ -144,6 +145,19 @@
             </div>
         </div>
 
+        <div id="tab-bewerber" class="mgmt-tab">
+    <div class="panel">
+        <div class="panel-header">📝 Eingegangene Bewerbungen</div>
+        <div class="grid-row grid-header" style="grid-template-columns: 1.5fr 1fr 1fr 1.5fr;">
+            <span>Bewerber</span>
+            <span>Visum / Tel</span>
+            <span>Status</span>
+            <span style="text-align: right;">Aktionen</span>
+        </div>
+        <div id="bewerberListAdmin"></div>
+    </div>
+</div>
+
     </div>
 </section>
 
@@ -171,6 +185,40 @@
             row.style.display = row.innerText.toLowerCase().includes(query) ? "grid" : "none";
         }
     }
+
+    function renderBewerberManagement() {
+    const list = document.getElementById("bewerberListAdmin");
+    if(!list) return;
+    list.innerHTML = "";
+    
+    getBewerber().reverse().forEach(b => {
+        const div = document.createElement("div");
+        div.className = "grid-row";
+        div.style.gridTemplateColumns = "1.5fr 1fr 1fr 1.5fr";
+        
+        let sClass = b.status === "angenommen" ? "status-badge-genehmigt" : (b.status === "abgelehnt" ? "status-badge-abgelehnt" : "status-badge-offen");
+        
+        div.innerHTML = `
+            <div>
+                <span style="font-weight:bold;">${b.name}</span><br>
+                <small style="opacity:0.6;">Zivi: ${b.zivi} ${b.fraktion ? '('+b.fraktion+')' : ''} | Optik: ${b.aussehen}/10</small>
+            </div>
+            <div style="font-size:0.85rem;">V: ${b.visum}<br>Tel: ${b.tel}</div>
+            <div><span class="status-badge ${sClass}">${b.status}</span></div>
+            <div class="action-btns">
+                ${b.status === 'offen' ? `
+                    <button class="rank-btn" onclick="updateBewerberStatus(${b.id}, 'angenommen')">✔</button>
+                    <button class="rank-btn" onclick="updateBewerberStatus(${b.id}, 'abgelehnt')">✖</button>
+                ` : ''}
+                <button class="delete-btn" onclick="deleteBewerber(${b.id})">🗑</button>
+            </div>
+        `;
+        list.appendChild(div);
+    });
+}
+
+// In der showTab Funktion der management.html ergänzen:
+if(tabId === 'tab-bewerber') renderBewerberManagement();
 
     function renderUsers() {
         const list = document.getElementById("userList");
