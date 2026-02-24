@@ -504,3 +504,33 @@ select:focus {
     color: black;
     border-color: var(--primary);
 }
+
+/* Grundzustand für das Announcement-Panel */
+.announcement-card {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid var(--glass-border) !important; /* Standard Rahmen */
+    position: relative;
+    overflow: hidden;
+}
+
+/* Hover-Effekt: Goldener Rahmen und leichtes Leuchten */
+.announcement-card:hover {
+    border-color: #ffcc00 !important; /* Dein Gold-Ton */
+    box-shadow: 0 0 15px rgba(255, 204, 0, 0.2);
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* Der kleine Text unten soll erst beim Hovern deutlicher werden */
+.hover-hint {
+    opacity: 0.4;
+    display: block;
+    margin-top: 10px;
+    transition: opacity 0.3s ease;
+}
+
+.announcement-card:hover .hover-hint {
+    opacity: 1;
+    color: #ffcc00;
+}
