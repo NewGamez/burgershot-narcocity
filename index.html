@@ -91,12 +91,17 @@
 <div class="modal-backdrop" id="abmModal">
     <div class="modal">
         <h2>📅 Abmeldung schreiben</h2>
-        <input type="text" id="abmVon" placeholder="Von (z.B. 24.02.)">
-        <input type="text" id="abmBis" placeholder="Bis (z.B. 01.03.)">
-        <textarea id="abmGrund" placeholder="Grund für die Abwesenheit..." style="width: 100%; height: 100px; margin-top: 10px; padding: 10px;"></textarea>
-        <div style="display: flex; gap: 10px; margin-top: 20px;">
-            <button onclick="submitAbmeldungUI()" style="flex: 1;">Absenden</button>
-            <button onclick="closeAbmModal()" style="background: #444; flex: 1;">Abbrechen</button>
+        
+        <div class="modal-grid">
+            <input type="text" id="abmVon" class="modal-input" placeholder="Von (z.B. 24.02.)">
+            <input type="text" id="abmBis" class="modal-input" placeholder="Bis (z.B. 01.03.)">
+        </div>
+
+        <textarea id="abmGrund" class="modal-textarea" placeholder="Grund für die Abwesenheit..."></textarea>
+
+        <div class="modal-actions">
+            <button class="submit-btn" onclick="submitAbmeldungUI()">Absenden</button>
+            <button class="cancel-btn" onclick="closeAbmModal()">Abbrechen</button>
         </div>
     </div>
 </div>
