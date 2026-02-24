@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Burgershot | Announcements</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Spezielles Styling für das Eingabefeld */
+        .custom-textarea {
+            width: 100%;
+            height: 120px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 15px;
+            border-radius: 12px;
+            resize: none;
+            outline: none;
+            font-family: inherit;
+        }
+        .custom-textarea:focus { border-color: var(--primary); }
+
+        /* Das Grid für die Karten */
+        .announce-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="index.html" class="brand-link">🍔 Burgershot Intern</a>
+    <button onclick="location.href='index.html'">Zurück zum Dashboard</button>
+</header>
+
+<section class="dashboard">
+    <div class="management-header">
+        <h2>📢 Business Announcements</h2>
+        <p style="opacity: 0.6;">Verwalte Werbetexte und Vorlagen für das Team.</p>
+    </div>
+
+    <div class="panel full-width" style="cursor: default; margin-bottom: 40px;">
+        <div class="panel-header">➕ Neue Vorlage erstellen</div>
+        <textarea id="newAnnounceText" class="custom-textarea" placeholder="Schreibe hier den Text für das Business..."></textarea>
+        <button onclick="addAnnouncement()" style="width: 100%; margin-top: 15px; padding: 15px;">Vorlage hinzufügen</button>
+    </div>
+
+    <hr style="border: 0; border-top: 1px solid var(--glass-border); margin-bottom: 40px;">
+
+    <div id="announceGrid" class="announce-grid"></div>
+</section>
+
+<script src="script.js"></script>
+<script>
+    // Beim Laden direkt die Liste anzeigen
+    document.addEventListener("DOMContentLoaded", () => {
+        requireLogin();
+        renderAnnouncementsPage();
+    });
+
+    function renderAnnouncementsPage() {
+        const container = document.getElementById("announceGrid");
+        if (!container) return;
+        container.innerHTML = "";
+        
+        const list = getAnnouncements();
+        const admin = isAdmin();
+
+        list.reverse().forEach(a => {
+            const div = document.createElement("div");
+            div.className = "panel";
+            div.style.display = "flex";
+            div.style.flexDirection = "column";
+            div.style.minHeight = "250px";
+
+            // Sauberes Escaping für Zeilenumbrüche
+            const cleanText = a.text.replace(/`/g, "\\`").replace(/\n/g, "\\n");
+
+            div.innerHTML = `
+                <div style="flex-grow: 1; font-size: 0.95rem; line-height: 1.6; white-space: pre-line; opacity: 0.9;">
+                    ${a.text}
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button onclick="copyText(\`${cleanText}\`)" style="flex: 2;">Text kopieren</button>
+                    ${admin ? `<button onclick="deleteAnnouncementPage(${a.id})" style="background: rgba(231, 76, 60, 0.2); border: 1px solid #e74c3c; color: #e74c3c; flex: 1;">Löschen</button>` : ''}
+                </div>
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    function deleteAnnouncementPage(id) {
+        if(confirm("Diese Vorlage wirklich löschen?")) {
+            deleteAnnouncement(id); // Nutzt deine Funktion aus script.js
+            renderAnnouncementsPage(); // UI neu laden
+        }
+    }
+</script>
+</body>
+</html>
