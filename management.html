@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>Management Center | Burgershot Intern</title>
+    <title>Management Center | Burgershot</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -16,53 +16,65 @@
     <section class="management-wrapper">
         
         <div class="panel full-width" style="margin-bottom: 20px; padding: 15px;">
-            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                <button class="nav-btn active" onclick="showTab('tab-personal', this)">👥 Personalverwaltung</button>
-                <button class="nav-btn" onclick="showTab('tab-abmeldungen', this)">📅 Alle Abmeldungen</button>
-                <button class="nav-btn" onclick="showTab('tab-bewerber', this)">📝 Bewerbungen</button>
-                <button class="nav-btn" onclick="location.href='announcements.html'" style="background: #444;">📢 Werbetexte</button>
+            <div style="display: flex; gap: 10px;">
+                <button class="nav-btn active" onclick="showTab('tab-accounts', this)">👤 Accountverwaltung</button>
+                <button class="nav-btn" onclick="showTab('tab-mitarbeiter', this)">📋 Mitarbeiterliste</button>
+                <button class="nav-btn" onclick="showTab('tab-abmeldungen', this)">📅 Abmeldungen</button>
             </div>
         </div>
 
-        <div id="tab-personal" class="mgmt-tab">
+        <div id="tab-accounts" class="mgmt-tab">
             <div class="panel" style="margin-bottom: 20px;">
                 <div class="management-header">
-                    <h2>👥 Personalverwaltung</h2>
+                    <h2>👤 Accountverwaltung</h2>
                     <div class="add-user-bar">
-                        <input type="text" id="newName" placeholder="Name für Account">
+                        <input type="text" id="newName" placeholder="Username">
                         <select id="newRole">
                             <option value="Mitarbeiter">Mitarbeiter</option>
                             <option value="Management">Management</option>
                             <option value="Cheffe">Cheffe</option>
                         </select>
-                        <button onclick="addUser()">Einstellen</button>
+                        <button onclick="addUser()">Erstellen</button>
                     </div>
                 </div>
             </div>
 
             <div class="panel">
-                <div class="panel-header">🔍 Mitarbeiter suchen</div>
-                <input type="text" id="userSearch" placeholder="Name eingeben..." onkeyup="filterUsers()" style="width: 100%; margin: 10px 0;">
-                
-                <div id="userList" class="account-table">
+                <div class="panel-header">🔍 Accounts durchsuchen</div>
+                <input type="text" id="accSearch" placeholder="Name eingeben..." onkeyup="filterTable('userList', this.value)" style="width: 100%; margin: 10px 0;">
+                <div id="userList" class="account-table"></div>
+            </div>
+        </div>
+
+        <div id="tab-mitarbeiter" class="mgmt-tab" style="display: none;">
+            <div class="panel" style="margin-bottom: 20px;">
+                <div class="management-header">
+                    <h2>📋 Mitarbeiterliste (IC-Infos)</h2>
+                    <div class="add-user-bar">
+                        <input type="text" id="maName" placeholder="Name">
+                        <input type="text" id="maTel" placeholder="Telefon">
+                        <input type="text" id="maGehalt" placeholder="Gehalt (€)">
+                        <button onclick="uiAddMitarbeiter()">Hinzufügen</button>
                     </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <input type="text" id="maSearch" placeholder="Mitarbeiter suchen..." onkeyup="filterTable('mitarbeiterList', this.value)" style="width: 100%; margin-bottom: 15px;">
+                <div class="table-head">
+                    <span>Name</span>
+                    <span>Telefon</span>
+                    <span>Gehalt</span>
+                    <span style="text-align: right;">Aktionen</span>
+                </div>
+                <div id="mitarbeiterList" class="account-table"></div>
             </div>
         </div>
 
         <div id="tab-abmeldungen" class="mgmt-tab" style="display: none;">
             <div class="panel">
-                <div class="panel-header">📅 Alle Team-Abmeldungen</div>
-                <div id="abmList" class="account-table" style="margin-top: 20px;">
-                    </div>
-            </div>
-        </div>
-
-        <div id="tab-bewerber" class="mgmt-tab" style="display: none;">
-            <div class="panel">
-                <div class="panel-header">📝 Bewerbungen im System</div>
-                <div id="bewerberList">
-                    <p style="opacity: 0.5; padding: 20px; text-align: center;">Aktuell liegen keine neuen Bewerbungen vor.</p>
-                </div>
+                <div class="panel-header">📅 Team-Abmeldungen</div>
+                <div id="abmList" class="account-table"></div>
             </div>
         </div>
 
@@ -71,99 +83,117 @@
 
 <script src="script.js"></script>
 <script>
-    // 1. Zugriffsschutz: Nur eingeloggte Admins/Management
     requireLogin();
-    if(!isAdmin()) {
-        window.location.href = "index.html";
-    }
+    if(!isAdmin()) window.location.href = "index.html";
 
-    // 2. Tab-Logik: Schaltet zwischen den Bereichen um
     function showTab(tabId, btn) {
-        // Alle Bereiche verstecken
         document.querySelectorAll(".mgmt-tab").forEach(tab => tab.style.display = "none");
-        // Gewählten Bereich zeigen
         document.getElementById(tabId).style.display = "block";
-        // Button-Styling (Farbe) anpassen
         document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
         btn.classList.add("active");
 
-        // Daten beim Wechsel frisch laden
-        if(tabId === 'tab-personal') renderUsers();
+        if(tabId === 'tab-accounts') renderUsers();
+        if(tabId === 'tab-mitarbeiter') renderMitarbeiter();
         if(tabId === 'tab-abmeldungen') renderAbmeldungen();
     }
 
-    // 3. Mitarbeiter-Liste rendern
+    // --- ACCOUNTS ---
     const roleOrder = ["Cheffe", "Management", "Mitarbeiter"];
-
     function renderUsers() {
         const list = document.getElementById("userList");
-        if(!list) return;
         list.innerHTML = "";
-        
-        const accs = getAccounts(); // Funktion aus script.js
-
-        // Sortieren nach Rang und Anzeigen
-        Object.keys(accs)
-            .sort((a,b) => roleOrder.indexOf(accs[a].role) - roleOrder.indexOf(accs[b].role))
-            .forEach(name => {
-                const row = document.createElement("div");
-                row.className = "table-row";
-                row.innerHTML = `
-                    <span>${name}</span>
-                    <span class="role-badge ${accs[name].role.toLowerCase()}">${accs[name].role}</span>
-                    <div class="action-cell">
-                        <button class="rank-btn" onclick="uprank('${name}'); renderUsers();">⬆</button>
-                        <button class="rank-btn" onclick="derank('${name}'); renderUsers();">⬇</button>
-                        <button class="delete-btn" onclick="removeUser('${name}'); renderUsers();">Kündigen</button>
-                    </div>`;
-                list.appendChild(row);
-            });
-    }
-
-    // 4. Abmeldungen für das Team verwalten
-    function renderAbmeldungen() {
-        const c = document.getElementById("abmList");
-        if (!c) return;
-        c.innerHTML = "";
-        
-        const alleAbmeldungen = getAbmeldungen(); // Funktion aus script.js
-
-        alleAbmeldungen.reverse().forEach((a) => {
+        const accs = getAccounts();
+        Object.keys(accs).sort((a,b) => roleOrder.indexOf(accs[a].role) - roleOrder.indexOf(accs[b].role)).forEach(name => {
             const row = document.createElement("div");
             row.className = "table-row";
-            
-            let statusClass = "status-badge-offen";
-            if (a.status === "genehmigt") statusClass = "status-badge-genehmigt";
-            if (a.status === "abgelehnt") statusClass = "status-badge-abgelehnt";
-
+            row.style.display = "flex"; // Fix für die Suche
             row.innerHTML = `
-                <span>${a.user}</span>
-                <span>${a.von} - ${a.bis}</span>
-                <span class="${statusClass}">${a.status.toUpperCase()}</span>
-                <div class="action-cell">
-                    ${a.status === "offen" ? `
-                        <button class="rank-btn" onclick="approveAbm(${a.id}); renderAbmeldungen();">✔</button>
-                        <button class="rank-btn" onclick="rejectAbm(${a.id}); renderAbmeldungen();">✖</button>
-                    ` : ''}
-                    <button class="delete-btn" onclick="deleteAbm(${a.id}); renderAbmeldungen();">Löschen</button>
+                <span style="flex:1;">${name}</span>
+                <span class="role-badge ${accs[name].role.toLowerCase()}" style="width:100px;">${accs[name].role}</span>
+                <div class="action-cell" style="flex:1; justify-content: flex-end;">
+                    <button class="rank-btn" onclick="uprank('${name}'); renderUsers();">⬆</button>
+                    <button class="rank-btn" onclick="derank('${name}'); renderUsers();">⬇</button>
+                    <button class="delete-btn" onclick="removeUser('${name}'); renderUsers();">Löschen</button>
+                </div>`;
+            list.appendChild(row);
+        });
+    }
+
+    // --- MITARBEITER (IC) ---
+    const getMitarbeiterData = () => JSON.parse(localStorage.getItem("bs_mitarbeiter_list")) || [];
+    const saveMitarbeiterData = (d) => localStorage.setItem("bs_mitarbeiter_list", JSON.stringify(d));
+
+    function uiAddMitarbeiter() {
+        const name = document.getElementById("maName").value;
+        const tel = document.getElementById("maTel").value;
+        const gehalt = document.getElementById("maGehalt").value;
+        if(!name) return;
+        const list = getMitarbeiterData();
+        list.push({name, tel, gehalt});
+        saveMitarbeiterData(list);
+        renderMitarbeiter();
+        document.getElementById("maName").value = "";
+        document.getElementById("maTel").value = "";
+        document.getElementById("maGehalt").value = "";
+    }
+
+    function renderMitarbeiter() {
+        const list = document.getElementById("mitarbeiterList");
+        list.innerHTML = "";
+        getMitarbeiterData().forEach((m, i) => {
+            const row = document.createElement("div");
+            row.className = "table-row";
+            row.style.display = "flex";
+            row.innerHTML = `
+                <span style="flex:1;">${m.name}</span>
+                <span style="flex:1;">${m.tel}</span>
+                <span style="flex:1;">${m.gehalt} €</span>
+                <div class="action-cell" style="flex:1; justify-content: flex-end;">
+                    <button class="delete-btn" onclick="deleteMA(${i})">Entfernen</button>
+                </div>`;
+            list.appendChild(row);
+        });
+    }
+
+    function deleteMA(i) {
+        const list = getMitarbeiterData();
+        list.splice(i, 1);
+        saveMitarbeiterData(list);
+        renderMitarbeiter();
+    }
+
+    // --- UNIVERSAL FILTER ---
+    function filterTable(containerId, val) {
+        const query = val.toLowerCase();
+        const rows = document.querySelectorAll(`#${containerId} .table-row`);
+        rows.forEach(row => {
+            const text = row.innerText.toLowerCase();
+            row.style.display = text.includes(query) ? "flex" : "none";
+        });
+    }
+
+    // --- ABMELDUNGEN ---
+    function renderAbmeldungen() {
+        const c = document.getElementById("abmList");
+        c.innerHTML = "";
+        getAbmeldungen().reverse().forEach((a) => {
+            const row = document.createElement("div");
+            row.className = "table-row";
+            row.style.display = "flex";
+            let sClass = a.status === "genehmigt" ? "status-badge-genehmigt" : (a.status === "abgelehnt" ? "status-badge-abgelehnt" : "status-badge-offen");
+            row.innerHTML = `
+                <span style="flex:1;">${a.user}</span>
+                <span style="flex:1;">${a.von}-${a.bis}</span>
+                <span class="${sClass}">${a.status.toUpperCase()}</span>
+                <div class="action-cell" style="flex:1; justify-content: flex-end;">
+                    ${a.status==="offen"?`<button class="rank-btn" onclick="approveAbm(${a.id});renderAbmeldungen()">✔</button><button class="rank-btn" onclick="rejectAbm(${a.id});renderAbmeldungen()">✖</button>`:''}
+                    <button class="delete-btn" onclick="deleteAbm(${a.id});renderAbmeldungen()">🗑</button>
                 </div>`;
             c.appendChild(row);
         });
     }
 
-    // 5. Live-Suche
-    function filterUsers() {
-        const query = document.getElementById("userSearch").value.toLowerCase();
-        const rows = document.querySelectorAll("#userList .table-row");
-        rows.forEach(row => {
-            const name = row.querySelector("span").innerText.toLowerCase();
-            row.style.display = name.includes(query) ? "flex" : "none";
-        });
-    }
-
-    // Initiales Laden beim Seitenstart
     document.addEventListener("DOMContentLoaded", renderUsers);
 </script>
-
 </body>
 </html>
