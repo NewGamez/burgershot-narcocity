@@ -76,25 +76,27 @@
 requireLogin();
 
 document.addEventListener("DOMContentLoaded", () => {
+    // ... dein bestehender Login-Check ...
 
-        // In index.html unter dem welcomeUser:
-    const offene = getOffeneAbmeldungenCount();
-    const abmBadge = document.getElementById("abmCounter");
-    if(abmBadge) {
-        abmBadge.innerText = offene + " offen";
+    // 1. Zähler für die Kopfzeile (Bild 1)
+    const accountsAnzahl = Object.keys(getAccounts()).length;
+    const offeneAbmeldungen = getOffeneAbmeldungenCount();
+
+    // Diese IDs müssen in deinem HTML existieren (z.B. <span id="accCount">)
+    if(document.getElementById("accCount")) 
+        document.getElementById("accCount").innerText = accountsAnzahl;
+    
+    // 2. Zähler für die Abmeldungs-Kachel (Bild 2 - die gelbe Badge)
+    const abmCounter = document.getElementById("abmCounter");
+    if (abmCounter) {
+        abmCounter.innerText = offeneAbmeldungen + " offen";
     }
 
-    // Bonus: Account-Zahl berechnen
-    const accounts = Object.keys(getAccounts()).length;
-    // Wenn du ein Element für "30 Accounts" hättest, könntest du es hier füllen
-
-    const user = sessionStorage.getItem("loggedInUser");
-    const accs = getAccounts();
-
-    if (!user || !accs[user]) {
-        logout();
-        return;
+    // 3. Eigene Abmeldungen rendern (falls das Panel auf dem Dashboard ist)
+    if(typeof renderMeineAbmeldungen === "function") {
+        renderMeineAbmeldungen();
     }
+});
 
     document.getElementById("welcomeUser").innerText = "Eingeloggt als: " + user;
 
