@@ -219,20 +219,15 @@ function renderAbmeldungen() {
         const row = document.createElement("div");
         row.className = "table-row";
         
-        // FARB-LOGIK ANPASSUNG
-        let badgeClass = "";
-        if (a.status === "genehmigt") {
-            badgeClass = "mitarbeiter"; // In deinem CSS ist das grau
-        } else if (a.status === "abgelehnt") {
-            badgeClass = "cheffe";      // In deinem CSS ist das rot
-        } else {
-            badgeClass = "management";  // In deinem CSS ist das orange (für offen)
-        }
+        // Logik für die NEUEN Status-Klassen
+        let statusClass = "status-badge-offen"; // Standard: Grau
+        if (a.status === "genehmigt") statusClass = "status-badge-genehmigt"; // Grün
+        if (a.status === "abgelehnt") statusClass = "status-badge-abgelehnt"; // Rot
 
         row.innerHTML = `
             <span>${a.user}</span>
             <span>${a.von} - ${a.bis}</span>
-            <span class="role-badge ${badgeClass}">${a.status.toUpperCase()}</span>
+            <span class="${statusClass}">${a.status.toUpperCase()}</span>
             <div class="action-cell">
                 ${a.status === "offen" ? `
                     <button class="rank-btn" onclick="approveAbm(${a.id}); renderAbmeldungen();">✔</button>
