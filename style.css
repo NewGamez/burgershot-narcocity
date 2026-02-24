@@ -1,3 +1,4 @@
+
 :root {
     --primary: #faac15;
     --primary-hover: #ffbd3d;
@@ -319,33 +320,34 @@ button:hover {
 /* ============================= */
 
 .role-badge {
-    padding: 5px 12px;
-    border-radius: 8px;
-    font-size: 0.8rem;
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 0.75rem;
     font-weight: bold;
+    letter-spacing: 1px;
     text-transform: uppercase;
+    width: fit-content;
     border: 1px solid;
-    display: inline-block;
 }
 
 /* CHEFFE */
 .role-badge.cheffe {
     color: #ff4d4d;
     border-color: #ff4d4d;
-    background: rgba(255, 77, 77, 0.1);
+    background: rgba(255, 77, 77, 0.12);
 }
 
 /* MANAGEMENT */
 .role-badge.management {
     color: #faac15;
     border-color: #faac15;
-    background: rgba(250, 172, 21, 0.1);
+    background: rgba(250, 172, 21, 0.12);
 }
 
 /* MITARBEITER */
 .role-badge.mitarbeiter {
-    color: #ffffff;
-    border-color: rgba(255, 255, 255, 0.3);
+    color: #aaa;
+    border-color: #666;
     background: rgba(255, 255, 255, 0.05);
 }
 
@@ -390,42 +392,38 @@ select:focus {
 }
 
 .rank-btn {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: white;
-    width: 35px;
-    height: 35px;
-    border-radius: 8px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: #ccc;
+    padding: 4px 8px;
+    border-radius: 6px;
     cursor: pointer;
-    font-size: 1.1rem;
-    transition: 0.2s;
-    margin-right: 5px;
+    transition: 0.2s ease;
 }
 
 .rank-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
     border-color: var(--primary);
+    color: var(--primary);
 }
 
 /* ============================= */
 /*        DELETE BUTTON          */
 /* ============================= */
 
-.fire-btn {
-    background: rgba(231, 76, 60, 0.1);
-    border: 1px solid #e74c3c;
-    color: #e74c3c;
-    padding: 6px 15px;
-    border-radius: 8px;
+.delete-btn {
+    background: rgba(255, 60, 60, 0.08);
+    border: 1px solid #ff4d4d;
+    color: #ff4d4d;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 0.8rem;
     font-weight: bold;
     cursor: pointer;
-    transition: 0.2s;
-    font-size: 0.85rem;
+    transition: 0.2s ease;
 }
 
-.fire-btn:hover {
-    background: #e74c3c;
-    color: white;
+.delete-btn:hover {
+    background: rgba(255, 60, 60, 0.2);
 }
 
 /* OFFEN (Grau) */
@@ -564,112 +562,3 @@ textarea:focus {
 textarea::placeholder {
     color: rgba(255, 255, 255, 0.3);
 }
-
-/* ========================================= */
-/* ERGÄNZUNGEN FÜR BEWERBER & MANAGEMENT     */
-/* ========================================= */
-
-/* Status-Badge für "Angenommen" (Bewerber) */
-.status-badge-angenommen {
-    color: #2ecc71;
-    border: 1px solid #2ecc71;
-    background: rgba(46, 204, 113, 0.15);
-    padding: 4px 12px;
-    border-radius: 6px;
-    font-size: 0.75rem;
-    font-weight: bold;
-    text-transform: uppercase;
-    display: inline-block;
-}
-
-/* Modal Layout Fix für Bewerbungen */
-.modal-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-}
-
-.modal-textarea {
-    margin-top: 15px;
-    width: 100%;
-}
-
-/* Management Grid Fix (Damit die Spalten immer sauber untereinander stehen) */
-.grid-row {
-    display: grid;
-    grid-template-columns: 1.5fr 1.2fr 1fr 1fr; /* Gleiche Gewichtung wie im HTML */
-    gap: 15px;
-    align-items: center;
-    padding: 12px 15px;
-    border-bottom: 1px solid var(--glass-border);
-}
-
-.grid-header {
-    background: rgba(255, 255, 255, 0.05);
-    font-weight: bold;
-    color: var(--primary);
-    border-bottom: 2px solid var(--primary);
-}
-
-/* Modal Aktionen (Buttons nebeneinander) */
-.modal-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 20px;
-}
-
-.submit-btn {
-    flex: 2;
-    background: var(--primary);
-    color: black;
-}
-
-.cancel-btn {
-    flex: 1;
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-}
-
-/* Damit die Management-Tabs flüssig umschalten */
-.mgmt-tab {
-    display: none;
-    animation: fadeIn 0.3s ease;
-}
-
-.mgmt-tab.active {
-    display: block;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* Icons/Emoji Zentrierung in den kleinen Panels */
-.panel.small {
-    text-align: center;
-    line-height: 1.4;
-}
-
-/* Flexibleres Management-Grid */
-.grid-row {
-    display: grid;
-    gap: 10px;
-    align-items: center;
-    padding: 12px 15px;
-    border-bottom: 1px solid var(--glass-border);
-    transition: background 0.2s;
-}
-
-.grid-row:hover {
-    background: rgba(255, 255, 255, 0.03);
-}
-
-/* Falls die Buttons zu groß werden */
-.action-cell button {
-    padding: 4px 8px;
-    font-size: 0.8rem;
-}
-
-.btn-check { background: #faac15; color: black; border: none; padding: 10px; border-radius: 10px; cursor: pointer; }
-.btn-delete { background: #faac15; color: black; border: none; padding: 10px; border-radius: 10px; cursor: pointer; }
