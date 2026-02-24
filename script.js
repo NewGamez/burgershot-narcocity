@@ -35,6 +35,24 @@ function updateDashboardStats() {
     if(document.getElementById("abmCounter")) document.getElementById("abmCounter").innerText = offeneCount + " offen";
 }
 
+function deleteAbm(id) {
+    if (confirm("Möchtest du diese Abmeldung wirklich dauerhaft aus dem System löschen?")) {
+        const list = getAbmeldungen();
+        // Wir behalten alle außer die ID, die gelöscht werden soll
+        const newList = list.filter(a => a.id !== id);
+        saveAbmeldungen(newList);
+        
+        // UI aktualisieren falls wir auf der Management Seite sind
+        if (typeof renderAbmeldungen === "function") {
+            renderAbmeldungen();
+        }
+        // Stats auf dem Dashboard (Hero-Banner) aktualisieren
+        if (typeof updateDashboardStats === "function") {
+            updateDashboardStats();
+        }
+    }
+}
+
 /* ================= UI FUNKTIONEN ===================== */
 function openAbmModal() { document.getElementById("abmModal").classList.add("active"); }
 function closeAbmModal() { document.getElementById("abmModal").classList.remove("active"); }
