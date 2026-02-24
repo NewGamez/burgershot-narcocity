@@ -88,22 +88,47 @@
     </div>
 </div>
 
-<script src="script.js"></script>
-<script>
-    requireLogin();
-    
-    document.addEventListener("DOMContentLoaded", () => {
-        const user = sessionStorage.getItem("loggedInUser");
-        document.getElementById("welcomeUser").innerText = "Eingeloggt als: " + user;
+<div class="modal-backdrop" id="firstLoginModal" style="display: none; z-index: 100000;">
+        <div class="modal">
+            <h2>🔒 Sicherheitshinweis</h2>
+            <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 20px;">
+                Dies ist dein erster Login. Bitte ändere dein Passwort von "0000" auf ein persönliches Passwort.
+            </p>
+            
+            <input type="password" id="newInitialPassword" placeholder="Neues Passwort">
+            <input type="password" id="confirmInitialPassword" placeholder="Passwort wiederholen">
+            
+            <div style="margin-top: 20px;">
+                <button onclick="changeFirstPassword()" style="width: 100%;">Passwort speichern & starten</button>
+            </div>
+        </div>
+    </div>
 
-        if (isAdmin()) {
-            document.getElementById("adminPanel").style.display = "flex";
-        }
+    <script src="script.js"></script>
+    <script>
+        // 1. Login-Check direkt beim Laden
+        requireLogin();
+        
+        document.addEventListener("DOMContentLoaded", () => {
+            const user = sessionStorage.getItem("loggedInUser");
+            
+            // 2. Willkommens-Text setzen
+            const welcomeElem = document.getElementById("welcomeUser");
+            if(welcomeElem) welcomeElem.innerText = "Eingeloggt als: " + user;
 
-        // Live-Daten laden
-        updateDashboardStats();
-        renderMeineAbmeldungen();
-    });
-</script>
+            // 3. Admin-Bereich einblenden falls berechtigt
+            if (isAdmin()) {
+                const adminPanel = document.getElementById("adminPanel");
+                if(adminPanel) adminPanel.style.display = "flex";
+            }
+
+            // 4. Daten laden
+            updateDashboardStats();
+            renderMeineAbmeldungen();
+
+            // 5. ZWANGS-CHECK: Muss das Passwort geändert werden?
+            checkFirstLogin();
+        });
+    </script>
 </body>
 </html>
