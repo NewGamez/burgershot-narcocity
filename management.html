@@ -186,31 +186,47 @@
         }
     }
 
-    function renderBewerberManagement() {
+function renderBewerberManagement() {
     const list = document.getElementById("bewerberListAdmin");
     if(!list) return;
     list.innerHTML = "";
     
-    getBewerber().reverse().forEach(b => {
+    const bewerbungen = getBewerber(); // Holt die Daten aus dem localStorage
+
+    if(bewerbungen.length === 0) {
+        list.innerHTML = "<p style='padding:20px; opacity:0.5; text-align:center;'>Keine Bewerbungen vorhanden.</p>";
+        return;
+    }
+
+    bewerbungen.reverse().forEach(b => {
         const div = document.createElement("div");
         div.className = "grid-row";
-        div.style.gridTemplateColumns = "1.5fr 1fr 1fr 1.5fr";
+        // Wir nutzen ein 4-Spalten Layout: Name/Geb | Kontakt/Visum | Status/Fraktion | Aktionen
+        div.style.gridTemplateColumns = "1.5fr 1.2fr 1fr 1fr"; 
         
         let sClass = b.status === "angenommen" ? "status-badge-genehmigt" : (b.status === "abgelehnt" ? "status-badge-abgelehnt" : "status-badge-offen");
         
         div.innerHTML = `
             <div>
-                <span style="font-weight:bold;">${b.name}</span><br>
-                <small style="opacity:0.6;">Zivi: ${b.zivi} ${b.fraktion ? '('+b.fraktion+')' : ''} | Optik: ${b.aussehen}/10</small>
+                <span style="font-weight:bold; color:var(--primary);">${b.name}</span><br>
+                <small style="opacity:0.7;">📅 Geb: ${b.geb || 'Nicht angegeben'}</small>
             </div>
-            <div style="font-size:0.85rem;">V: ${b.visum}<br>Tel: ${b.tel}</div>
-            <div><span class="status-badge ${sClass}">${b.status}</span></div>
+            <div style="font-size:0.85rem;">
+                📱 ${b.tel}<br>
+                <small>Visum: <b>${b.visum}</b> | ⭐ Optik: <b>${b.aussehen}/10</b></small>
+            </div>
+            <div>
+                <span class="status-badge ${sClass}">${b.status}</span><br>
+                <small style="opacity:0.6; font-size:0.7rem;">
+                    ${b.zivi === 'Ja' ? '✅ Zivilist' : '🏢 Fraktion: ' + (b.fraktion || 'Keine')}
+                </small>
+            </div>
             <div class="action-btns">
                 ${b.status === 'offen' ? `
-                    <button class="rank-btn" onclick="updateBewerberStatus(${b.id}, 'angenommen')">✔</button>
-                    <button class="rank-btn" onclick="updateBewerberStatus(${b.id}, 'abgelehnt')">✖</button>
+                    <button class="rank-btn" onclick="updateBewerberStatus(${b.id}, 'angenommen')" title="Annehmen">✔</button>
+                    <button class="rank-btn" onclick="updateBewerberStatus(${b.id}, 'abgelehnt')" title="Ablehnen">✖</button>
                 ` : ''}
-                <button class="delete-btn" onclick="deleteBewerber(${b.id})">🗑</button>
+                <button class="delete-btn" onclick="deleteBewerber(${b.id})" title="Löschen">🗑</button>
             </div>
         `;
         list.appendChild(div);
