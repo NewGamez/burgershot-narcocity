@@ -1,329 +1,200 @@
-/* ================= ACCOUNT & AUTH ==================== */
+/* ================= CORE FUNCTIONS ==================== */
 const getAccounts = () => JSON.parse(localStorage.getItem("bs_accounts")) || {};
 const saveAccounts = accs => localStorage.setItem("bs_accounts", JSON.stringify(accs));
+const getAbmeldungen = () => JSON.parse(localStorage.getItem("bs_abmeldungen")) || [];
+const saveAbmeldungen = data => localStorage.setItem("bs_abmeldungen", JSON.stringify(data));
 
-const requireLogin = () => {
-    if (!sessionStorage.getItem("loggedInUser")) window.location.href = "login.html";
-};
-
-const logout = () => {
-    sessionStorage.clear();
-    window.location.href = "login.html";
-};
-
+const requireLogin = () => { if (!sessionStorage.getItem("loggedInUser")) window.location.href = "login.html"; };
+const logout = () => { sessionStorage.clear(); window.location.href = "login.html"; };
 const isAdmin = () => {
     const user = sessionStorage.getItem("loggedInUser");
     const accs = getAccounts();
     return accs[user] && (accs[user].role === "Management" || accs[user].role === "Cheffe");
 };
 
-/* PRÜFUNG BEIM LOGIN */
-function checkFirstLogin() {
-    const username = sessionStorage.getItem("loggedInUser");
-    const accs = getAccounts();
-    const userAcc = accs[username];
+/* ================= TABS & UI ==================== */
+function showTab(tabId, btn) {
+    document.querySelectorAll(".mgmt-tab").forEach(t => t.classList.remove("active"));
+    document.getElementById(tabId).classList.add("active");
+    document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
 
-    if (userAcc && userAcc.isFirstLogin) {
-        // Zeige das Modal, falls es der erste Login ist
-        const modal = document.getElementById("firstLoginModal");
-        if (modal) modal.style.display = "flex";
-    }
+    if(tabId === 'tab-accounts') renderUsers();
+    if(tabId === 'tab-mitarbeiter') renderMitarbeiter();
+    if(tabId === 'tab-abmeldungen') renderAbmeldungen();
+    if(tabId === 'tab-bewerber') renderBewerbungen();
 }
 
-/* PASSWORT ÄNDERN FUNKTION */
-function changeFirstPassword() {
-    const newPass = document.getElementById("newInitialPassword").value.trim();
-    const confirmPass = document.getElementById("confirmInitialPassword").value.trim();
-    const username = sessionStorage.getItem("loggedInUser");
+function closeModal(id) { document.getElementById(id).classList.remove("active"); }
+function openAbmModal() { document.getElementById("abmModal").classList.add("active"); }
+function closeAbmModal() { document.getElementById("abmModal").classList.remove("active"); }
 
-    if (newPass.length < 4) {
-        alert("Das Passwort muss mindestens 4 Zeichen lang sein!");
-        return;
-    }
-
-    if (newPass !== confirmPass) {
-        alert("Die Passwörter stimmen nicht überein!");
-        return;
-    }
-
-    if (newPass === "0000") {
-        alert("Bitte wähle ein anderes Passwort als das Standard-Passwort!");
-        return;
-    }
-
-    // Speichern im System
+/* ================= DASHBOARD STATS ==================== */
+function updateDashboardStats() {
     const accs = getAccounts();
-    accs[username].password = newPass;
-    accs[username].isFirstLogin = false; // Flag auf false setzen
-    saveAccounts(accs);
+    const abms = getAbmeldungen();
+    const bews = JSON.parse(localStorage.getItem("bs_bewerbungen") || "[]");
 
-    alert("Passwort erfolgreich geändert! Du kannst das System nun nutzen.");
-    document.getElementById("firstLoginModal").style.display = "none";
+    const offeneAbm = abms.filter(a => a.status === "offen").length;
+    const offeneBew = bews.filter(b => b.status === "offen").length;
+
+    if(document.getElementById("accCount")) document.getElementById("accCount").innerText = Object.keys(accs).length;
+    if(document.getElementById("heroAbmCount")) document.getElementById("heroAbmCount").innerText = offeneAbm;
+    if(document.getElementById("abmCounter")) document.getElementById("abmCounter").innerText = offeneAbm + " offen";
+    if(document.getElementById("bewerberCounter")) document.getElementById("bewerberCounter").innerText = offeneBew + " neu";
 }
 
-function showTab(tabId) {
-    // Alle Tabs verstecken
-    document.querySelectorAll('.mgmt-tab').forEach(tab => {
-        tab.style.display = 'none';
-    });
-    
-    // Gewünschten Tab zeigen
-    document.getElementById(tabId).style.display = 'block';
+/* ================= BEWERBUNGEN ==================== */
+function submitBewerbungUI() {
+    const name = document.getElementById("bewName").value;
+    const bews = JSON.parse(localStorage.getItem("bs_bewerbungen") || "[]");
+    const neueBew = {
+        id: Date.now(),
+        name: name,
+        tel: document.getElementById("bewTel").value,
+        visum: document.getElementById("bewVisum").value,
+        fraktion: document.getElementById("bewFraktion").value,
+        status: "offen"
+    };
+    bews.push(neueBew);
+    localStorage.setItem("bs_bewerbungen", JSON.stringify(bews));
+    closeModal('bewModal');
+    updateDashboardStats();
+    alert("Abgesendet!");
+}
 
-    // Button-Styling anpassen
-    document.querySelectorAll('.nav-btn').forEach(btn => {
-        btn.classList.remove('active');
+function renderBewerbungen() {
+    const list = document.getElementById("bewManagementList");
+    if(!list) return;
+    list.innerHTML = "";
+    const bews = JSON.parse(localStorage.getItem("bs_bewerbungen") || "[]");
+    bews.reverse().forEach(b => {
+        const div = document.createElement("div");
+        div.className = "grid-row";
+        div.innerHTML = `
+            <span><b>${b.name}</b> (V: ${b.visum})</span>
+            <span>${b.tel}</span>
+            <span class="status-badge-${b.status}">${b.status}</span>
+            <div class="action-cell">
+                <button onclick="setBewStatus(${b.id}, 'angenommen')">✔</button>
+                <button onclick="deleteBewerbung(${b.id})">🗑</button>
+            </div>`;
+        list.appendChild(div);
     });
-    // Findet den Button, der die Funktion aufgerufen hat und markiert ihn
-    event.currentTarget.classList.add('active');
+}
+
+function setBewStatus(id, s) {
+    let bews = JSON.parse(localStorage.getItem("bs_bewerbungen"));
+    const i = bews.findIndex(b => b.id === id);
+    if(i !== -1) bews[i].status = s;
+    localStorage.setItem("bs_bewerbungen", JSON.stringify(bews));
+    renderBewerbungen();
+}
+
+function deleteBewerbung(id) {
+    let bews = JSON.parse(localStorage.getItem("bs_bewerbungen")).filter(b => b.id !== id);
+    localStorage.setItem("bs_bewerbungen", JSON.stringify(bews));
+    renderBewerbungen();
+}
+
+/* ================= ABMELDUNGEN ==================== */
+function submitAbmeldungUI() {
+    const list = getAbmeldungen();
+    list.push({
+        user: sessionStorage.getItem("loggedInUser"),
+        von: document.getElementById("abmVon").value,
+        bis: document.getElementById("abmBis").value,
+        grund: document.getElementById("abmGrund").value,
+        status: "offen",
+        id: Date.now()
+    });
+    saveAbmeldungen(list);
+    closeAbmModal();
+    updateDashboardStats();
+    renderMeineAbmeldungen();
+}
+
+function renderAbmeldungen() {
+    const list = document.getElementById("abmList");
+    if(!list) return;
+    list.innerHTML = "";
+    getAbmeldungen().reverse().forEach(a => {
+        const div = document.createElement("div");
+        div.className = "grid-row";
+        div.innerHTML = `<span>${a.user}</span><span>${a.von}-${a.bis}</span><span class="status-badge-${a.status}">${a.status}</span>
+            <div class="action-cell"><button onclick="approveAbm(${a.id});renderAbmeldungen()">✔</button><button onclick="deleteAbm(${a.id});renderAbmeldungen()">🗑</button></div>`;
+        list.appendChild(div);
+    });
+}
+
+function approveAbm(id) {
+    const list = getAbmeldungen();
+    const i = list.findIndex(a => a.id === id);
+    if(i !== -1) list[i].status = "genehmigt";
+    saveAbmeldungen(list);
+}
+
+function deleteAbm(id) {
+    const list = getAbmeldungen().filter(a => a.id !== id);
+    saveAbmeldungen(list);
+}
+
+function renderMeineAbmeldungen() {
+    const container = document.getElementById("meineAbmeldungenList");
+    if(!container) return;
+    const user = sessionStorage.getItem("loggedInUser");
+    const meine = getAbmeldungen().filter(a => a.user === user);
+    container.innerHTML = meine.length ? "" : "Keine Einträge.";
+    meine.reverse().forEach(a => {
+        const div = document.createElement("div");
+        div.className = "panel";
+        div.style.marginBottom = "10px";
+        div.innerHTML = `<b>${a.von} - ${a.bis}</b> | Status: ${a.status.toUpperCase()}`;
+        container.appendChild(div);
+    });
+}
+
+/* ================= ACCOUNTS ==================== */
+function renderUsers() {
+    const list = document.getElementById("userList");
+    if(!list) return;
+    list.innerHTML = "";
+    const accs = getAccounts();
+    Object.keys(accs).forEach(name => {
+        const div = document.createElement("div");
+        div.className = "grid-row";
+        div.innerHTML = `<span>${name}</span><span>${accs[name].role}</span><span>Aktiv</span>
+            <div class="action-cell"><button onclick="deleteUser('${name}')">🗑</button></div>`;
+        list.appendChild(div);
+    });
 }
 
 function addUser() {
     const name = document.getElementById("newName").value.trim();
-    const role = document.getElementById("newRole").value;
+    if(!name) return;
     const accs = getAccounts();
-    
-    if (!name) return alert("Bitte einen Namen eingeben!");
-    if (accs[name]) return alert("Dieser Account existiert bereits!");
-
-    // Account erstellen
-    accs[name] = { 
-        password: "0000", 
-        role: role, 
-        isFirstLogin: true 
-    };
-    
+    accs[name] = { password: "0000", role: document.getElementById("newRole").value, isFirstLogin: true };
     saveAccounts(accs);
-    
-    // UI Update: Falls wir auf der Management-Seite sind, Liste neu zeichnen
-    if (typeof renderUsers === "function") {
-        renderUsers();
-    }
-
-    // Felder leeren
-    document.getElementById("newName").value = "";
-    alert("Mitarbeiter " + name + " wurde angelegt. Standard-PW: 0000");
+    renderUsers();
 }
 
-/* ANNOUNCEMENTS LOGIK */
-const getAnnouncements = () => JSON.parse(localStorage.getItem("bs_announcements")) || [
-    { id: 1, text: "/businessannounce BURGERSHOT – Wo Geschmack über den Dächern von Los Santos lebt\nSaftige Burger, kalte Drinks & die beste Aussicht der Stadt auf unserer Dachterrasse!\nOb Date, Feierabend oder einfach Hunger – wir servieren Good Vibes & Great Burgers!\nBurgerShot – Come hungry, leave happy!" }
-];
-const saveAnnouncements = (data) => localStorage.setItem("bs_announcements", JSON.stringify(data));
-
-function addAnnouncement() {
-    const text = document.getElementById("newAnnounceText").value.trim();
-    if (!text) return alert("Bitte Text eingeben!");
-
-    const list = getAnnouncements();
-    list.push({ id: Date.now(), text: text });
-    saveAnnouncements(list);
-    
-    document.getElementById("newAnnounceText").value = "";
-    renderAnnounceDetails(); // Liste aktualisieren
+function deleteUser(name) {
+    const accs = getAccounts();
+    delete accs[name];
+    saveAccounts(accs);
+    renderUsers();
 }
 
-function deleteAnnouncement(id) {
-    if (!confirm("Diese Vorlage wirklich löschen?")) return;
-    const list = getAnnouncements().filter(a => a.id !== id);
-    saveAnnouncements(list);
-    renderAnnounceDetails();
+function checkFirstLogin() {
+    const user = getAccounts()[sessionStorage.getItem("loggedInUser")];
+    if(user && user.isFirstLogin) document.getElementById("firstLoginModal").style.display = "flex";
 }
 
-function copyText(text) {
-    navigator.clipboard.writeText(text).then(() => {
-        alert("Kopiert!");
-    });
-}
-
-function renderAnnounceDetails() {
-    const container = document.getElementById("announceGrid");
-    if (!container) return;
-    container.innerHTML = "";
-    
-    const list = getAnnouncements();
-    const admin = isAdmin();
-
-    list.forEach(a => {
-        const div = document.createElement("div");
-        div.className = "panel"; 
-        
-        // Wir escapen den Text für den Button-Klick sauber
-        const cleanText = a.text.replace(/`/g, "\\`").replace(/\n/g, "\\n");
-
-        div.innerHTML = `
-            <p style="font-size: 0.85rem; white-space: pre-line; margin-bottom: 15px; opacity: 0.9; line-height: 1.5;">${a.text}</p>
-            <div style="display: flex; gap: 8px; margin-top: auto;">
-                <button onclick="copyText(\`${cleanText}\`)" style="flex: 2; font-size: 0.75rem;">Text kopieren</button>
-                ${admin ? `<button onclick="deleteAnnouncement(${a.id})" style="background: rgba(231, 76, 60, 0.2); border: 1px solid #e74c3c; color: #e74c3c; flex: 1; font-size: 0.75rem;">Löschen</button>` : ''}
-            </div>
-        `;
-        container.appendChild(div);
-    });
-}
-
-// Initialisierung
-let bewerbungen = JSON.parse(localStorage.getItem("bs_bewerbungen")) || [];
-
-function saveBewerbungen() {
-    localStorage.setItem("bs_bewerbungen", JSON.stringify(bewerbungen));
-    updateCounters(); // Aktualisiert die Zahlen auf dem Dashboard
-}
-
-function submitBewerbungUI() {
-    const name = document.getElementById("bewName").value;
-    const geb = document.getElementById("bewGeb").value;
-    const tel = document.getElementById("bewTel").value;
-    const zivi = document.getElementById("bewZivi").value;
-    const fraktion = document.getElementById("bewFraktion").value;
-    const visum = document.getElementById("bewVisum").value;
-    const look = document.getElementById("bewLook").value;
-
-    if(!name || !geb) return alert("Name und Geburtstag sind Pflicht!");
-
-    const neueBew = {
-        id: Date.now(),
-        name, geb, tel, zivi, 
-        fraktion: zivi === "Ja" ? "Keine (Zivi)" : fraktion,
-        visum, look,
-        status: "offen",
-        datum: new Date().toLocaleDateString()
-    };
-
-    bewerbungen.push(neueBew);
-    saveBewerbungen();
-    closeModal('bewModal');
-    alert("Bewerbung erfolgreich abgesendet!");
-}
-
-// Management Funktionen
-function setBewStatus(id, newStatus) {
-    const index = bewerbungen.findIndex(b => b.id === id);
-    if(index !== -1) {
-        bewerbungen[index].status = newStatus;
-        saveBewerbungen();
-        if(typeof renderBewerbungen === "function") renderBewerbungen();
-    }
-}
-
-function deleteBewerbung(id) {
-    bewerbungen = bewerbungen.filter(b => b.id !== id);
-    saveBewerbungen();
-    if(typeof renderBewerbungen === "function") renderBewerbungen();
-}
-
-// Funktion zum Öffnen des Panels vom Dashboard aus
-function openAnnouncePanel() {
-    document.getElementById('announceDetailsModal').style.display = 'flex';
-    renderAnnounceDetails();
-}
-
-/* ================= ABMELDUNGEN LOGIK ================= */
-const getAbmeldungen = () => JSON.parse(localStorage.getItem("bs_abmeldungen")) || [];
-const saveAbmeldungen = data => localStorage.setItem("bs_abmeldungen", JSON.stringify(data));
-
-function getOffeneAbmeldungenCount() {
-    return getAbmeldungen().filter(a => a.status === "offen").length;
-}
-
-// Stats auf dem Dashboard aktualisieren
-function updateDashboardStats() {
-    const accCount = Object.keys(getAccounts()).length;
-    const offeneCount = getOffeneAbmeldungenCount();
-
-    if(document.getElementById("accCount")) document.getElementById("accCount").innerText = accCount;
-    if(document.getElementById("heroAbmCount")) document.getElementById("heroAbmCount").innerText = offeneCount;
-    if(document.getElementById("abmCounter")) document.getElementById("abmCounter").innerText = offeneCount + " offen";
-}
-
-function deleteAbm(id) {
-    if (confirm("Möchtest du diese Abmeldung wirklich dauerhaft aus dem System löschen?")) {
-        const list = getAbmeldungen();
-        // Wir behalten alle außer die ID, die gelöscht werden soll
-        const newList = list.filter(a => a.id !== id);
-        saveAbmeldungen(newList);
-        
-        // UI aktualisieren falls wir auf der Management Seite sind
-        if (typeof renderAbmeldungen === "function") {
-            renderAbmeldungen();
-        }
-        // Stats auf dem Dashboard (Hero-Banner) aktualisieren
-        if (typeof updateDashboardStats === "function") {
-            updateDashboardStats();
-        }
-    }
-}
-
-/* ================= UI FUNKTIONEN ===================== */
-function openAbmModal() { document.getElementById("abmModal").classList.add("active"); }
-function closeAbmModal() { document.getElementById("abmModal").classList.remove("active"); }
-
-function submitAbmeldungUI() {
-    const von = document.getElementById("abmVon").value;
-    const bis = document.getElementById("abmBis").value;
-    const grund = document.getElementById("abmGrund").value;
+function changeFirstPassword() {
     const user = sessionStorage.getItem("loggedInUser");
-
-    if(!von || !bis || !grund) return alert("Bitte alle Felder ausfüllen!");
-
-    const list = getAbmeldungen();
-    list.push({ user, von, bis, grund, status: "offen", id: Date.now() });
-    saveAbmeldungen(list);
-
-    closeAbmModal();
-    updateDashboardStats();
-    renderMeineAbmeldungen();
-    
-    // Felder leeren
-    document.getElementById("abmVon").value = "";
-    document.getElementById("abmBis").value = "";
-    document.getElementById("abmGrund").value = "";
-}
-
-// Zeigt dem User seine eigenen Anträge und deren Status
-function renderMeineAbmeldungen() {
-    const container = document.getElementById("meineAbmeldungenList");
-    if(!container) return;
-
-    container.innerHTML = "";
-    const user = sessionStorage.getItem("loggedInUser");
-    const meine = getAbmeldungen().filter(a => a.user === user);
-
-    if(meine.length === 0) {
-        container.innerHTML = "<p style='opacity:0.5;'>Du hast aktuell keine Abmeldungen eingereicht.</p>";
-        return;
-    }
-
-    meine.reverse().forEach(a => {
-        let color = "#faac15"; // offen
-        if(a.status === "genehmigt") color = "#2ecc71";
-        if(a.status === "abgelehnt") color = "#e74c3c";
-
-        const div = document.createElement("div");
-        div.style.cssText = "background: rgba(255,255,255,0.05); padding: 12px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid " + color;
-        div.innerHTML = `
-            <div>
-                <span style="font-weight:bold;">${a.von} - ${a.bis}</span>
-                <br><small style="opacity:0.7;">Grund: ${a.grund}</small>
-            </div>
-            <span style="color:${color}; font-weight:bold; text-transform:uppercase; font-size:0.8rem;">${a.status}</span>
-        `;
-        container.appendChild(div);
-    });
-}
-
-/* ================= ADMIN MANAGEMENT ================= */
-// Diese Funktionen werden in der management.html genutzt
-function approveAbm(id) {
-    const list = getAbmeldungen();
-    const index = list.findIndex(a => a.id === id);
-    if(index !== -1) list[index].status = "genehmigt";
-    saveAbmeldungen(list);
-}
-
-function rejectAbm(id) {
-    const list = getAbmeldungen();
-    const index = list.findIndex(a => a.id === id);
-    if(index !== -1) list[index].status = "abgelehnt";
-    saveAbmeldungen(list);
+    const accs = getAccounts();
+    accs[user].password = document.getElementById("newInitialPassword").value;
+    accs[user].isFirstLogin = false;
+    saveAccounts(accs);
+    document.getElementById("firstLoginModal").style.display = "none";
 }
