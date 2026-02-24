@@ -5,19 +5,16 @@ const saveAccounts = accs => localStorage.setItem("bs_accounts", JSON.stringify(
 const getAbmeldungen = () => JSON.parse(localStorage.getItem("bs_abmeldungen")) || [];
 const saveAbmeldungen = data => localStorage.setItem("bs_abmeldungen", JSON.stringify(data));
 
-const getMitarbeiter = () => JSON.parse(localStorage.getItem("bs_mitarbeiter")) || [];
+const getMitarbeiter = () => {
+    const data = localStorage.getItem("bs_mitarbeiter");
+    return data ? JSON.parse(data) : [];
+};
 const saveMitarbeiter = data => localStorage.setItem("bs_mitarbeiter", JSON.stringify(data));
 
 const requireLogin = () => { if (!sessionStorage.getItem("loggedInUser")) window.location.href = "login.html"; };
 const logout = () => { sessionStorage.clear(); window.location.href = "login.html"; };
 
-const isAdmin = () => {
-    const user = sessionStorage.getItem("loggedInUser");
-    const accs = getAccounts();
-    return accs[user] && (accs[user].role === "Management" || accs[user].role === "Cheffe");
-};
-
-// Rang-Priorität für die Sortierung (Accountverwaltung)
+// Rang-Priorität für die Account-Sortierung
 const getRankPriority = (role) => {
     const ränge = { "Cheffe": 1, "Management": 2, "Mitarbeiter": 3 };
     return ränge[role] || 4;
@@ -59,34 +56,34 @@ function updateDashboardStats() {
 }
 
 /* ================= MITARBEITERLISTE (IC - FINANZEN) ==================== */
-// WICHTIG: Diese IDs müssen 1:1 in deinem HTML stehen!
 function uiAddMitarbeiter() {
-    const nameVal = document.getElementById("maName")?.value.trim();
-    const telVal = document.getElementById("maTel")?.value.trim() || "Keine Nummer";
-    const gehaltVal = document.getElementById("maGehalt")?.value || "10000";
+    const nameInput = document.getElementById("maName");
+    const telInput = document.getElementById("maTel");
+    const gehaltInput = document.getElementById("maGehalt");
 
-    if(!nameVal) {
+    if(!nameInput || !nameInput.value.trim()) {
         alert("Bitte einen Namen eingeben!");
         return;
     }
 
     let maList = getMitarbeiter();
+    
+    // Sicherstellen, dass keine korrupten Daten gepusht werden
     maList.push({
         id: Date.now(),
-        name: nameVal,
-        tel: telVal,
-        gehalt: parseInt(gehaltVal)
+        name: nameInput.value.trim(),
+        tel: telInput ? telInput.value.trim() : "-",
+        gehalt: gehaltInput ? parseInt(gehaltInput.value) : 10000
     });
 
     saveMitarbeiter(maList);
     
     // Felder leeren
-    document.getElementById("maName").value = "";
-    document.getElementById("maTel").value = "";
-    document.getElementById("maGehalt").value = "10000";
+    nameInput.value = "";
+    if(telInput) telInput.value = "";
+    if(gehaltInput) gehaltInput.value = "10000";
 
     renderMitarbeiter();
-    console.log("Mitarbeiter hinzugefügt:", nameVal);
 }
 
 function renderMitarbeiter() {
@@ -94,12 +91,15 @@ function renderMitarbeiter() {
     if(!list) return;
     list.innerHTML = "";
 
-    const ma = getMitarbeiter().sort((a,b) => a.name.localeCompare(b.name));
+    let ma = getMitarbeiter();
+    
+    // Sicherheits-Sortierung: Falls ein Name fehlt, wird er ignoriert, um den Fehler aus image_622b76 zu vermeiden
+    ma = ma.filter(m => m && m.name).sort((a,b) => a.name.localeCompare(b.name));
 
     ma.forEach(m => {
         const div = document.createElement("div");
         div.className = "grid-row";
-        // Header: Name, Gehalt, Telefon, Aktion -> Spaltenverhältnis anpassen
+        // Header-Struktur laut deinem Bild: Name | Gehalt | Telefon | Aktion
         div.style.gridTemplateColumns = "1.5fr 1.2fr 1.5fr 1fr";
         
         div.innerHTML = `
@@ -118,18 +118,19 @@ function updateMAGehalt(id, wert) {
     let ma = getMitarbeiter();
     const i = ma.findIndex(x => x.id === id);
     if(i !== -1) {
-        ma[i].gehalt = parseInt(wert);
+        ma[i].gehalt = parseInt(wert) || 0;
         saveMitarbeiter(ma);
     }
 }
 
 function deleteMA(id) {
     if(!confirm("Mitarbeiter wirklich kündigen?")) return;
-    saveMitarbeiter(getMitarbeiter().filter(m => m.id !== id));
+    const gefiltert = getMitarbeiter().filter(m => m.id !== id);
+    saveMitarbeiter(gefiltert);
     renderMitarbeiter();
 }
 
-/* ================= ACCOUNTS (MANAGEMENT) ==================== */
+/* ================= ACCOUNTS (MANAGEMENT-TAB) ==================== */
 function renderUsers() {
     const list = document.getElementById("userList");
     if(!list) return;
@@ -164,20 +165,6 @@ function renderUsers() {
     });
 }
 
-function addUser() {
-    const name = document.getElementById("newName")?.value.trim();
-    if(!name) return alert("Benutzername fehlt!");
-    const accs = getAccounts();
-    accs[name] = { 
-        password: "0000", 
-        role: document.getElementById("newRole").value, 
-        isFirstLogin: true 
-    };
-    saveAccounts(accs);
-    renderUsers();
-    document.getElementById("newName").value = "";
-}
-
 function changeRank(username, direction) {
     const accs = getAccounts();
     const ränge = ["Mitarbeiter", "Management", "Cheffe"];
@@ -190,27 +177,52 @@ function changeRank(username, direction) {
 }
 
 function deleteUser(name) {
-    if(!confirm(`${name} wirklich aus dem System löschen?`)) return;
+    if(!confirm(`${name} wirklich löschen?`)) return;
     const accs = getAccounts();
     delete accs[name];
     saveAccounts(accs);
     renderUsers();
 }
 
-/* ================= ABMELDUNGEN ==================== */
-function submitAbmeldungUI() {
-    const list = getAbmeldungen();
-    list.push({
-        user: sessionStorage.getItem("loggedInUser"),
-        von: document.getElementById("abmVon").value,
-        bis: document.getElementById("abmBis").value,
-        grund: document.getElementById("abmGrund").value,
-        status: "offen",
-        id: Date.now()
+/* ================= BEWERBUNGEN & ABMELDUNGEN ==================== */
+function renderBewerbungen() {
+    const list = document.getElementById("bewManagementList");
+    if(!list) return;
+    list.innerHTML = "";
+    const bews = JSON.parse(localStorage.getItem("bs_bewerbungen") || "[]");
+
+    bews.reverse().forEach(b => {
+        const div = document.createElement("div");
+        div.className = "grid-row";
+        div.style.gridTemplateColumns = "1.2fr 0.8fr 1fr 1fr 0.8fr 0.8fr";
+        div.innerHTML = `
+            <span><b>${b.name}</b> (V: ${b.visum || '?'})</span>
+            <span>${b.geb || '-'}</span>
+            <span>${b.tel || '-'}</span>
+            <span>${b.zivi === 'Ja' ? '✅ Zivi' : (b.fraktion || 'Keine')}</span>
+            <span><span class="status-badge-${b.status}">${b.status}</span></span>
+            <div class="action-cell">
+                <button class="btn-check" onclick="setBewStatus(${b.id}, 'angenommen')">✔</button>
+                <button class="btn-delete" onclick="deleteBewerbung(${b.id})">🗑</button>
+            </div>`;
+        list.appendChild(div);
     });
-    saveAbmeldungen(list);
-    closeModal('abmModal');
-    updateDashboardStats();
+}
+
+function setBewStatus(id, s) {
+    let bews = JSON.parse(localStorage.getItem("bs_bewerbungen"));
+    const i = bews.findIndex(b => b.id === id);
+    if(i !== -1) {
+        bews[i].status = s;
+        if(s === 'angenommen') {
+            let ma = getMitarbeiter();
+            ma.push({ id: Date.now(), name: bews[i].name, tel: bews[i].tel, gehalt: 10000 });
+            saveMitarbeiter(ma);
+        }
+        localStorage.setItem("bs_bewerbungen", JSON.stringify(bews));
+        renderBewerbungen();
+        updateDashboardStats();
+    }
 }
 
 function renderAbmeldungen() {
@@ -248,42 +260,6 @@ function deleteAbm(id) {
     updateDashboardStats();
 }
 
-/* ================= BEWERBUNGEN ==================== */
-function renderBewerbungen() {
-    const list = document.getElementById("bewManagementList");
-    if(!list) return;
-    list.innerHTML = "";
-    const bews = JSON.parse(localStorage.getItem("bs_bewerbungen") || "[]");
-
-    bews.reverse().forEach(b => {
-        const div = document.createElement("div");
-        div.className = "grid-row";
-        div.style.gridTemplateColumns = "1.2fr 0.8fr 1fr 1fr 0.8fr 0.8fr";
-        div.innerHTML = `
-            <span><b>${b.name}</b> (V: ${b.visum || '?'})</span>
-            <span>${b.geb || '-'}</span>
-            <span>${b.tel || '-'}</span>
-            <span>${b.zivi === 'Ja' ? '✅ Zivi' : (b.fraktion || 'Keine')}</span>
-            <span><span class="status-badge-${b.status}">${b.status}</span></span>
-            <div class="action-cell">
-                <button class="btn-check" onclick="setBewStatus(${b.id}, 'angenommen')">✔</button>
-                <button class="btn-delete" onclick="deleteBewerbung(${b.id})">🗑</button>
-            </div>`;
-        list.appendChild(div);
-    });
-}
-
-function setBewStatus(id, s) {
-    let bews = JSON.parse(localStorage.getItem("bs_bewerbungen"));
-    const i = bews.findIndex(b => b.id === id);
-    if(i !== -1) {
-        bews[i].status = s;
-        localStorage.setItem("bs_bewerbungen", JSON.stringify(bews));
-        renderBewerbungen();
-        updateDashboardStats();
-    }
-}
-
 function deleteBewerbung(id) {
     let bews = JSON.parse(localStorage.getItem("bs_bewerbungen")).filter(b => b.id !== id);
     localStorage.setItem("bs_bewerbungen", JSON.stringify(bews));
@@ -293,9 +269,7 @@ function deleteBewerbung(id) {
 
 /* ================= INITIALISIERUNG ==================== */
 document.addEventListener("DOMContentLoaded", () => {
-    // Falls Dashboard-Elemente vorhanden sind
     updateDashboardStats();
-    
-    // Falls man im Management-Tab startet
     if(document.getElementById("userList")) renderUsers();
+    if(document.getElementById("mitarbeiterList")) renderMitarbeiter();
 });
