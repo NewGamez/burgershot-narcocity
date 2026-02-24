@@ -390,42 +390,42 @@ select:focus {
 }
 
 .rank-btn {
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.2);
-    color: #ccc;
-    padding: 4px 8px;
-    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    width: 35px;
+    height: 35px;
+    border-radius: 8px;
     cursor: pointer;
-    transition: 0.2s ease;
+    font-size: 1.1rem;
+    transition: 0.2s;
+    margin-right: 5px;
 }
 
 .rank-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
     border-color: var(--primary);
-    color: var(--primary);
 }
 
 /* ============================= */
 /*        DELETE BUTTON          */
 /* ============================= */
 
-.delete-btn {
-    background-color: #faac15 !important; /* Burgershot Gelb */
-    color: #000 !important;
-    border: none;
-    width: 35px;
-    height: 35px;
-    border-radius: 10px;
+.fire-btn {
+    background: rgba(231, 76, 60, 0.1);
+    border: 1px solid #e74c3c;
+    color: #e74c3c;
+    padding: 6px 15px;
+    border-radius: 8px;
+    font-weight: bold;
     cursor: pointer;
-    font-size: 1.1rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform 0.2s, background 0.2s;
+    transition: 0.2s;
+    font-size: 0.85rem;
 }
 
-.delete-btn:hover {
-    background-color: #ffbd3d !important;
-    transform: scale(1.05);
+.fire-btn:hover {
+    background: #e74c3c;
+    color: white;
 }
 
 /* OFFEN (Grau) */
@@ -670,3 +670,6 @@ textarea::placeholder {
     padding: 4px 8px;
     font-size: 0.8rem;
 }
+
+.btn-check { background: #faac15; color: black; border: none; padding: 10px; border-radius: 10px; cursor: pointer; }
+.btn-delete { background: #faac15; color: black; border: none; padding: 10px; border-radius: 10px; cursor: pointer; }
