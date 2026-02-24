@@ -4,6 +4,60 @@
     <meta charset="UTF-8">
     <title>Management Center | Burgershot</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* Das Herzstück: Ein festes Grid für alle Listen */
+        /* Spalten: 25% Name, 25% Telefon/Rang, 25% Gehalt/Status, 25% Buttons */
+        .grid-row {
+            display: grid;
+            grid-template-columns: 1.5fr 1.2fr 1fr 1fr; 
+            gap: 15px;
+            align-items: center;
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--glass-border);
+            color: white;
+        }
+
+        .grid-header {
+            background: rgba(255, 255, 255, 0.05);
+            font-weight: bold;
+            color: var(--primary);
+            border-radius: 8px 8px 0 0;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        /* Fix für die Badges: Sie brauchen Platz zum Atmen */
+        .role-badge, .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            text-align: center;
+            min-width: 100px; /* Verhindert das Quetschen aus dem Screenshot */
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .search-box {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .action-btns {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+
+        .mgmt-tab { display: none; }
+        .mgmt-tab.active { display: block; }
+    </style>
 </head>
 <body>
 
@@ -13,7 +67,7 @@
 </header>
 
 <section class="dashboard">
-    <section class="management-wrapper">
+    <div class="management-wrapper">
         
         <div class="panel full-width" style="margin-bottom: 20px; padding: 15px;">
             <div style="display: flex; gap: 10px;">
@@ -23,7 +77,7 @@
             </div>
         </div>
 
-        <div id="tab-accounts" class="mgmt-tab">
+        <div id="tab-accounts" class="mgmt-tab active">
             <div class="panel" style="margin-bottom: 20px;">
                 <div class="management-header">
                     <h2>👤 Accountverwaltung</h2>
@@ -40,45 +94,56 @@
             </div>
 
             <div class="panel">
-                <div class="panel-header">🔍 Accounts durchsuchen</div>
-                <input type="text" id="accSearch" placeholder="Name eingeben..." onkeyup="filterTable('userList', this.value)" style="width: 100%; margin: 10px 0;">
-                <div id="userList" class="account-table"></div>
+                <input type="text" class="search-box" placeholder="Accounts durchsuchen..." onkeyup="filterGrid('userList', this.value)">
+                <div class="grid-row grid-header">
+                    <span>Name</span>
+                    <span>Rang</span>
+                    <span>Status</span>
+                    <span style="text-align: right;">Aktionen</span>
+                </div>
+                <div id="userList"></div>
             </div>
         </div>
 
-        <div id="tab-mitarbeiter" class="mgmt-tab" style="display: none;">
+        <div id="tab-mitarbeiter" class="mgmt-tab">
             <div class="panel" style="margin-bottom: 20px;">
                 <div class="management-header">
-                    <h2>📋 Mitarbeiterliste (IC-Infos)</h2>
+                    <h2>📋 Mitarbeiterliste (IC)</h2>
                     <div class="add-user-bar">
                         <input type="text" id="maName" placeholder="Name">
                         <input type="text" id="maTel" placeholder="Telefon">
-                        <input type="text" id="maGehalt" placeholder="Gehalt (€)">
+                        <input type="number" id="maGehalt" placeholder="Gehalt">
                         <button onclick="uiAddMitarbeiter()">Hinzufügen</button>
                     </div>
                 </div>
             </div>
 
             <div class="panel">
-                <input type="text" id="maSearch" placeholder="Mitarbeiter suchen..." onkeyup="filterTable('mitarbeiterList', this.value)" style="width: 100%; margin-bottom: 15px;">
-                <div class="table-head">
+                <input type="text" class="search-box" placeholder="Mitarbeiter suchen..." onkeyup="filterGrid('mitarbeiterList', this.value)">
+                <div class="grid-row grid-header">
                     <span>Name</span>
                     <span>Telefon</span>
                     <span>Gehalt</span>
                     <span style="text-align: right;">Aktionen</span>
                 </div>
-                <div id="mitarbeiterList" class="account-table"></div>
+                <div id="mitarbeiterList"></div>
             </div>
         </div>
 
-        <div id="tab-abmeldungen" class="mgmt-tab" style="display: none;">
+        <div id="tab-abmeldungen" class="mgmt-tab">
             <div class="panel">
-                <div class="panel-header">📅 Team-Abmeldungen</div>
-                <div id="abmList" class="account-table"></div>
+                <div class="panel-header" style="margin-bottom:15px;">📅 Team-Abmeldungen</div>
+                <div class="grid-row grid-header">
+                    <span>Name</span>
+                    <span>Zeitraum</span>
+                    <span>Status</span>
+                    <span style="text-align: right;">Aktionen</span>
+                </div>
+                <div id="abmList"></div>
             </div>
         </div>
 
-    </section>
+    </div>
 </section>
 
 <script src="script.js"></script>
@@ -87,8 +152,8 @@
     if(!isAdmin()) window.location.href = "index.html";
 
     function showTab(tabId, btn) {
-        document.querySelectorAll(".mgmt-tab").forEach(tab => tab.style.display = "none");
-        document.getElementById(tabId).style.display = "block";
+        document.querySelectorAll(".mgmt-tab").forEach(t => t.classList.remove("active"));
+        document.getElementById(tabId).classList.add("active");
         document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
         btn.classList.add("active");
 
@@ -97,99 +162,98 @@
         if(tabId === 'tab-abmeldungen') renderAbmeldungen();
     }
 
-    // --- ACCOUNTS ---
-    const roleOrder = ["Cheffe", "Management", "Mitarbeiter"];
+    // Fix für Suche: Nutzt "grid" beim Einblenden
+    function filterGrid(containerId, val) {
+        const query = val.toLowerCase();
+        const rows = document.getElementById(containerId).children;
+        for (let row of rows) {
+            row.style.display = row.innerText.toLowerCase().includes(query) ? "grid" : "none";
+        }
+    }
+
     function renderUsers() {
         const list = document.getElementById("userList");
         list.innerHTML = "";
         const accs = getAccounts();
-        Object.keys(accs).sort((a,b) => roleOrder.indexOf(accs[a].role) - roleOrder.indexOf(accs[b].role)).forEach(name => {
-            const row = document.createElement("div");
-            row.className = "table-row";
-            row.style.display = "flex"; // Fix für die Suche
-            row.innerHTML = `
-                <span style="flex:1;">${name}</span>
-                <span class="role-badge ${accs[name].role.toLowerCase()}" style="width:100px;">${accs[name].role}</span>
-                <div class="action-cell" style="flex:1; justify-content: flex-end;">
-                    <button class="rank-btn" onclick="uprank('${name}'); renderUsers();">⬆</button>
-                    <button class="rank-btn" onclick="derank('${name}'); renderUsers();">⬇</button>
-                    <button class="delete-btn" onclick="removeUser('${name}'); renderUsers();">Löschen</button>
+        const order = ["Cheffe", "Management", "Mitarbeiter"];
+
+        Object.keys(accs).sort((a,b) => order.indexOf(accs[a].role) - order.indexOf(accs[b].role)).forEach(name => {
+            const div = document.createElement("div");
+            div.className = "grid-row";
+            div.innerHTML = `
+                <span style="font-weight:bold;">${name}</span>
+                <div><span class="role-badge ${accs[name].role.toLowerCase()}">${accs[name].role}</span></div>
+                <span style="opacity:0.5; font-size:0.8rem;">Aktiv</span>
+                <div class="action-btns">
+                    <button class="rank-btn" onclick="uprank('${name}');renderUsers()">⬆</button>
+                    <button class="rank-btn" onclick="derank('${name}');renderUsers()">⬇</button>
+                    <button class="delete-btn" onclick="removeUser('${name}');renderUsers()">🗑</button>
                 </div>`;
-            list.appendChild(row);
+            list.appendChild(div);
         });
     }
 
-    // --- MITARBEITER (IC) ---
-    const getMitarbeiterData = () => JSON.parse(localStorage.getItem("bs_mitarbeiter_list")) || [];
-    const saveMitarbeiterData = (d) => localStorage.setItem("bs_mitarbeiter_list", JSON.stringify(d));
-
     function uiAddMitarbeiter() {
-        const name = document.getElementById("maName").value;
-        const tel = document.getElementById("maTel").value;
-        const gehalt = document.getElementById("maGehalt").value;
+        const name = document.getElementById("maName").value.trim();
+        const tel = document.getElementById("maTel").value.trim();
+        const gehalt = document.getElementById("maGehalt").value.trim();
         if(!name) return;
-        const list = getMitarbeiterData();
+
+        let list = JSON.parse(localStorage.getItem("bs_ma_list") || "[]");
         list.push({name, tel, gehalt});
-        saveMitarbeiterData(list);
-        renderMitarbeiter();
+        localStorage.setItem("bs_ma_list", JSON.stringify(list));
+        
         document.getElementById("maName").value = "";
         document.getElementById("maTel").value = "";
         document.getElementById("maGehalt").value = "";
+        renderMitarbeiter();
     }
 
     function renderMitarbeiter() {
         const list = document.getElementById("mitarbeiterList");
         list.innerHTML = "";
-        getMitarbeiterData().forEach((m, i) => {
-            const row = document.createElement("div");
-            row.className = "table-row";
-            row.style.display = "flex";
-            row.innerHTML = `
-                <span style="flex:1;">${m.name}</span>
-                <span style="flex:1;">${m.tel}</span>
-                <span style="flex:1;">${m.gehalt} €</span>
-                <div class="action-cell" style="flex:1; justify-content: flex-end;">
+        const data = JSON.parse(localStorage.getItem("bs_ma_list") || "[]");
+
+        data.forEach((m, i) => {
+            const div = document.createElement("div");
+            div.className = "grid-row";
+            div.innerHTML = `
+                <span>${m.name}</span>
+                <span>${m.tel || '-'}</span>
+                <span style="color: #2ecc71; font-weight:bold;">${m.gehalt ? m.gehalt + ' €' : '-'}</span>
+                <div class="action-btns">
                     <button class="delete-btn" onclick="deleteMA(${i})">Entfernen</button>
                 </div>`;
-            list.appendChild(row);
+            list.appendChild(div);
         });
     }
 
     function deleteMA(i) {
-        const list = getMitarbeiterData();
+        let list = JSON.parse(localStorage.getItem("bs_ma_list") || "[]");
         list.splice(i, 1);
-        saveMitarbeiterData(list);
+        localStorage.setItem("bs_ma_list", JSON.stringify(list));
         renderMitarbeiter();
     }
 
-    // --- UNIVERSAL FILTER ---
-    function filterTable(containerId, val) {
-        const query = val.toLowerCase();
-        const rows = document.querySelectorAll(`#${containerId} .table-row`);
-        rows.forEach(row => {
-            const text = row.innerText.toLowerCase();
-            row.style.display = text.includes(query) ? "flex" : "none";
-        });
-    }
-
-    // --- ABMELDUNGEN ---
     function renderAbmeldungen() {
-        const c = document.getElementById("abmList");
-        c.innerHTML = "";
-        getAbmeldungen().reverse().forEach((a) => {
-            const row = document.createElement("div");
-            row.className = "table-row";
-            row.style.display = "flex";
+        const list = document.getElementById("abmList");
+        list.innerHTML = "";
+        getAbmeldungen().reverse().forEach(a => {
+            const div = document.createElement("div");
+            div.className = "grid-row";
             let sClass = a.status === "genehmigt" ? "status-badge-genehmigt" : (a.status === "abgelehnt" ? "status-badge-abgelehnt" : "status-badge-offen");
-            row.innerHTML = `
-                <span style="flex:1;">${a.user}</span>
-                <span style="flex:1;">${a.von}-${a.bis}</span>
-                <span class="${sClass}">${a.status.toUpperCase()}</span>
-                <div class="action-cell" style="flex:1; justify-content: flex-end;">
-                    ${a.status==="offen"?`<button class="rank-btn" onclick="approveAbm(${a.id});renderAbmeldungen()">✔</button><button class="rank-btn" onclick="rejectAbm(${a.id});renderAbmeldungen()">✖</button>`:''}
+            div.innerHTML = `
+                <span style="font-weight:bold;">${a.user}</span>
+                <span style="font-size:0.85rem;">${a.von} - ${a.bis}</span>
+                <div><span class="status-badge ${sClass}">${a.status}</span></div>
+                <div class="action-btns">
+                    ${a.status === 'offen' ? `
+                        <button class="rank-btn" onclick="approveAbm(${a.id});renderAbmeldungen()">✔</button>
+                        <button class="rank-btn" onclick="rejectAbm(${a.id});renderAbmeldungen()">✖</button>
+                    ` : ''}
                     <button class="delete-btn" onclick="deleteAbm(${a.id});renderAbmeldungen()">🗑</button>
                 </div>`;
-            c.appendChild(row);
+            list.appendChild(div);
         });
     }
 
