@@ -1,4 +1,4 @@
-/* ================= ACCOUNT & AUTH ==================== */
+/* ================= 1. ACCOUNT & AUTH (BASIS) ==================== */
 const getAccounts = () => JSON.parse(localStorage.getItem("bs_accounts")) || {};
 const saveAccounts = accs => localStorage.setItem("bs_accounts", JSON.stringify(accs));
 
@@ -22,7 +22,6 @@ function checkFirstLogin() {
     const username = sessionStorage.getItem("loggedInUser");
     const accs = getAccounts();
     const userAcc = accs[username];
-
     if (userAcc && userAcc.isFirstLogin) {
         const modal = document.getElementById("firstLoginModal");
         if (modal) modal.style.display = "flex";
@@ -48,12 +47,7 @@ function changeFirstPassword() {
     document.getElementById("firstLoginModal").style.display = "none";
 }
 
-function showTab(tabId) {
-    document.querySelectorAll('.mgmt-tab').forEach(tab => tab.style.display = 'none');
-    document.getElementById(tabId).style.display = 'block';
-    document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-    if(event) event.currentTarget.classList.add('active');
-}
+/* ================= 2. MANAGEMENT CENTER (ACCOUNTVERWALTUNG) ==================== */
 
 function addUser() {
     const name = document.getElementById("newName").value.trim();
@@ -63,15 +57,48 @@ function addUser() {
     if (!name) return alert("Bitte einen Namen eingeben!");
     if (accs[name]) return alert("Dieser Account existiert bereits!");
 
+    // Einheitliche Struktur für Login & Management
     accs[name] = { password: "0000", role: role, isFirstLogin: true };
     saveAccounts(accs);
     
-    if (typeof renderUsers === "function") renderUsers();
     document.getElementById("newName").value = "";
+    if (typeof renderUsers === "function") renderUsers();
+    updateDashboardStats();
     alert("Mitarbeiter " + name + " wurde angelegt.");
 }
 
-/* ANNOUNCEMENTS LOGIK */
+function uprank(username) {
+    let accs = getAccounts();
+    if (accs[username].role === "Mitarbeiter") {
+        accs[username].role = "Management";
+    } else if (accs[username].role === "Management") {
+        accs[username].role = "Cheffe";
+    }
+    saveAccounts(accs);
+}
+
+function derank(username) {
+    let accs = getAccounts();
+    if (accs[username].role === "Cheffe") {
+        accs[username].role = "Management";
+    } else if (accs[username].role === "Management") {
+        accs[username].role = "Mitarbeiter";
+    }
+    saveAccounts(accs);
+}
+
+function removeUser(username) {
+    if (username === sessionStorage.getItem("loggedInUser")) {
+        return alert("Du kannst dich nicht selbst löschen!");
+    }
+    if (!confirm("Account " + username + " wirklich löschen?")) return;
+    
+    let accs = getAccounts();
+    delete accs[username];
+    saveAccounts(accs);
+}
+
+/* ================= 3. ANNOUNCEMENTS (FUNK-VORLAGEN) ==================== */
 const getAnnouncements = () => JSON.parse(localStorage.getItem("bs_announcements")) || [
     { id: 1, text: "/businessannounce BURGERSHOT – Wo Geschmack über den Dächern von Los Santos lebt..." }
 ];
@@ -120,27 +147,62 @@ function renderAnnounceDetails() {
 }
 
 function openAnnouncePanel() {
-    document.getElementById('announceDetailsModal').style.display = 'flex';
-    renderAnnounceDetails();
+    const modal = document.getElementById('announceDetailsModal');
+    if(modal) {
+        modal.style.display = 'flex';
+        renderAnnounceDetails();
+    }
 }
 
-/* ================= ABMELDUNGEN LOGIK ================= */
+/* ================= 4. ABMELDUNGEN LOGIK ================= */
 const getAbmeldungen = () => JSON.parse(localStorage.getItem("bs_abmeldungen")) || [];
 const saveAbmeldungen = data => localStorage.setItem("bs_abmeldungen", JSON.stringify(data));
 
-function getOffeneAbmeldungenCount() {
-    return getAbmeldungen().filter(a => a.status === "offen").length;
-}
-
 function updateDashboardStats() {
     const accCount = Object.keys(getAccounts()).length;
-    const offeneCount = getOffeneAbmeldungenCount();
+    const offeneAbm = getAbmeldungen().filter(a => a.status === "offen").length;
     const bewerberCount = getBewerber().filter(b => b.status === "offen").length;
 
     if(document.getElementById("accCount")) document.getElementById("accCount").innerText = accCount;
-    if(document.getElementById("heroAbmCount")) document.getElementById("heroAbmCount").innerText = offeneCount;
-    if(document.getElementById("abmCounter")) document.getElementById("abmCounter").innerText = offeneCount + " offen";
+    if(document.getElementById("heroAbmCount")) document.getElementById("heroAbmCount").innerText = offeneAbm;
+    if(document.getElementById("abmCounter")) document.getElementById("abmCounter").innerText = offeneAbm + " offen";
     if(document.getElementById("bewerberCounter")) document.getElementById("bewerberCounter").innerText = bewerberCount + " neu";
+}
+
+function submitAbmeldungUI() {
+    const von = document.getElementById("abmVon").value;
+    const bis = document.getElementById("abmBis").value;
+    const grund = document.getElementById("abmGrund").value;
+    const user = sessionStorage.getItem("loggedInUser");
+    if(!von || !bis || !grund) return alert("Bitte alles ausfüllen!");
+    
+    const list = getAbmeldungen();
+    list.push({ user, von, bis, grund, status: "offen", id: Date.now() });
+    saveAbmeldungen(list);
+    
+    if(typeof closeAbmModal === "function") closeAbmModal();
+    updateDashboardStats();
+    if(typeof renderMeineAbmeldungen === "function") renderMeineAbmeldungen();
+}
+
+function approveAbm(id) {
+    const list = getAbmeldungen();
+    const index = list.findIndex(a => a.id === id);
+    if(index !== -1) {
+        list[index].status = "genehmigt";
+        saveAbmeldungen(list);
+        updateDashboardStats();
+    }
+}
+
+function rejectAbm(id) {
+    const list = getAbmeldungen();
+    const index = list.findIndex(a => a.id === id);
+    if(index !== -1) {
+        list[index].status = "abgelehnt";
+        saveAbmeldungen(list);
+        updateDashboardStats();
+    }
 }
 
 function deleteAbm(id) {
@@ -151,66 +213,9 @@ function deleteAbm(id) {
     updateDashboardStats();
 }
 
-function openAbmModal() { document.getElementById("abmModal").classList.add("active"); }
-function closeAbmModal() { document.getElementById("abmModal").classList.remove("active"); }
-
-function submitAbmeldungUI() {
-    const von = document.getElementById("abmVon").value;
-    const bis = document.getElementById("abmBis").value;
-    const grund = document.getElementById("abmGrund").value;
-    const user = sessionStorage.getItem("loggedInUser");
-    if(!von || !bis || !grund) return alert("Bitte alles ausfüllen!");
-    const list = getAbmeldungen();
-    list.push({ user, von, bis, grund, status: "offen", id: Date.now() });
-    saveAbmeldungen(list);
-    closeAbmModal();
-    updateDashboardStats();
-    renderMeineAbmeldungen();
-}
-
-function renderMeineAbmeldungen() {
-    const container = document.getElementById("meineAbmeldungenList");
-    if(!container) return;
-    container.innerHTML = "";
-    const user = sessionStorage.getItem("loggedInUser");
-    const meine = getAbmeldungen().filter(a => a.user === user);
-    if(meine.length === 0) {
-        container.innerHTML = "<p style='opacity:0.5;'>Keine Abmeldungen eingereicht.</p>";
-        return;
-    }
-    meine.reverse().forEach(a => {
-        let color = a.status === "genehmigt" ? "#2ecc71" : (a.status === "abgelehnt" ? "#e74c3c" : "#faac15");
-        const div = document.createElement("div");
-        div.style.cssText = `background: rgba(255,255,255,0.05); padding: 12px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid ${color}`;
-        div.innerHTML = `<div><span style="font-weight:bold;">${a.von} - ${a.bis}</span><br><small style="opacity:0.7;">Grund: ${a.grund}</small></div><span style="color:${color}; font-weight:bold; text-transform:uppercase; font-size:0.8rem;">${a.status}</span>`;
-        container.appendChild(div);
-    });
-}
-
-function approveAbm(id) {
-    const list = getAbmeldungen();
-    const index = list.findIndex(a => a.id === id);
-    if(index !== -1) list[index].status = "genehmigt";
-    saveAbmeldungen(list);
-}
-
-function rejectAbm(id) {
-    const list = getAbmeldungen();
-    const index = list.findIndex(a => a.id === id);
-    if(index !== -1) list[index].status = "abgelehnt";
-    saveAbmeldungen(list);
-}
-
-/* ================= BEWERBER LOGIK ==================== */
+/* ================= 5. BEWERBER LOGIK ==================== */
 const getBewerber = () => JSON.parse(localStorage.getItem("bs_bewerber")) || [];
 const saveBewerber = data => localStorage.setItem("bs_bewerber", JSON.stringify(data));
-
-function updateBewerberCount() {
-    const count = getBewerber().filter(b => b.status === "offen").length;
-    if(document.getElementById("bewerberCounter")) {
-        document.getElementById("bewerberCounter").innerText = count + " neu";
-    }
-}
 
 function submitBewerbung() {
     const name = document.getElementById("bewName").value.trim();
