@@ -561,3 +561,89 @@ textarea:focus {
 textarea::placeholder {
     color: rgba(255, 255, 255, 0.3);
 }
+
+/* ========================================= */
+/* ERGÄNZUNGEN FÜR BEWERBER & MANAGEMENT     */
+/* ========================================= */
+
+/* Status-Badge für "Angenommen" (Bewerber) */
+.status-badge-angenommen {
+    color: #2ecc71;
+    border: 1px solid #2ecc71;
+    background: rgba(46, 204, 113, 0.15);
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    display: inline-block;
+}
+
+/* Modal Layout Fix für Bewerbungen */
+.modal-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.modal-textarea {
+    margin-top: 15px;
+    width: 100%;
+}
+
+/* Management Grid Fix (Damit die Spalten immer sauber untereinander stehen) */
+.grid-row {
+    display: grid;
+    grid-template-columns: 1.5fr 1.2fr 1fr 1fr; /* Gleiche Gewichtung wie im HTML */
+    gap: 15px;
+    align-items: center;
+    padding: 12px 15px;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.grid-header {
+    background: rgba(255, 255, 255, 0.05);
+    font-weight: bold;
+    color: var(--primary);
+    border-bottom: 2px solid var(--primary);
+}
+
+/* Modal Aktionen (Buttons nebeneinander) */
+.modal-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.submit-btn {
+    flex: 2;
+    background: var(--primary);
+    color: black;
+}
+
+.cancel-btn {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+/* Damit die Management-Tabs flüssig umschalten */
+.mgmt-tab {
+    display: none;
+    animation: fadeIn 0.3s ease;
+}
+
+.mgmt-tab.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Icons/Emoji Zentrierung in den kleinen Panels */
+.panel.small {
+    text-align: center;
+    line-height: 1.4;
+}
