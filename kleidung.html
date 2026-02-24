@@ -153,7 +153,6 @@
 <script>
     requireLogin();
 
-    // Outfits aus Speicher laden oder Standard setzen
     let outfits = JSON.parse(localStorage.getItem("bs_outfits")) || [
         {
             id: 1,
@@ -168,26 +167,26 @@
         list.innerHTML = "";
         const admin = isAdmin();
 
-        // Admin-Panel anzeigen, wenn berechtigt
         if(admin) document.getElementById("adminOutfitPanel").style.display = "block";
 
         outfits.forEach((o, index) => {
             const div = document.createElement("div");
             div.className = "outfit-card";
-            
-            // Beschreibung in Liste umwandeln
             const items = o.desc.split(',').map(item => `<li>${item.trim()}</li>`).join('');
 
             div.innerHTML = `
-        <div class="outfit-image">
-            <img src="${o.img}" alt="${o.role}">
-        </div>
-        <div class="outfit-info">
-            ${admin ? `<button class="delete-outfit" onclick="deleteOutfit(${index})">Löschen</button>` : ''}
-            <h2>👔 ${o.role}</h2>
-            <ul>${items}</ul>
-        </div>
-    `;
+                <div class="outfit-image">
+                    <img src="${o.img}" alt="${o.role}">
+                </div>
+                <div class="outfit-info">
+                    ${admin ? `<button class="delete-outfit" onclick="deleteOutfit(${index})">Löschen</button>` : ''}
+                    <h2>👔 ${o.role}</h2>
+                    <ul>${items}</ul>
+                </div>
+            `;
+            list.appendChild(div);
+        });
+    }
 
     function addOutfit() {
         const role = document.getElementById("outfitRole").value;
@@ -198,19 +197,14 @@
 
         const reader = new FileReader();
         reader.onload = function(e) {
-            const base64Image = e.target.result; // Das Bild als Code
-            
             outfits.push({
                 id: Date.now(),
                 role: role,
                 desc: desc,
-                img: base64Image
+                img: e.target.result
             });
-
             localStorage.setItem("bs_outfits", JSON.stringify(outfits));
             renderOutfits();
-            
-            // Felder leeren
             document.getElementById("outfitRole").value = "";
             document.getElementById("outfitDesc").value = "";
             fileInput.value = "";
