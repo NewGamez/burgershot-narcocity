@@ -20,7 +20,7 @@
         <div style="display: flex; align-items: center; gap: 20px;">
             <img src="assets/logo.png" alt="Logo" style="width: 60px;">
             <div>
-                <h1 style="color: var(--primary); font-size: 1.5rem;">Willkommen beim BurgerShot Panel</h1>
+                <h1 style="color: var(--primary); font-size: 1.5rem;">Willkommen bei Burgershot Intern</h1>
                 <p style="opacity: 0.7;">Teamverwaltung & Organisation auf einen Blick.</p>
             </div>
         </div>
@@ -50,7 +50,7 @@
             <p>Klicke hier, um eine neue Abmeldung einzureichen.</p>
         </div>
 
-        <div class="panel big" onclick="document.getElementById('bewerberModal').style.display='flex'" style="cursor: pointer;">
+        <div class="panel big">
             <div class="panel-top">
                 <span class="panel-header">📝 BEWERBER</span>
                 <span id="bewerberCounter" class="badge">0 neu</span>
@@ -68,9 +68,7 @@
         <div class="panel small">📦 Orders</div>
         <div class="panel small">🏭 Lager</div>
         <div class="panel small">🎵 Musik</div>
-        <div class="panel small" onclick="location.href='kleidung.html'" style="cursor: pointer;">
-            👕 Kleiderordnung
-        </div>
+        <div class="panel small">👕 Kleidung</div>
     </div>
 
     <div class="panel full-width" style="margin-top: 30px; cursor: default;">
@@ -89,35 +87,6 @@
         <span style="font-size: 1.2rem;">➔</span>
     </div>
 </section>
-
-<div class="modal-backdrop" id="bewerberModal">
-    <div class="modal" style="width: 450px;">
-        <h2>📝 Neue Bewerbung</h2>
-        <input type="text" id="bewName" placeholder="Vollständiger Name">
-        <input type="text" id="bewGeb" placeholder="Geburtsdatum (z.B. 10.05.1995)">
-        <input type="text" id="bewTel" placeholder="Telefonnummer">
-        
-        <select id="bewZivi" onchange="document.getElementById('fraktionDiv').style.display = (this.value === 'Nein' ? 'block' : 'none')">
-            <option value="Ja">Zivilist (Ja)</option>
-            <option value="Nein">Fraktion (Nein)</option>
-        </select>
-        
-        <div id="fraktionDiv" style="display:none; margin-top:10px;">
-            <input type="text" id="bewFraktion" placeholder="Welche Fraktion?">
-        </div>
-
-        <input type="number" id="bewVisum" placeholder="Visumstufe">
-        
-        <label style="display:block; margin-top:10px; font-size:0.8rem; opacity:0.7;">Erscheinungsbild (1-10):</label>
-        <input type="range" id="bewAussehen" min="1" max="10" value="5" oninput="this.nextElementSibling.value = this.value">
-        <output>5</output>
-
-        <div style="display:flex; gap:10px; margin-top:20px;">
-            <button onclick="submitBewerbung()" style="flex:1;">Eintragen</button>
-            <button onclick="document.getElementById('bewerberModal').style.display='none'" style="background:#444; flex:1;">Abbrechen</button>
-        </div>
-    </div>
-</div>
 
 <div class="modal-backdrop" id="abmModal">
     <div class="modal">
