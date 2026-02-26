@@ -411,7 +411,7 @@ function renderBewerberManagement() {
                 <span>📅 <b>Geb:</b> ${b.geb}</span>
                 <span>📞 <b>Tel:</b> ${b.tel}</span>
                 <span>🆔 <b>Visum:</b> ${b.visum}</span>
-                <span>👕 <b>Look:</b> ${b.look}/10</span>
+                <span>⭐ <b>Visumstufe:</b> ${b.look}/10</span>
                 <span style="grid-column: span 2;">🏢 <b>Status/Fraktion:</b> ${b.zivi}</span>
             </div>
             <div style="text-align:center;">
