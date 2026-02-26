@@ -194,12 +194,23 @@ button:hover {
 
 /* BADGE */
 .badge {
-    background: var(--primary);
-    color: black;
-    padding: 4px 10px;
-    border-radius: 20px;
+    background-color: #ffac15; /* Dein Burgershot-Gelb */
+    color: #000;
+    padding: 4px 14px; /* Mehr Padding links/rechts macht es ovaler */
+    border-radius: 20px; /* Abgerundete Ecken */
     font-size: 0.75rem;
     font-weight: bold;
+    display: flex;
+    flex-direction: column; /* Text untereinander (0 und offen) */
+    align-items: center;
+    justify-content: center;
+    line-height: 1.1;
+    min-width: 50px; /* Verhindert, dass es zu schmal wird */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.badge span {
+    display: block;
 }
 
 /* MANAGEMENT BAR */
