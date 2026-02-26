@@ -412,7 +412,7 @@ function renderBewerberManagement() {
                 <span>📞 <b>Tel:</b> ${b.tel}</span>
                 <span>⭐ <b>Visum:</b> ${b.visum}</span>
                 <span>👔 <b>Erscheinungsbild:</b> ${b.ersch}/10</span>
-                <span style="grid-column: span 2;">🏢 <b>Status/Fraktion:</b> ${b.zivi}</span>
+                <span style="grid-column: span 2;">🏢 <b>Zivi/Fraktion:</b> ${b.zivi}</span>
             </div>
             <div style="text-align:center;">
                 <span class="status-badge" style="border:1px solid ${statusColor}; color:${statusColor}; padding: 4px 8px; border-radius: 4px; font-size: 0.7rem;">
