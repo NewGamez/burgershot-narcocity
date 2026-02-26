@@ -46,11 +46,14 @@
         </div>
 
         <div class="panel big" onclick="openAbmModal()" style="cursor: pointer;">
-            <div class="panel-top">
-                <span class="panel-header">📅 ABMELDUNGEN</span>
-                <span id="abmCounter" class="badge">0 offen</span>
+            <div class="panel-top" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+                <div class="panel-header">📅 ABMELDUNGEN</div>
+                <div id="abmCounter" class="badge">
+                    <span id="abmCountNum">0</span>
+                    <span style="font-size: 0.6rem; text-transform: lowercase;">offen</span>
+                </div>
             </div>
-            <p>Klicke hier, um eine neue Abmeldung einzureichen.</p>
+            <p style="opacity: 0.7;">Klicke hier, um eine neue Abmeldung einzureichen.</p>
         </div>
 
         <div class="panel">
