@@ -332,3 +332,51 @@ function derank(name) {
         renderUsers();
     }
 }
+
+/* ================= BEWERBER LOGIK ==================== */
+const getBewerber = () => JSON.parse(localStorage.getItem("bs_bewerber")) || [];
+const saveBewerber = data => localStorage.setItem("bs_bewerber", JSON.stringify(data));
+
+function submitBewerbung() {
+    const name = document.getElementById("bewName").value.trim();
+    const geb = document.getElementById("bewGeb").value;
+    const tel = document.getElementById("bewTel").value.trim();
+    const zivi = document.getElementById("bewZivi").value; // "Ja" oder Fraktionsname
+    const visum = document.getElementById("bewVisum").value;
+    const look = document.getElementById("bewLook").value;
+
+    if(!name || !geb || !tel || !visum) return alert("Bitte die wichtigsten Felder ausfüllen!");
+
+    const bewerber = getBewerber();
+    bewerber.push({
+        id: Date.now(),
+        name, geb, tel, zivi, visum, look,
+        status: "offen",
+        erstelltAm: new Date().toLocaleDateString('de-DE')
+    });
+
+    saveBewerber(bewerber);
+    alert("Bewerber erfolgreich eingetragen!");
+    
+    // Felder leeren
+    ["bewName", "bewGeb", "bewTel", "bewZivi", "bewVisum", "bewLook"].forEach(id => {
+        document.getElementById(id).value = "";
+    });
+}
+
+function updateBewerberStatus(id, neuerStatus) {
+    let bewerber = getBewerber();
+    const index = bewerber.findIndex(b => b.id === id);
+    if(index !== -1) {
+        bewerber[index].status = neuerStatus;
+        saveBewerber(bewerber);
+        renderBewerberManagement(); // Liste aktualisieren
+    }
+}
+
+function deleteBewerber(id) {
+    if(!confirm("Bewerber endgültig löschen?")) return;
+    const bewerber = getBewerber().filter(b => b.id !== id);
+    saveBewerber(bewerber);
+    renderBewerberManagement();
+}
