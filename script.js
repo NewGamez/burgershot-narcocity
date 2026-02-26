@@ -31,6 +31,19 @@ function checkFirstLogin() {
     }
 }
 
+function updateDashboardStats() {
+    const accs = getAccounts();
+    const abm = getAbmeldungen();
+    
+    const accCount = Object.keys(accs).length;
+    const offeneAbm = abm.filter(a => a.status === "offen").length;
+
+    if(document.getElementById("accCount")) 
+        document.getElementById("accCount").innerText = accCount;
+    if(document.getElementById("heroAbmCount")) 
+        document.getElementById("heroAbmCount").innerText = offeneAbm;
+}
+
 /* PASSWORT ÄNDERN FUNKTION */
 function changeFirstPassword() {
     const newPass = document.getElementById("newInitialPassword").value.trim();
