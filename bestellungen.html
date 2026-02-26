@@ -37,22 +37,33 @@
 <script src="script.js"></script>
 <script>
     document.addEventListener("DOMContentLoaded", () => {
-        requireLogin();
+        // Sicherstellen, dass der Login geprüft wird
+        if (typeof requireLogin === "function") {
+            requireLogin();
+        }
         renderOrders();
     });
 
+    // Hilfsfunktion zum Laden der Daten
+    function getOrders() {
+        return JSON.parse(localStorage.getItem("bs_orders")) || [];
+    }
+
     function renderOrders() {
         const container = document.getElementById("orderList");
-        const orders = JSON.parse(localStorage.getItem("bs_orders")) || [];
-        const admin = isAdmin();
+        if (!container) return;
+        
+        const orders = getOrders();
+        const admin = isAdmin(); // Prüft Management-Rechte aus script.js
         container.innerHTML = "";
 
-        if(orders.length === 0) {
+        if (orders.length === 0) {
             container.innerHTML = "<p style='text-align:center; padding: 20px; opacity: 0.5;'>Keine offenen Bestellungen.</p>";
             return;
         }
 
-        orders.reverse().forEach(o => {
+        // Kopie machen und umdrehen, damit das Neueste oben steht
+        [...orders].reverse().forEach(o => {
             const div = document.createElement("div");
             div.className = "grid-row";
             div.style.gridTemplateColumns = "1fr 3fr 1fr 1fr";
@@ -75,3 +86,46 @@
     function addOrder() {
         const input = document.getElementById("orderInput");
         const text = input.value.trim();
+        
+        if (!text) {
+            alert("Bitte gib ein, was bestellt werden soll!");
+            return;
+        }
+
+        const orders = getOrders();
+        const currentUser = sessionStorage.getItem("loggedInUser") || "Unbekannt";
+
+        const newOrder = {
+            id: Date.now(),
+            user: currentUser,
+            date: new Date().toLocaleDateString('de-DE'),
+            text: text
+        };
+
+        orders.push(newOrder);
+        localStorage.setItem("bs_orders", JSON.stringify(orders));
+        
+        // Input leeren
+        input.value = "";
+        
+        // Liste sofort neu zeichnen
+        renderOrders();
+        
+        // Optional: Falls du die Badge auf dem Dashboard hast
+        if (typeof updateDashboardStats === "function") {
+            updateDashboardStats();
+        }
+    }
+
+    function deleteOrder(id) {
+        if (!confirm("Bestellung als erledigt markieren und löschen?")) return;
+        let orders = getOrders();
+        orders = orders.filter(o => o.id !== id);
+        localStorage.setItem("bs_orders", JSON.stringify(orders));
+        renderOrders();
+        
+        if (typeof updateDashboardStats === "function") {
+            updateDashboardStats();
+        }
+    }
+</script>
