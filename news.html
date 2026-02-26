@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Burgershot Intern | News & Infos</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+    <a href="index.html" class="brand-link">🍔 Burgershot News</a>
+    <div>
+        <button onclick="location.href='index.html'">Zurück zum Dashboard</button>
+    </div>
+</header>
+
+<section class="dashboard">
+    <div id="newsCreatorArea" class="panel full-width" style="display: none; margin-bottom: 30px;">
+        <div class="panel-header">📢 Neue Nachricht verfassen</div>
+        <textarea id="newNewsText" placeholder="Was gibt es Neues? (Emojis erlaubt ✨)" style="width: 100%; height: 120px; margin: 15px 0; background: rgba(0,0,0,0.2); color: white; border: 1px solid var(--glass-border); padding: 15px; border-radius: 10px;"></textarea>
+        <input type="text" id="newNewsImg" placeholder="Bild-URL (Optional, z.B. von Discord oder Imgur)" style="width: 100%; margin-bottom: 15px;">
+        <button onclick="addNews()" style="width: 100%;" class="submit-btn">Nachricht veröffentlichen</button>
+    </div>
+
+    <div id="newsFullGrid">
+        </div>
+</section>
+
+<script src="script.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        requireLogin();
+        // Zeige Creator-Bereich nur für Manager/Cheffe
+        if (isAdmin()) {
+            document.getElementById('newsCreatorArea').style.display = 'block';
+        }
+        renderNewsFull();
+    });
+
+    // Wir passen renderNewsFull leicht an, damit es nach dem Hinzufügen/Löschen auf dieser Seite bleibt
+    function renderNewsFull() {
+        const container = document.getElementById("newsFullGrid");
+        if(!container) return;
+        
+        const news = getNews();
+        const currentUser = sessionStorage.getItem("loggedInUser");
+        const admin = isAdmin();
+        
+        container.innerHTML = "";
+
+        if(news.length === 0) {
+            container.innerHTML = "<div class='panel full-width' style='text-align:center; opacity:0.5;'>Noch keine Nachrichten vorhanden.</div>";
+            return;
+        }
+
+        news.reverse().forEach(n => {
+            const hasVotedUp = n.votesUp.includes(currentUser);
+            const hasVotedDown = n.votesDown.includes(currentUser);
+
+            const div = document.createElement("div");
+            div.className = "panel full-width";
+            div.style.marginBottom = "25px";
+            div.style.padding = "25px";
+
+            div.innerHTML = `
+                <div style="display:flex; justify-content:space-between; margin-bottom:15px; opacity:0.6; font-size:0.85rem;">
+                    <span>Erstellt von: <b style="color:var(--primary);">${n.ersteller}</b></span>
+                    <span>${n.datum} Uhr</span>
+                </div>
+                
+                <p style="white-space:pre-line; line-height:1.6; font-size:1.1rem; margin-bottom:20px;">${n.text}</p>
+                
+                ${n.bild ? `<img src="${n.bild}" style="max-width:100%; border-radius:12px; margin-bottom:20px; border:1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 30px rgba(0,0,0,0.3);">` : ''}
+                
+                <div style="display:flex; justify-content:space-between; align-items:center; border-top: 1px solid rgba(255,255,255,0.1); padding-top:20px;">
+                    <div style="display:flex; gap:15px;">
+                        <button onclick="reactToNews(${n.id}, 'up')" class="react-btn ${hasVotedUp ? 'active' : ''}">
+                            ✅ <span style="margin-left:8px; font-weight:bold;">${n.votesUp.length}</span>
+                        </button>
+                        <button onclick="reactToNews(${n.id}, 'down')" class="react-btn ${hasVotedDown ? 'active' : ''}">
+                            ❌ <span style="margin-left:8px; font-weight:bold;">${n.votesDown.length}</span>
+                        </button>
+                    </div>
+                    ${admin ? `<button onclick="deleteNews(${n.id})" style="background:none; border:none; color:#e74c3c; cursor:pointer; font-size:0.9rem; text-decoration:underline;">Nachricht entfernen</button>` : ''}
+                </div>
+            `;
+            container.appendChild(div);
+        });
+    }
+</script>
+</body>
+</html>
