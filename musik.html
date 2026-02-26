@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Burgershot | Radio & Playlist</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+    <a href="index.html" class="brand-link">🎵 Burgershot Radio</a>
+    <button onclick="location.href='index.html'">Zurück zum Dashboard</button>
+</header>
+
+<section class="dashboard">
+    <div class="panel full-width">
+        <div class="panel-header">➕ Song zur Playlist hinzufügen</div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 10px; margin-top: 15px;">
+            <input type="text" id="songTitle" placeholder="Song Titel (z.B. Lofi Hip Hop)">
+            <input type="text" id="songUrl" placeholder="YouTube Link">
+            <button onclick="addSong()" class="submit-btn" style="margin:0;">Hinzufügen</button>
+        </div>
+    </div>
+
+    <div class="panel full-width">
+        <div class="panel-header" style="display: flex; justify-content: space-between;">
+            <span>📻 Aktuelle Playlist</span>
+            <span id="musicCounter" class="badge">0 Songs</span>
+        </div>
+        
+        <div class="grid-row grid-header" style="grid-template-columns: 2fr 1fr 1fr auto; font-weight: bold; opacity: 0.7; border-bottom: 1px solid var(--glass-border); padding-bottom: 10px; margin-top: 15px;">
+            <span>Titel</span>
+            <span>Von</span>
+            <span>Link</span>
+            <span style="text-align: right;">Aktion</span>
+        </div>
+        <div id="playlistContainer"></div>
+    </div>
+</section>
+
+<script src="script.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        requireLogin();
+        renderPlaylist();
+    });
+
+    function renderPlaylist() {
+        const container = document.getElementById("playlistContainer");
+        const songs = JSON.parse(localStorage.getItem("bs_playlist")) || [];
+        const admin = isAdmin();
+        container.innerHTML = "";
+
+        document.getElementById("musicCounter").innerText = songs.length + " Songs";
+
+        if(songs.length === 0) {
+            container.innerHTML = "<p style='text-align:center; padding: 20px; opacity: 0.5;'>Die Playlist ist noch leer.</p>";
+            return;
+        }
+
+        songs.reverse().forEach(s => {
+            const div = document.createElement("div");
+            div.className = "grid-row";
+            div.style.gridTemplateColumns = "2fr 1fr 1fr auto";
+            div.style.alignItems = "center";
+            div.style.padding = "12px 0";
+            div.style.borderBottom = "1px solid rgba(255,255,255,0.05)";
+
+            div.innerHTML = `
+                <span style="font-weight: 500; color: var(--primary);">${s.title}</span>
+                <span style="font-size: 0.85rem; opacity: 0.7;">${s.user}</span>
+                <button onclick="copyToClipboard('${s.url}')" style="background: rgba(255,255,255,0.1); border: 1px solid var(--glass-border); color: white; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 0.8rem;">
+                    📋 Link kopieren
+                </button>
+                <div style="text-align: right;">
+                    ${admin ? `<button onclick="deleteSong(${s.id})" style="background:none; border:none; color:#e74c3c; cursor:pointer; font-size:1.2rem; margin-left:10px;">🗑</button>` : ''}
+                </div>
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    function addSong() {
+        const titleInput = document.getElementById("songTitle");
+        const urlInput = document.getElementById("songUrl");
+        
+        if(!titleInput.value || !urlInput.value) return alert("Bitte Titel und Link eingeben!");
+
+        const songs = JSON.parse(localStorage.getItem("bs_playlist")) || [];
+        songs.push({
+            id: Date.now(),
+            title: titleInput.value.trim(),
+            url: urlInput.value.trim(),
+            user: sessionStorage.getItem("loggedInUser")
+        });
+
+        localStorage.setItem("bs_playlist", JSON.stringify(songs));
+        titleInput.value = "";
+        urlInput.value = "";
+        renderPlaylist();
+    }
+
+    function copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(() => {
+            alert("Link wurde kopiert!");
+        });
+    }
+
+    function deleteSong(id) {
+        let songs = JSON.parse(localStorage.getItem("bs_playlist")) || [];
+        songs = songs.filter(s => s.id !== id);
+        localStorage.setItem("bs_playlist", JSON.stringify(songs));
+        renderPlaylist();
+    }
+</script>
+</body>
+</html>
