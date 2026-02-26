@@ -75,6 +75,7 @@
                 <button class="nav-btn active" onclick="showTab('tab-accounts', this)">👤 Accountverwaltung</button>
                 <button class="nav-btn" onclick="showTab('tab-mitarbeiter', this)">📋 Mitarbeiterliste</button>
                 <button class="nav-btn" onclick="showTab('tab-abmeldungen', this)">📅 Abmeldungen</button>
+                <button class="nav-btn" onclick="showTab('tab-bewerber', this); renderBewerberManagement()">📝 Bewerber</button>
             </div>
         </div>
 
@@ -141,6 +142,21 @@
                     <span style="text-align: right;">Aktionen</span>
                 </div>
                 <div id="abmList"></div>
+            </div>
+        </div>
+
+        <div id="tab-bewerber" class="mgmt-tab">
+            <div class="panel">
+                <div class="panel-header" style="margin-bottom:15px;">📝 Offene & Bearbeitete Bewerbungen</div>
+        
+                <div class="grid-row grid-header" style="grid-template-columns: 1.5fr 2.5fr 1fr 1fr;">
+                    <span>Name / Datum</span>
+                    <span>Details (Visum, Tel, Fraktion)</span>
+                    <span style="text-align: center;">Status</span>
+                    <span style="text-align: right;">Aktionen</span>
+                </div>
+
+                <div id="bewerberManagementList"></div>
             </div>
         </div>
 
