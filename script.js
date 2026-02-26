@@ -449,3 +449,101 @@ function showTab(tabId, btn) {
     if(tabId === 'tab-abmeldungen') renderAbmeldungen();
     if(tabId === 'tab-bewerber') renderBewerberManagement(); // WICHTIG!
 }
+
+/* ================= NEWS & INFOS LOGIK ==================== */
+const getNews = () => JSON.parse(localStorage.getItem("bs_news")) || [];
+const saveNews = data => localStorage.setItem("bs_news", JSON.stringify(data));
+
+function addNews() {
+    const text = document.getElementById("newNewsText").value.trim();
+    const imgUrl = document.getElementById("newNewsImg").value.trim();
+    
+    if(!text) return alert("Bitte einen Text eingeben!");
+
+    const news = getNews();
+    news.push({
+        id: Date.now(),
+        ersteller: sessionStorage.getItem("loggedInUser"),
+        datum: new Date().toLocaleString('de-DE', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }),
+        text: text,
+        bild: imgUrl || null,
+        votesUp: [], // Speichert Usernames, die ✅ geklickt haben
+        votesDown: [] // Speichert Usernames, die ❌ geklickt haben
+    });
+
+    saveNews(news);
+    document.getElementById("newNewsText").value = "";
+    document.getElementById("newNewsImg").value = "";
+    renderNewsFull();
+}
+
+function reactToNews(id, type) {
+    const user = sessionStorage.getItem("loggedInUser");
+    let news = getNews();
+    const index = news.findIndex(n => n.id === id);
+    
+    if(index !== -1) {
+        // Alte Reaktionen des Users entfernen (damit man nicht beides gleichzeitig kann)
+        news[index].votesUp = news[index].votesUp.filter(u => u !== user);
+        news[index].votesDown = news[index].votesDown.filter(u => u !== user);
+
+        // Neue Reaktion hinzufügen
+        if(type === 'up') news[index].votesUp.push(user);
+        if(type === 'down') news[index].votesDown.push(user);
+
+        saveNews(news);
+        renderNewsFull();
+    }
+}
+
+function deleteNews(id) {
+    if(!confirm("Diese Nachricht wirklich löschen?")) return;
+    const news = getNews().filter(n => n.id !== id);
+    saveNews(news);
+    renderNewsFull();
+}
+
+function renderNewsFull() {
+    const container = document.getElementById("newsFullGrid");
+    if(!container) return;
+    
+    const news = getNews();
+    const currentUser = sessionStorage.getItem("loggedInUser");
+    const admin = isAdmin();
+    
+    container.innerHTML = "";
+
+    news.reverse().forEach(n => {
+        const hasVotedUp = n.votesUp.includes(currentUser);
+        const hasVotedDown = n.votesDown.includes(currentUser);
+
+        const div = document.createElement("div");
+        div.className = "panel";
+        div.style.marginBottom = "20px";
+        div.style.padding = "20px";
+
+        div.innerHTML = `
+            <div style="display:flex; justify-content:space-between; margin-bottom:10px; opacity:0.6; font-size:0.8rem;">
+                <span>Von: <b>${n.ersteller}</b></span>
+                <span>${n.datum} Uhr</span>
+            </div>
+            
+            <p style="white-space:pre-line; line-height:1.5; margin-bottom:15px;">${n.text}</p>
+            
+            ${n.bild ? `<img src="${n.bild}" style="max-width:100%; border-radius:10px; margin-bottom:15px; border:1px solid rgba(255,255,255,0.1);">` : ''}
+            
+            <div style="display:flex; justify-content:space-between; align-items:center; border-top: 1px solid rgba(255,255,255,0.05); pt-15px; margin-top:10px; padding-top:15px;">
+                <div style="display:flex; gap:15px;">
+                    <button onclick="reactToNews(${n.id}, 'up')" class="react-btn ${hasVotedUp ? 'active' : ''}">
+                        ✅ <span style="margin-left:5px;">${n.votesUp.length}</span>
+                    </button>
+                    <button onclick="reactToNews(${n.id}, 'down')" class="react-btn ${hasVotedDown ? 'active' : ''}">
+                        ❌ <span style="margin-left:5px;">${n.votesDown.length}</span>
+                    </button>
+                </div>
+                ${admin ? `<button onclick="deleteNews(${n.id})" style="background:none; border:none; color:#e74c3c; cursor:pointer; font-size:0.8rem;">Nachricht löschen</button>` : ''}
+            </div>
+        `;
+        container.appendChild(div);
+    });
+}
