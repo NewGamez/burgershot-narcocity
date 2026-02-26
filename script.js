@@ -449,3 +449,61 @@ function showTab(tabId, btn) {
     if(tabId === 'tab-abmeldungen') renderAbmeldungen();
     if(tabId === 'tab-bewerber') renderBewerberManagement(); // WICHTIG!
 }
+
+function renderAbmeldungen() {
+    const container = document.getElementById("managementAbmeldungenList");
+    if(!container) return;
+
+    const abmeldungen = getAbmeldungen();
+    container.innerHTML = "";
+
+    if(abmeldungen.length === 0) {
+        container.innerHTML = "<p style='padding:20px; opacity:0.5; text-align:center;'>Aktuell liegen keine Abmeldungen vor.</p>";
+        return;
+    }
+
+    // Die neuesten Abmeldungen nach oben
+    abmeldungen.reverse().forEach(a => {
+        const div = document.createElement("div");
+        div.className = "grid-row"; 
+        div.style.gridTemplateColumns = "1.5fr 2fr 1fr 1fr";
+        div.style.alignItems = "center";
+        div.style.padding = "15px 0";
+        div.style.borderBottom = "1px solid rgba(255,255,255,0.05)";
+
+        const statusColor = a.status === 'genehmigt' ? '#2ecc71' : (a.status === 'abgelehnt' ? '#e74c3c' : '#faac15');
+
+        div.innerHTML = `
+            <div>
+                <strong style="color:var(--primary); font-size:1.05rem;">${a.user}</strong><br>
+                <small style="opacity:0.6;">📅 ${a.von} bis ${a.bis}</small>
+            </div>
+            <div style="font-size: 0.9rem; opacity: 0.9; padding-right: 10px;">
+                ${a.grund}
+            </div>
+            <div style="text-align:center;">
+                <span style="border:1px solid ${statusColor}; color:${statusColor}; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; font-weight:bold;">
+                    ${a.status.toUpperCase()}
+                </span>
+            </div>
+            <div class="action-btns" style="display:flex; gap:5px; justify-content: flex-end;">
+                <button onclick="handleAbmStatus('${a.id}', 'genehmigt')" style="background:#2ecc71; color:white; border:none; padding:8px 12px; border-radius:5px; cursor:pointer;">✔</button>
+                <button onclick="handleAbmStatus('${a.id}', 'abgelehnt')" style="background:#e74c3c; color:white; border:none; padding:8px 12px; border-radius:5px; cursor:pointer;">✖</button>
+                <button onclick="deleteAbm('${a.id}')" style="background:rgba(255,255,255,0.1); color:#ff4d4d; border:1px solid #ff4d4d; padding:8px 12px; border-radius:5px; cursor:pointer;">🗑</button>
+            </div>
+        `;
+        container.appendChild(div);
+    });
+}
+
+// Hilfsfunktion zum Updaten des Status
+function handleAbmStatus(id, neuerStatus) {
+    const list = getAbmeldungen();
+    const index = list.findIndex(a => String(a.id) === String(id));
+    if(index !== -1) {
+        list[index].status = neuerStatus;
+        saveAbmeldungen(list);
+        renderAbmeldungen(); // Liste sofort neu zeichnen
+        if(typeof updateDashboardStats === "function") updateDashboardStats();
+    }
+}
