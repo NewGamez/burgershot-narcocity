@@ -343,14 +343,14 @@ function submitBewerbung() {
     const tel = document.getElementById("bewTel").value.trim();
     const zivi = document.getElementById("bewZivi").value; // "Ja" oder Fraktionsname
     const visum = document.getElementById("bewVisum").value;
-    const look = document.getElementById("bewLook").value;
+    const ersch = document.getElementById("bewversch").value;
 
     if(!name || !geb || !tel || !visum) return alert("Bitte die wichtigsten Felder ausfüllen!");
 
     const bewerber = getBewerber();
     bewerber.push({
         id: Date.now(),
-        name, geb, tel, zivi, visum, look,
+        name, geb, tel, zivi, visum, ersch,
         status: "offen",
         erstelltAm: new Date().toLocaleDateString('de-DE')
     });
@@ -359,7 +359,7 @@ function submitBewerbung() {
     alert("Bewerber erfolgreich eingetragen!");
     
     // Felder leeren
-    ["bewName", "bewGeb", "bewTel", "bewZivi", "bewVisum", "bewLook"].forEach(id => {
+    ["bewName", "bewGeb", "bewTel", "bewZivi", "bewVisum", "bewersch"].forEach(id => {
         document.getElementById(id).value = "";
     });
 }
@@ -410,8 +410,8 @@ function renderBewerberManagement() {
             <div style="font-size: 0.85rem; display: grid; grid-template-columns: 1fr 1fr; gap: 5px;">
                 <span>📅 <b>Geb:</b> ${b.geb}</span>
                 <span>📞 <b>Tel:</b> ${b.tel}</span>
-                <span>🆔 <b>Visum:</b> ${b.visum}</span>
-                <span>⭐ <b>Visumstufe:</b> ${b.look}/10</span>
+                <span>⭐ <b>Visum:</b> ${b.visum}</span>
+                <span>👔 <b>Erscheinungsbild:</b> ${b.ersch}/10</span>
                 <span style="grid-column: span 2;">🏢 <b>Status/Fraktion:</b> ${b.zivi}</span>
             </div>
             <div style="text-align:center;">
