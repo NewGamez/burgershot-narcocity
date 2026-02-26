@@ -2,226 +2,123 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>Kleiderordnung | Burgershot</title>
+    <title>Burgershot | Kleiderordnung</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-    /* Hintergrund & Container */
-    body { background-attachment: fixed; }
-    .dresscode-container { max-width: 1100px; margin: 0 auto; padding: 40px 20px; }
-    
-    /* Überschriften */
-    h1 { font-size: 2.5rem; color: var(--primary); text-shadow: 0 0 20px rgba(250,172,21,0.4); }
-
-    /* Admin Bereich Styling */
-    .admin-only { 
-        background: rgba(255, 255, 255, 0.03); 
-        backdrop-filter: blur(10px);
-        padding: 30px; 
-        border-radius: 20px; 
-        border: 1px solid rgba(250, 172, 21, 0.3);
-        margin-bottom: 50px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    }
-
-    /* Outfit Karten Layout */
-    #outfitList {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
-        gap: 30px;
-    }
-
-    .outfit-card {
-        background: rgba(255, 255, 255, 0.05);
-        backdrop-filter: blur(15px);
-        border-radius: 20px;
-        border: 1px solid rgba(255,255,255,0.1);
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .outfit-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 15px 40px rgba(0,0,0,0.4);
-        border-color: var(--primary);
-    }
-
-    /* Bild-Bereich */
-    .outfit-image {
-        width: 100%;
-        height: 350px;
-        overflow: hidden;
-        background: #111;
-        border-bottom: 2px solid var(--primary);
-    }
-
-    .outfit-image img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover; /* Verhindert Verzerrung */
-        transition: transform 0.5s ease;
-    }
-
-    .outfit-card:hover .outfit-image img {
-        transform: scale(1.05);
-    }
-
-    /* Text-Bereich */
-    .outfit-info {
-        padding: 25px;
-        position: relative;
-    }
-
-    .outfit-info h2 {
-        margin: 0 0 15px 0;
-        color: var(--primary);
-        font-size: 1.6rem;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-    .outfit-info ul {
-        margin: 0;
-        padding: 0;
-        list-style: none;
-    }
-
-    .outfit-info li {
-        padding: 8px 0;
-        border-bottom: 1px solid rgba(255,255,255,0.05);
-        font-size: 0.95rem;
-        opacity: 0.9;
-        display: flex;
-        align-items: center;
-    }
-
-    .outfit-info li::before {
-        content: "•";
-        color: var(--primary);
-        margin-right: 10px;
-        font-weight: bold;
-    }
-
-    /* Löschen Button Schicker */
-    .delete-outfit {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-        background: rgba(231, 76, 60, 0.8);
-        border: none;
-        color: white;
-        padding: 8px 15px;
-        border-radius: 8px;
-        font-size: 0.75rem;
-        cursor: pointer;
-        opacity: 0;
-        transition: opacity 0.3s;
-    }
-
-    .outfit-card:hover .delete-outfit {
-        opacity: 1;
-    }
-</style>
 </head>
 <body>
 
 <header>
-    <a href="index.html" class="brand-link">🍔 Burgershot Intern</a>
-    <button onclick="location.href='index.html'" style="background: #222;">🏠 Dashboard</button>
+    <a href="index.html" class="brand-link">👕 Burgershot Kleidung</a>
+    <button onclick="location.href='index.html'">Zurück zum Dashboard</button>
 </header>
 
-<section class="dresscode-container">
-    <h1 style="text-align: center; margin-bottom: 10px;">👔 Kleiderordnung</h1>
-    <p style="text-align: center; opacity: 0.6; margin-bottom: 40px;">Offizielle Outfits für den Dienst</p>
-
-    <div id="adminOutfitPanel" class="admin-only">
-        <h3>➕ Neues Outfit hinzufügen</h3>
-        <input type="text" id="outfitRole" placeholder="Rollen-Name (z.B. Service)">
-        <textarea id="outfitDesc" placeholder="Beschreibung & Regeln (Stichpunkte mit Komma trennen)"></textarea>
-        <label style="display: block; margin-bottom: 5px; font-size: 0.8rem;">Outfit-Bild hochladen:</label>
-        <input type="file" id="outfitImgFile" accept="image/*">
-        <button onclick="addOutfit()" style="width: 100%; margin-top: 10px;">Outfit Speichern</button>
+<section class="dashboard">
+    <div id="clothingCreator" class="panel full-width" style="display: none; margin-bottom: 30px;">
+        <div class="panel-header" id="creatorTitle">➕ Neues Outfit eintragen</div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
+            <input type="text" id="clothTitle" placeholder="Name des Outfits (z.B. Service Männlich)">
+            <input type="text" id="clothImg" placeholder="Bild-URL (Optional)">
+            <textarea id="clothDesc" placeholder="Details (Mehrere Zeilen möglich)&#10;Hose: ID 5&#10;Oberteil: ID 12..." style="grid-column: span 2; height: 100px; background: rgba(0,0,0,0.2); color: white; border: 1px solid var(--glass-border); padding: 10px; border-radius: 8px;"></textarea>
+            <input type="hidden" id="editId">
+            <button onclick="saveClothing()" class="submit-btn" style="grid-column: span 2;">Outfit speichern</button>
+            <button id="cancelEdit" onclick="resetForm()" style="display:none; grid-column: span 2; background: #444;">Bearbeiten abbrechen</button>
+        </div>
     </div>
 
-    <div id="outfitList">
+    <div id="clothingGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
         </div>
 </section>
 
 <script src="script.js"></script>
 <script>
-    requireLogin();
-
-    let outfits = JSON.parse(localStorage.getItem("bs_outfits")) || [
-        {
-            id: 1,
-            role: "Management",
-            desc: "Weißes Hemd, Schwarze Anzughose, Gepflegte Schuhe",
-            img: "https://via.placeholder.com/400x500?text=Beispiel+Bild"
-        }
-    ];
-
-    function renderOutfits() {
-    const container = document.getElementById("outfitContainer"); // ID deines Containers
-    if (!container) return;
-    
-    const outfits = JSON.parse(localStorage.getItem("bs_outfits")) || [];
-    container.innerHTML = "";
-
-    outfits.forEach((outfit, index) => {
-        // Trenne die Beschreibung am Komma in ein Array
-        const items = outfit.description.split(',').map(item => item.trim());
-        
-        const card = document.createElement("div");
-        card.className = "outfit-card";
-        
-        card.innerHTML = `
-            <img src="${outfit.image}" class="outfit-img" alt="${outfit.name}">
-            <div class="outfit-info">
-                <h3 style="color:var(--primary); margin-bottom: 5px;">👔 ${outfit.name}</h3>
-                <ul class="outfit-list">
-                    ${items.map(i => `<li>${i}</li>`).join('')}
-                </ul>
-                ${isAdmin() ? `<button onclick="deleteOutfit(${index})" class="delete-btn" style="width:100%; margin-top:10px;">Löschen</button>` : ''}
-            </div>
-        `;
-        container.appendChild(card);
+    document.addEventListener("DOMContentLoaded", () => {
+        requireLogin();
+        if(isAdmin()) document.getElementById("clothingCreator").style.display = "block";
+        renderClothing();
     });
-}
 
-    function addOutfit() {
-        const role = document.getElementById("outfitRole").value;
-        const desc = document.getElementById("outfitDesc").value;
-        const fileInput = document.getElementById("outfitImgFile");
+    const getClothing = () => JSON.parse(localStorage.getItem("bs_clothing")) || [];
+
+    function renderClothing() {
+        const container = document.getElementById("clothingGrid");
+        const items = getClothing();
+        const admin = isAdmin();
+        container.innerHTML = "";
+
+        if(items.length === 0) {
+            container.innerHTML = "<p style='grid-column: 1/-1; text-align:center; opacity:0.5;'>Keine Outfits eingetragen.</p>";
+            return;
+        }
+
+        items.forEach(item => {
+            const div = document.createElement("div");
+            div.className = "panel";
+            div.style.display = "flex";
+            div.style.flexDirection = "column";
+
+            div.innerHTML = `
+                <div class="panel-header" style="color: var(--primary);">${item.title}</div>
+                ${item.img ? `<img src="${item.img}" style="width:100%; border-radius:8px; margin: 10px 0;">` : ''}
+                <p style="white-space: pre-line; font-size: 0.9rem; margin: 10px 0; flex-grow: 1;">${item.desc}</p>
+                ${admin ? `
+                <div style="display: flex; gap: 10px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px; margin-top: auto;">
+                    <button onclick="editClothing(${item.id})" style="flex:1; background: rgba(255,255,255,0.1); font-size: 0.8rem;">Bearbeiten</button>
+                    <button onclick="deleteClothing(${item.id})" style="flex:1; background: rgba(231, 76, 60, 0.2); color: #e74c3c; border: 1px solid #e74c3c; font-size: 0.8rem;">Löschen</button>
+                </div>` : ''}
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    function saveClothing() {
+        const title = document.getElementById("clothTitle").value;
+        const img = document.getElementById("clothImg").value;
+        const desc = document.getElementById("clothDesc").value;
+        const editId = document.getElementById("editId").value;
         
-        if(!role || !desc || !fileInput.files[0]) return alert("Bitte alles ausfüllen!");
+        if(!title || !desc) return alert("Bitte Titel und Details ausfüllen!");
 
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            outfits.push({
-                id: Date.now(),
-                role: role,
-                desc: desc,
-                img: e.target.result
-            });
-            localStorage.setItem("bs_outfits", JSON.stringify(outfits));
-            renderOutfits();
-            document.getElementById("outfitRole").value = "";
-            document.getElementById("outfitDesc").value = "";
-            fileInput.value = "";
-        };
-        reader.readAsDataURL(fileInput.files[0]);
+        let items = getClothing();
+
+        if(editId) {
+            const index = items.findIndex(i => i.id == editId);
+            items[index] = { ...items[index], title, img, desc };
+        } else {
+            items.push({ id: Date.now(), title, img, desc });
+        }
+
+        localStorage.setItem("bs_clothing", JSON.stringify(items));
+        resetForm();
+        renderClothing();
     }
 
-    function deleteOutfit(index) {
-        if(!confirm("Outfit wirklich entfernen?")) return;
-        outfits.splice(index, 1);
-        localStorage.setItem("bs_outfits", JSON.stringify(outfits));
-        renderOutfits();
+    function editClothing(id) {
+        const item = getClothing().find(i => i.id == id);
+        document.getElementById("clothTitle").value = item.title;
+        document.getElementById("clothImg").value = item.img;
+        document.getElementById("clothDesc").value = item.desc;
+        document.getElementById("editId").value = item.id;
+        
+        document.getElementById("creatorTitle").innerText = "✏️ Outfit bearbeiten";
+        document.getElementById("cancelEdit").style.display = "block";
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    renderOutfits();
+    function resetForm() {
+        document.getElementById("clothTitle").value = "";
+        document.getElementById("clothImg").value = "";
+        document.getElementById("clothDesc").value = "";
+        document.getElementById("editId").value = "";
+        document.getElementById("creatorTitle").innerText = "➕ Neues Outfit eintragen";
+        document.getElementById("cancelEdit").style.display = "none";
+    }
+
+    function deleteClothing(id) {
+        if(!confirm("Outfit wirklich löschen?")) return;
+        let items = getClothing().filter(i => i.id !== id);
+        localStorage.setItem("bs_clothing", JSON.stringify(items));
+        renderClothing();
+    }
 </script>
 </body>
 </html>
