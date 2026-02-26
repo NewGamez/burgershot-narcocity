@@ -1,83 +1,53 @@
 
-/* ================= ACCOUNT & AUTH ==================== */
-const getAccounts = () => JSON.parse(localStorage.getItem("bs_accounts")) || {};
-const saveAccounts = accs => localStorage.setItem("bs_accounts", JSON.stringify(accs));
+/* ================= FIREBASE LOGIN SYSTEM ==================== */
 
-const requireLogin = () => {
-    if (!sessionStorage.getItem("loggedInUser")) window.location.href = "login.html";
-};
+function login() {
+    const userIn = document.getElementById("username").value.trim();
+    const passIn = document.getElementById("password").value.trim();
 
-const logout = () => {
+    if (!userIn || !passIn) return alert("Bitte alles ausfüllen!");
+
+    // Wir schauen in den Pfad 'users' in deiner Firebase DB
+    const userRef = window.dbRef(window.db, 'users/' + userIn);
+
+    window.dbOnValue(userRef, (snapshot) => {
+        const userData = snapshot.val();
+
+        if (userData) {
+            // User gefunden -> Passwort prüfen
+            if (userData.password === passIn) {
+                // Erfolg! Daten im SessionStorage speichern (bleibt bis Browser zu ist)
+                sessionStorage.setItem("loggedInUser", userIn);
+                sessionStorage.setItem("userRole", userData.role); // z.B. "mitarbeiter", "manager", "cheffe"
+                
+                window.location.href = "index.html";
+            } else {
+                alert("Falsches Passwort!");
+            }
+        } else {
+            alert("Benutzer existiert nicht!");
+        }
+    }, {
+        onlyOnce: true // Ganz wichtig, damit der Check nicht jedes Mal feuert
+    });
+}
+
+// Prüfen ob jemand eingeloggt ist (auf jeder Seite oben aufzurufen)
+function requireLogin() {
+    if (!sessionStorage.getItem("loggedInUser")) {
+        window.location.href = "login.html";
+    }
+}
+
+// Hilfsfunktion für Management-Rechte
+function isAdmin() {
+    const role = sessionStorage.getItem("userRole");
+    return role === "manager" || role === "cheffe";
+}
+
+function logout() {
     sessionStorage.clear();
     window.location.href = "login.html";
-};
-
-const isAdmin = () => {
-    const user = sessionStorage.getItem("loggedInUser");
-    const accs = getAccounts();
-    return accs[user] && (accs[user].role === "Management" || accs[user].role === "Cheffe");
-};
-
-/* PRÜFUNG BEIM LOGIN */
-function checkFirstLogin() {
-    const username = sessionStorage.getItem("loggedInUser");
-    const accs = getAccounts();
-    const userAcc = accs[username];
-
-    if (userAcc && userAcc.isFirstLogin) {
-        // Zeige das Modal, falls es der erste Login ist
-        const modal = document.getElementById("firstLoginModal");
-        if (modal) modal.style.display = "flex";
-    }
-}
-
-function updateDashboardStats() {
-    const abmeldungen = getAbmeldungen();
-    const offeneCount = abmeldungen.filter(a => a.status === "offen").length;
-
-    // Nur die Zahl im kleinen Span ändern
-    const numElem = document.getElementById("abmCountNum");
-    if(numElem) {
-        numElem.innerText = offeneCount;
-    }
-    
-    // Falls du die News-Badge auch fixen willst:
-    const news = getNews();
-    const newsElem = document.getElementById("newsCounter");
-    if(newsElem) {
-        newsElem.innerText = news.length;
-    }
-}
-
-/* PASSWORT ÄNDERN FUNKTION */
-function changeFirstPassword() {
-    const newPass = document.getElementById("newInitialPassword").value.trim();
-    const confirmPass = document.getElementById("confirmInitialPassword").value.trim();
-    const username = sessionStorage.getItem("loggedInUser");
-
-    if (newPass.length < 4) {
-        alert("Das Passwort muss mindestens 4 Zeichen lang sein!");
-        return;
-    }
-
-    if (newPass !== confirmPass) {
-        alert("Die Passwörter stimmen nicht überein!");
-        return;
-    }
-
-    if (newPass === "0000") {
-        alert("Bitte wähle ein anderes Passwort als das Standard-Passwort!");
-        return;
-    }
-
-    // Speichern im System
-    const accs = getAccounts();
-    accs[username].password = newPass;
-    accs[username].isFirstLogin = false; // Flag auf false setzen
-    saveAccounts(accs);
-
-    alert("Passwort erfolgreich geändert! Du kannst das System nun nutzen.");
-    document.getElementById("firstLoginModal").style.display = "none";
 }
 
 function showTab(tabId) {
