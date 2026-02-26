@@ -428,3 +428,24 @@ function renderBewerberManagement() {
         container.appendChild(div);
     });
 }
+
+function showTab(tabId, btn) {
+    // Alle Tabs verstecken
+    document.querySelectorAll(".mgmt-tab").forEach(t => t.classList.remove("active"));
+    document.querySelectorAll(".mgmt-tab").forEach(t => t.style.display = "none");
+
+    // Gewählten Tab zeigen
+    const activeTab = document.getElementById(tabId);
+    activeTab.classList.add("active");
+    activeTab.style.display = "block";
+
+    // Buttons stylen
+    document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+
+    // Daten laden je nach Tab
+    if(tabId === 'tab-accounts') renderUsers();
+    if(tabId === 'tab-mitarbeiter') renderMitarbeiter();
+    if(tabId === 'tab-abmeldungen') renderAbmeldungen();
+    if(tabId === 'tab-bewerber') renderBewerberManagement(); // WICHTIG!
+}
