@@ -291,3 +291,44 @@ function rejectAbm(id) {
     if(index !== -1) list[index].status = "abgelehnt";
     saveAbmeldungen(list);
 }
+
+/* Account aus dem System entfernen */
+function removeUser(name) {
+    if (name === sessionStorage.getItem("loggedInUser")) {
+        return alert("Du kannst dich nicht selbst löschen!");
+    }
+    
+    if (!confirm(`Möchtest du den Account von ${name} wirklich löschen?`)) return;
+
+    const accs = getAccounts();
+    delete accs[name]; // Entfernt den Key aus dem Objekt
+    saveAccounts(accs);
+    
+    renderUsers(); // Liste neu zeichnen
+    if (typeof updateDashboardStats === "function") updateDashboardStats();
+}
+
+/* Ränge anpassen */
+function uprank(name) {
+    const accs = getAccounts();
+    const roles = ["Mitarbeiter", "Management", "Cheffe"];
+    let currentIdx = roles.indexOf(accs[name].role);
+    
+    if (currentIdx < roles.length - 1) {
+        accs[name].role = roles[currentIdx + 1];
+        saveAccounts(accs);
+        renderUsers();
+    }
+}
+
+function derank(name) {
+    const accs = getAccounts();
+    const roles = ["Mitarbeiter", "Management", "Cheffe"];
+    let currentIdx = roles.indexOf(accs[name].role);
+    
+    if (currentIdx > 0) {
+        accs[name].role = roles[currentIdx - 1];
+        saveAccounts(accs);
+        renderUsers();
+    }
+}
