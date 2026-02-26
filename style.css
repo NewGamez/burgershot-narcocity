@@ -65,11 +65,11 @@ button:hover {
     background: var(--primary-hover);
 }
 
-/* DASHBOARD CONTAINER */
 .dashboard {
-    max-width: 1400px;
-    margin: 60px auto;
-    padding: 0 40px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Panels füllen den Platz jetzt automatisch aus */
+    gap: 20px;
+    padding: 20px;
 }
 
 /* ============================= */
