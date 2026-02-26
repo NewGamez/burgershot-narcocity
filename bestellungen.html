@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Burgershot | Bestellliste</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+    <a href="index.html" class="brand-link">🍔 Burgershot Logistik</a>
+    <button onclick="location.href='index.html'">Zurück zum Dashboard</button>
+</header>
+
+<section class="dashboard">
+    <div class="panel full-width">
+        <div class="panel-header">📦 Neue Bestellung aufgeben</div>
+        <p style="opacity: 0.6; margin-bottom: 10px;">Gib hier ein, was eingekauft werden muss. Mehrere Artikel einfach untereinander schreiben.</p>
+        
+        <textarea id="orderInput" placeholder="Beispiel:&#10;500x Fleisch&#10;200x Brötchen&#10;100x Cola" style="width: 100%; height: 120px; background: rgba(0,0,0,0.2); color: white; border: 1px solid var(--glass-border); padding: 15px; border-radius: 10px; font-family: inherit;"></textarea>
+        
+        <button onclick="addOrder()" class="submit-btn" style="width: 100%; margin-top: 10px;">Auf die Liste setzen</button>
+    </div>
+
+    <div class="panel full-width">
+        <div class="panel-header">📝 Aktuelle Einkaufsliste</div>
+        <div class="grid-row grid-header" style="grid-template-columns: 1fr 3fr 1fr 1fr; font-weight: bold; opacity: 0.7; border-bottom: 1px solid var(--glass-border); padding-bottom: 10px;">
+            <span>Datum</span>
+            <span>Artikel / Menge</span>
+            <span>Von</span>
+            <span style="text-align: right;">Aktion</span>
+        </div>
+        <div id="orderList"></div>
+    </div>
+</section>
+
+<script src="script.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        requireLogin();
+        renderOrders();
+    });
+
+    function renderOrders() {
+        const container = document.getElementById("orderList");
+        const orders = JSON.parse(localStorage.getItem("bs_orders")) || [];
+        const admin = isAdmin();
+        container.innerHTML = "";
+
+        if(orders.length === 0) {
+            container.innerHTML = "<p style='text-align:center; padding: 20px; opacity: 0.5;'>Keine offenen Bestellungen.</p>";
+            return;
+        }
+
+        orders.reverse().forEach(o => {
+            const div = document.createElement("div");
+            div.className = "grid-row";
+            div.style.gridTemplateColumns = "1fr 3fr 1fr 1fr";
+            div.style.alignItems = "center";
+            div.style.padding = "12px 0";
+            div.style.borderBottom = "1px solid rgba(255,255,255,0.05)";
+
+            div.innerHTML = `
+                <span style="font-size: 0.85rem; opacity: 0.7;">${o.date}</span>
+                <span style="white-space: pre-line; font-weight: 500;">${o.text}</span>
+                <span style="font-size: 0.9rem; color: var(--primary);">${o.user}</span>
+                <div style="text-align: right;">
+                    ${admin ? `<button onclick="deleteOrder(${o.id})" style="background:none; border:none; color:#e74c3c; cursor:pointer; font-size:1.2rem;">🗑</button>` : '<span style="opacity:0.3;">-</span>'}
+                </div>
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    function addOrder() {
+        const input = document.getElementById("orderInput");
+        const text = input.value.trim();
