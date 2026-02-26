@@ -380,3 +380,51 @@ function deleteBewerber(id) {
     saveBewerber(bewerber);
     renderBewerberManagement();
 }
+
+function renderBewerberManagement() {
+    const container = document.getElementById("bewerberManagementList");
+    if(!container) return;
+    
+    const bewerber = getBewerber();
+    container.innerHTML = "";
+
+    if(bewerber.length === 0) {
+        container.innerHTML = "<p style='padding:20px; opacity:0.5; text-align:center;'>Keine Bewerber in der Datenbank.</p>";
+        return;
+    }
+
+    bewerber.reverse().forEach(b => {
+        const div = document.createElement("div");
+        div.className = "grid-row"; 
+        
+        // Wir setzen das Grid auf 4 Spalten für die Management-Ansicht
+        div.style.gridTemplateColumns = "1.5fr 2.5fr 1fr 1fr"; 
+        
+        const statusColor = b.status === 'angenommen' ? '#2ecc71' : (b.status === 'abgelehnt' ? '#e74c3c' : '#faac15');
+
+        div.innerHTML = `
+            <div>
+                <strong style="color:var(--primary); font-size:1.1rem;">${b.name}</strong><br>
+                <small style="opacity:0.6;">Eingetragen: ${b.erstelltAm}</small>
+            </div>
+            <div style="font-size: 0.85rem; display: grid; grid-template-columns: 1fr 1fr; gap: 5px;">
+                <span>📅 <b>Geb:</b> ${b.geb}</span>
+                <span>📞 <b>Tel:</b> ${b.tel}</span>
+                <span>🆔 <b>Visum:</b> ${b.visum}</span>
+                <span>👕 <b>Look:</b> ${b.look}/10</span>
+                <span style="grid-column: span 2;">🏢 <b>Status/Fraktion:</b> ${b.zivi}</span>
+            </div>
+            <div style="text-align:center;">
+                <span class="status-badge" style="border:1px solid ${statusColor}; color:${statusColor}; padding: 4px 8px; border-radius: 4px; font-size: 0.7rem;">
+                    ${b.status.toUpperCase()}
+                </span>
+            </div>
+            <div class="action-btns" style="display:flex; gap:5px; justify-content: flex-end;">
+                <button onclick="updateBewerberStatus(${b.id}, 'angenommen')" style="background:#2ecc71; color:white; border:none; padding:5px 10px; border-radius:5px; cursor:pointer;">✔</button>
+                <button onclick="updateBewerberStatus(${b.id}, 'abgelehnt')" style="background:#e74c3c; color:white; border:none; padding:5px 10px; border-radius:5px; cursor:pointer;">✖</button>
+                <button onclick="deleteBewerber(${b.id})" style="background:rgba(255,255,255,0.1); color:#ff4d4d; border:1px solid #ff4d4d; padding:5px 10px; border-radius:5px; cursor:pointer;">🗑</button>
+            </div>
+        `;
+        container.appendChild(div);
+    });
+}
