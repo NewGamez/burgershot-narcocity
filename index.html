@@ -37,28 +37,12 @@
     </div>
 
 <div class="grid-top">
-        <div class="panel big" onclick="openNewsModal()" style="cursor: pointer;">
-            <div class="panel-header">📢 NEWS & INFOS</div>
-            <p>Hier klicken, um alle Ankündigungen zu sehen und zu reagieren.</p>
-        </div>
-
-        <div id="newsFullModal" class="modal-backdrop">
-            <div class="modal" style="width: 90%; max-width: 800px; max-height: 90vh; overflow-y: auto;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <h2 style="margin: 0;">📢 Schwarzes Brett</h2>
-                    <button onclick="document.getElementById('newsFullModal').style.display='none'" style="background: #444;">Schließen</button>
-                </div>
-
-                <div id="newsCreatorArea" class="panel" style="background: rgba(255,255,255,0.05); margin-bottom: 30px; display: none;">
-                    <div class="panel-header" style="font-size: 0.9rem;">Neue Nachricht verfassen</div>
-                    <textarea id="newNewsText" placeholder="Was gibt es Neues? (Emojis erlaubt ✨)" style="width: 100%; height: 100px; margin: 10px 0;"></textarea>
-                    <input type="text" id="newNewsImg" placeholder="Bild-URL (Optional, z.B. von Discord oder Imgur)" style="width: 100%; margin-bottom: 10px;">
-                    <button onclick="addNews()" style="width: 100%;" class="submit-btn">Veröffentlichen</button>
-                </div>
-
-                <div id="newsFullGrid">
-                    </div>
-            </div>        
+        <div class="panel big" onclick="location.href='news.html'" style="cursor: pointer;">
+            <div class="panel-top" style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <span class="panel-header">📢 NEWS & INFOS</span>
+                <span id="newsCounter" class="badge">0</span>
+            </div>
+            <p>Klicke hier, um alle Ankündigungen zu sehen.</p>
         </div>
 
         <div class="panel big" onclick="openAbmModal()" style="cursor: pointer;">
