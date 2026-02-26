@@ -32,16 +32,21 @@ function checkFirstLogin() {
 }
 
 function updateDashboardStats() {
-    const accs = getAccounts();
-    const abm = getAbmeldungen();
-    
-    const accCount = Object.keys(accs).length;
-    const offeneAbm = abm.filter(a => a.status === "offen").length;
+    const abmeldungen = getAbmeldungen();
+    const offeneCount = abmeldungen.filter(a => a.status === "offen").length;
 
-    if(document.getElementById("accCount")) 
-        document.getElementById("accCount").innerText = accCount;
-    if(document.getElementById("heroAbmCount")) 
-        document.getElementById("heroAbmCount").innerText = offeneAbm;
+    // Nur die Zahl im kleinen Span ändern
+    const numElem = document.getElementById("abmCountNum");
+    if(numElem) {
+        numElem.innerText = offeneCount;
+    }
+    
+    // Falls du die News-Badge auch fixen willst:
+    const news = getNews();
+    const newsElem = document.getElementById("newsCounter");
+    if(newsElem) {
+        newsElem.innerText = news.length;
+    }
 }
 
 /* PASSWORT ÄNDERN FUNKTION */
