@@ -343,7 +343,7 @@ function submitBewerbung() {
     const tel = document.getElementById("bewTel").value.trim();
     const zivi = document.getElementById("bewZivi").value; // "Ja" oder Fraktionsname
     const visum = document.getElementById("bewVisum").value;
-    const ersch = document.getElementById("bewversch").value;
+    const ersch = document.getElementById("bewersch").value;
 
     if(!name || !geb || !tel || !visum) return alert("Bitte die wichtigsten Felder ausfüllen!");
 
