@@ -202,6 +202,17 @@
             // 5. ZWANGS-CHECK: Muss das Passwort geändert werden?
             checkFirstLogin();
         });
+
+        function openNewsModal() {
+    document.getElementById('newsFullModal').style.display = 'flex';
+    
+    // Prüfen, ob der User Manager/Cheffe ist, um das Schreib-Feld zu zeigen
+    if (isAdmin()) {
+        document.getElementById('newsCreatorArea').style.display = 'block';
+    }
+    
+    renderNewsFull();
+}
     </script>
 </body>
 </html>
