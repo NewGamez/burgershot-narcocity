@@ -522,3 +522,21 @@ function renderNewsFull() {
         container.appendChild(div);
     });
 }
+
+/* ================= ACCOUNT & STORAGE HELPER ==================== */
+
+// Lädt Accounts. Falls leer, wird ein Admin-Account erstellt.
+function getAccounts() {
+    let accs = JSON.parse(localStorage.getItem("bs_accounts"));
+    if (!accs) {
+        accs = {
+            "Admin": { password: "1234", role: "cheffe", isFirstLogin: false }
+        };
+        localStorage.setItem("bs_accounts", JSON.stringify(accs));
+    }
+    return accs;
+}
+
+function saveAccounts(accs) {
+    localStorage.setItem("bs_accounts", JSON.stringify(accs));
+}
