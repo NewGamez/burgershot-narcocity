@@ -6,42 +6,56 @@
     <title>Burgershot | Announcements</title>
     <link rel="stylesheet" href="style.css">
     <style>
-    /* Spezielles Styling für das Eingabefeld */
-    .custom-textarea {
-        width: 100%;
-        height: 120px;
-        background: rgba(0, 0, 0, 0.3);
-        border: 1px solid var(--glass-border);
-        color: white;
-        padding: 15px;
-        border-radius: 12px;
-        resize: none;
-        outline: none;
-        font-family: inherit;
-        box-sizing: border-box; /* Wichtig, damit Padding nicht die Breite sprengt */
-    }
-    .custom-textarea:focus { border-color: var(--primary); }
+        /* Das Dashboard braucht eine Begrenzung, um nicht rechts auszulaufen */
+        .dashboard {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            box-sizing: border-box;
+        }
 
-    /* FIX: Das Grid für die Karten */
-    .announce-grid {
-        display: grid;
-        /* Wir nutzen auto-fill und begrenzen die maximale Breite */
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
-        gap: 20px;
-        margin-top: 30px;
-        width: 100%;
-        box-sizing: border-box;
-    }
-
-    /* Damit die Karten innerhalb der Box bleiben und Text nicht rausläuft */
-    .announce-card {
-        display: flex;
-        flex-direction: column;
-        min-height: 250px;
-        word-wrap: break-word; /* Verhindert, dass langer Text die Karte sprengt */
-        overflow: hidden;
-    }
-</style>
+        .custom-textarea {
+            width: 100%;
+            height: 120px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 15px;
+            border-radius: 12px;
+            resize: none;
+            outline: none;
+            font-family: inherit;
+            box-sizing: border-box;
+        }
+    
+        /* FIX: Das Grid für die Karten */
+        .announce-grid {
+            display: grid;
+            /* Wir nutzen auto-fit, damit die Karten den Platz optimal ausfüllen */
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); 
+            gap: 20px;
+            margin-top: 30px;
+            width: 100%;
+        }
+    
+        .announce-card {
+            background: rgba(20, 20, 25, 0.8);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 280px;
+            transition: transform 0.2s;
+            box-sizing: border-box;
+        }
+    
+        .announce-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+        }
+    </style>
 </head>
 <body>
 
