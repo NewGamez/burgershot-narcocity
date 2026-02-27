@@ -10,8 +10,8 @@
 <header>
     <a href="index.html" class="brand-link">🍔 Burgershot Intern</a>
     <div>
-        <span id="welcomeUser" style="margin-right: 15px; opacity: 0.8;"></span>
-        <button onclick="logout()" style="background: rgba(231, 76, 60, 0.2); border: 1px solid #e74c3c; color: #e74c3c;">Logout</button>
+        <span id="welcomeUser"></span>
+        <button onclick="logout()">Logout</button>
     </div>
 </header>
 
@@ -27,7 +27,7 @@
         <div style="display: flex; gap: 40px; text-align: center;">
             <div>
                 <div id="accCount" style="font-size: 1.8rem; font-weight: bold; color: var(--primary);">0</div>
-                <div style="font-size: 0.7rem; opacity: 0.6; text-transform: uppercase;">Mitarbeiter</div>
+                <div style="font-size: 0.7rem; opacity: 0.6; text-transform: uppercase;">Accounts</div>
             </div>
             <div>
                 <div id="heroAbmCount" style="font-size: 1.8rem; font-weight: bold; color: var(--primary);">0</div>
@@ -36,8 +36,7 @@
         </div>
     </div>
 
-    <div class="dashboard-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px;">
-        
+<div class="grid-top">
         <div class="panel big" onclick="location.href='news.html'" style="cursor: pointer;">
             <div class="panel-top" style="display: flex; justify-content: space-between; align-items: flex-start;">
                 <span class="panel-header">📢 NEWS & INFOS</span>
@@ -47,64 +46,59 @@
         </div>
 
         <div class="panel big" onclick="openAbmModal()" style="cursor: pointer;">
-            <div class="panel-top" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
-                <div class="panel-header">📅 ABMELDUNGEN</div>
-                <div id="abmCounter" class="badge">
-                    <span id="abmCountNum">0</span>
-                    <span style="font-size: 0.6rem; text-transform: lowercase;">offen</span>
-                </div>
+            <div class="panel-top">
+                <span class="panel-header">📅 ABMELDUNGEN</span>
+                <span id="abmCounter" class="badge">0 offen</span>
             </div>
-            <p style="opacity: 0.7;">Klicke hier, um eine neue Abmeldung einzureichen.</p>
+            <p>Klicke hier, um eine neue Abmeldung einzureichen.</p>
         </div>
 
         <div class="panel">
             <div class="panel-header">📝 Neuen Bewerber eintragen</div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px;">
                 <input type="text" id="bewName" placeholder="Vollständiger Name">
-                <input type="text" id="bewGeb" placeholder="Geburtstermin">
+                <input type="text" id="bewGeb" placeholder="Geburtsdatum (z.B. 01.01.1990)">
                 <input type="text" id="bewTel" placeholder="Telefonnummer">
                 <input type="text" id="bewVisum" placeholder="Visumstufe">
-                <input type="text" id="bewZivi" placeholder="Fraktion/Zivi">
+        
+                <input type="text" id="bewZivi" placeholder="Zivi? (Falls nein: Fraktion)">
+        
                 <select id="bewersch">
                     <option value="">Erscheinungsbild (1-10)</option>
-                    <option value="1">1</option><option value="2">2</option><option value="3">3</option>
-                    <option value="4">4</option><option value="5">5</option><option value="6">6</option>
-                    <option value="7">7</option><option value="8">8</option><option value="9">9</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
                     <option value="10">10</option>
                 </select>
             </div>
             <button onclick="submitBewerbung()" style="width: 100%; margin-top: 15px;">Bewerber speichern</button>
         </div>
 
-        <div class="panel big announcement-card" onclick="location.href='announcements.html'" style="cursor: pointer;">
+        <div class="panel big announcement-card" onclick="location.href='announcements.html'">
             <div class="panel-header">📢 BUSINESS ANNOUNCEMENTS</div>
             <p>Vorlagen für Werbetexte ansehen & hinzufügen.</p>
             <small class="hover-hint">Vollbildansicht öffnen</small>
         </div>
-
-        <div class="panel" onclick="location.href='bestellungen.html'" style="cursor: pointer;">
-            <div class="panel-header">📦 BESTELLUNGEN</div>
-            <p>Hier eintragen, was für das Lager gekauft werden muss.</p>
-        </div>
-
-        <div class="panel" onclick="location.href='musik.html'" style="cursor: pointer;">
-            <div class="panel-header">🎵 MUSIK / RADIO</div>
-            <p>Teile YouTube-Links und kopiere Songs für das Radio.</p>
-        </div>
-
-        <div class="panel" onclick="location.href='kleidung.html'" style="cursor: pointer;">
-            <div class="panel-header">👕 KLEIDUNG</div>
-            <p>Hier siehst du die Kleiderordnung für alle Ränge.</p>
-        </div>
+    
+    </div> <div class="grid-bottom" style="margin-top: 25px;">
+        <div class="panel small">📦 Orders</div>
+        <div class="panel small">🏭 Lager</div>
+        <div class="panel small">🎵 Musik</div>
+        <div class="panel small">👕 Kleidung</div>
     </div>
 
     <div class="panel full-width" style="margin-top: 30px; cursor: default;">
         <div class="panel-header">🕒 MEINE AKTUELLEN ANTRÄGE</div>
-        <div id="meineAbmeldungenList" style="margin-top: 15px;">
-            </div>
+        <div id="meineAbmeldungenList" style="margin-top: 15px;"></div>
     </div>
 
-    <div id="adminPanel" class="management-bar" onclick="location.href='management.html'" style="margin-top: 30px; display: none;">
+    <div id="adminPanel" class="management-bar" onclick="location.href='management.html'" style="margin-top: 30px;">
         <div style="display: flex; align-items: center; gap: 10px;">
             <span>⭐</span>
             <div>
@@ -119,11 +113,14 @@
 <div class="modal-backdrop" id="abmModal">
     <div class="modal">
         <h2>📅 Abmeldung schreiben</h2>
+        
         <div class="modal-grid">
             <input type="text" id="abmVon" class="modal-input" placeholder="Von (z.B. 24.02.)">
             <input type="text" id="abmBis" class="modal-input" placeholder="Bis (z.B. 01.03.)">
         </div>
+
         <textarea id="abmGrund" class="modal-textarea" placeholder="Grund für die Abwesenheit..."></textarea>
+
         <div class="modal-actions">
             <button class="submit-btn" onclick="submitAbmeldungUI()">Absenden</button>
             <button class="cancel-btn" onclick="closeAbmModal()">Abbrechen</button>
@@ -131,59 +128,75 @@
     </div>
 </div>
 
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getDatabase, ref, set, push, onValue, remove, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-
-  const firebaseConfig = {
-    apiKey: "DEIN_API_KEY",
-    authDomain: "DEIN_PROJEKT.firebaseapp.com",
-    databaseURL: "https://DEIN_PROJEKT-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "DEIN_PROJEKT",
-    storageBucket: "DEIN_PROJEKT.appspot.com",
-    messagingSenderId: "DEINE_ID",
-    appId: "DEINE_APP_ID"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
-
-  window.db = db;
-  window.dbRef = ref;
-  window.dbPush = push;
-  window.dbOnValue = onValue;
-</script>
-
-<script src="script.js"></script>
-<script>
-    document.addEventListener("DOMContentLoaded", () => {
-        requireLogin();
-        const user = sessionStorage.getItem("loggedInUser");
-        document.getElementById("welcomeUser").innerText = "Willkommen, " + user;
-
-        if (isAdmin()) {
-            document.getElementById("adminPanel").style.display = "flex";
-        }
-
-        // Live-Update für "Meine Einträge" aus Firebase
-        const abmRef = window.dbRef(window.db, 'abmeldungen');
-        window.dbOnValue(abmRef, (snapshot) => {
-            const data = snapshot.val();
-            const list = document.getElementById("meineAbmeldungenList");
-            list.innerHTML = "";
+<div class="modal-backdrop" id="firstLoginModal" style="display: none; z-index: 100000;">
+        <div class="modal">
+            <h2>🔒 Sicherheitshinweis</h2>
+            <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 20px;">
+                Dies ist dein erster Login. Bitte ändere dein Passwort von "0000" auf ein persönliches Passwort.
+            </p>
             
-            for(let id in data) {
-                if(data[id].user === user) {
-                    const statusColor = data[id].status === 'genehmigt' ? '#2ecc71' : (data[id].status === 'abgelehnt' ? '#e74c3c' : '#faac15');
-                    list.innerHTML += `
-                        <div style="background: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; margin-bottom: 5px; display: flex; justify-content: space-between;">
-                            <span>${data[id].von} bis ${data[id].bis} (${data[id].grund})</span>
-                            <strong style="color: ${statusColor}">${data[id].status.toUpperCase()}</strong>
-                        </div>`;
-                }
+            <input type="password" id="newInitialPassword" placeholder="Neues Passwort">
+            <input type="password" id="confirmInitialPassword" placeholder="Passwort wiederholen">
+            
+            <div style="margin-top: 20px;">
+                <button onclick="changeFirstPassword()" style="width: 100%;">Passwort speichern & starten</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-backdrop" id="announceDetailsModal">
+    <div class="modal" style="width: 80%; max-width: 900px; max-height: 80vh; overflow-y: auto;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 style="margin: 0;">📢 Business Announcements</h2>
+            <button onclick="document.getElementById('announceDetailsModal').style.display='none'" style="background: #444;">Schließen</button>
+        </div>
+
+        <div class="panel" style="background: rgba(255,255,255,0.05); margin-bottom: 20px;">
+            <textarea id="newAnnounceText" placeholder="Neuen Text hinzufügen..." style="width: 100%; height: 80px; margin-bottom: 10px;"></textarea>
+            <button onclick="addAnnouncement()" style="width: 100%;">Vorlage hinzufügen</button>
+        </div>
+
+        <div id="announceGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px;">
+            </div>
+    </div>
+</div>
+
+    <script src="script.js"></script>
+    <script>
+        // 1. Login-Check direkt beim Laden
+        requireLogin();
+        
+        document.addEventListener("DOMContentLoaded", () => {
+            const user = sessionStorage.getItem("loggedInUser");
+            
+            // 2. Willkommens-Text setzen
+            const welcomeElem = document.getElementById("welcomeUser");
+            if(welcomeElem) welcomeElem.innerText = "Eingeloggt als: " + user;
+
+            // 3. Admin-Bereich einblenden falls berechtigt
+            if (isAdmin()) {
+                const adminPanel = document.getElementById("adminPanel");
+                if(adminPanel) adminPanel.style.display = "flex";
             }
+
+            // 4. Daten laden
+            updateDashboardStats();
+            renderMeineAbmeldungen();
+
+            // 5. ZWANGS-CHECK: Muss das Passwort geändert werden?
+            checkFirstLogin();
         });
-    });
-</script>
+
+        function openNewsModal() {
+    document.getElementById('newsFullModal').style.display = 'flex';
+    
+    // Prüfen, ob der User Manager/Cheffe ist, um das Schreib-Feld zu zeigen
+    if (isAdmin()) {
+        document.getElementById('newsCreatorArea').style.display = 'block';
+    }
+    
+    renderNewsFull();
+}
+    </script>
 </body>
 </html>
