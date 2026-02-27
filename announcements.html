@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -6,55 +5,83 @@
     <title>Burgershot | Announcements</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Das Dashboard braucht eine Begrenzung, um nicht rechts auszulaufen */
-        .dashboard {
-            max-width: 1400px;
+        /* Hauptcontainer für die Seite */
+        .content-wrapper {
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
-            box-sizing: border-box;
+            padding: 40px 20px;
+        }
+
+        /* Titel-Sektion */
+        .page-header {
+            margin-bottom: 30px;
+            text-align: left;
+        }
+
+        /* Die Eingabebox oben über die volle Breite */
+        .create-panel {
+            background: rgba(20, 20, 25, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 50px;
+            backdrop-filter: blur(10px);
         }
 
         .custom-textarea {
             width: 100%;
-            height: 120px;
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid var(--glass-border);
+            height: 100px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             color: white;
             padding: 15px;
-            border-radius: 12px;
-            resize: none;
-            outline: none;
+            border-radius: 10px;
+            resize: vertical;
             font-family: inherit;
             box-sizing: border-box;
+            margin-bottom: 15px;
         }
-    
-        /* FIX: Das Grid für die Karten */
+
+        .custom-textarea:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        /* Das Gitter für die Vorlagen darunter */
         .announce-grid {
             display: grid;
-            /* Wir nutzen auto-fit, damit die Karten den Platz optimal ausfüllen */
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); 
-            gap: 20px;
-            margin-top: 30px;
-            width: 100%;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
         }
-    
+
         .announce-card {
-            background: rgba(20, 20, 25, 0.8);
-            border: 1px solid var(--glass-border);
-            border-radius: 15px;
+            background: rgba(30, 30, 35, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
             padding: 20px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            min-height: 280px;
-            transition: transform 0.2s;
-            box-sizing: border-box;
+            min-height: 200px;
+            backdrop-filter: blur(5px);
         }
-    
-        .announce-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--primary);
+
+        .card-text {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            white-space: pre-line;
+            opacity: 0.9;
+            margin-bottom: 20px;
+            word-break: break-word;
         }
+
+        .card-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        button.primary { width: 100%; padding: 12px; font-weight: bold; }
+        button.delete { background: rgba(231, 76, 60, 0.2); color: #e74c3c; border: 1px solid #e74c3c; padding: 10px; }
     </style>
 </head>
 <body>
@@ -64,26 +91,25 @@
     <button onclick="location.href='index.html'">Zurück zum Dashboard</button>
 </header>
 
-<section class="dashboard">
-    <div class="management-header">
-        <h2>📢 Business Announcements</h2>
-        <p style="opacity: 0.6;">Verwalte Werbetexte und Vorlagen für das Team.</p>
+<div class="content-wrapper">
+    <div class="page-header">
+        <h1>📢 Business Announcements</h1>
+        <p style="opacity: 0.6;">Erstelle und verwalte Werbetexte für das Business.</p>
     </div>
 
-    <div class="panel full-width" style="cursor: default; margin-bottom: 40px;">
-        <div class="panel-header">➕ Neue Vorlage erstellen</div>
-        <textarea id="newAnnounceText" class="custom-textarea" placeholder="Schreibe hier den Text für das Business..."></textarea>
-        <button onclick="addAnnouncement()" style="width: 100%; margin-top: 15px; padding: 15px;">Vorlage hinzufügen</button>
+    <div class="create-panel">
+        <h3 style="margin-top: 0; color: var(--primary);">➕ Neue Vorlage erstellen</h3>
+        <textarea id="newAnnounceText" class="custom-textarea" placeholder="Schreibe hier den Werbetext..."></textarea>
+        <button class="primary" onclick="addAnnouncement()">Vorlage speichern</button>
     </div>
 
-    <hr style="border: 0; border-top: 1px solid var(--glass-border); margin-bottom: 40px;">
-
+    <h2 style="margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">Vorhandene Vorlagen</h2>
+    
     <div id="announceGrid" class="announce-grid"></div>
-</section>
+</div>
 
 <script src="script.js"></script>
 <script>
-    // Beim Laden direkt die Liste anzeigen
     document.addEventListener("DOMContentLoaded", () => {
         requireLogin();
         renderAnnouncementsPage();
@@ -99,19 +125,15 @@
 
         list.reverse().forEach(a => {
             const div = document.createElement("div");
-            // Hier die Klasse 'announce-card' hinzufügen
-            div.className = "panel announce-card"; 
-    
-            // Sauberes Escaping für Zeilenumbrüche
+            div.className = "announce-card";
+
             const cleanText = a.text.replace(/`/g, "\\`").replace(/\n/g, "\\n");
 
             div.innerHTML = `
-                <div style="flex-grow: 1; font-size: 0.95rem; line-height: 1.6; white-space: pre-line; opacity: 0.9; margin-bottom: 15px;">
-                    ${a.text}
-                </div>
-                <div style="display: flex; gap: 10px; margin-top: auto;">
-                    <button onclick="copyText(\`${cleanText}\`)" style="flex: 2; padding: 10px;">Text kopieren</button>
-                    ${admin ? `<button onclick="deleteAnnouncementPage(${a.id})" style="background: rgba(231, 76, 60, 0.2); border: 1px solid #e74c3c; color: #e74c3c; flex: 1; padding: 10px;">Löschen</button>` : ''}
+                <div class="card-text">${a.text}</div>
+                <div class="card-actions">
+                    <button onclick="copyText(\`${cleanText}\`)" style="flex: 2;">Text kopieren</button>
+                    ${admin ? `<button class="delete" onclick="deleteAnnouncementPage(${a.id})">Löschen</button>` : ''}
                 </div>
             `;
             container.appendChild(div);
@@ -120,10 +142,11 @@
 
     function deleteAnnouncementPage(id) {
         if(confirm("Diese Vorlage wirklich löschen?")) {
-            deleteAnnouncement(id); // Nutzt deine Funktion aus script.js
-            renderAnnouncementsPage(); // UI neu laden
+            deleteAnnouncement(id);
+            renderAnnouncementsPage();
         }
     }
 </script>
+
 </body>
 </html>
