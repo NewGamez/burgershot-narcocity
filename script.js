@@ -1,46 +1,37 @@
 
-/* ================= FIREBASE LOGIN SYSTEM ==================== */
-
+/* ================= LOGIN SYSTEM ==================== */
 function login() {
     const userIn = document.getElementById("username").value.trim();
     const passIn = document.getElementById("password").value.trim();
 
     if (!userIn || !passIn) return alert("Bitte alles ausfüllen!");
 
-    // Wir schauen in den Pfad 'users' in deiner Firebase DB
-    const userRef = window.dbRef(window.db, 'users/' + userIn);
+    const accs = getAccounts();
+    const userData = accs[userIn];
 
-    window.dbOnValue(userRef, (snapshot) => {
-        const userData = snapshot.val();
-
-        if (userData) {
-            // User gefunden -> Passwort prüfen
-           if (passwordInput === userData.password) {
-                sessionStorage.setItem("loggedInUser", username);
-                sessionStorage.setItem("userRole", userData.role); // DAS HIER IST ENTSCHEIDEND
-                window.location.href = "index.html";
-            }
-                alert("Falsches Passwort!");
-            }
+    if (userData) {
+        if (passIn === userData.password) {
+            sessionStorage.setItem("loggedInUser", userIn);
+            // Wir speichern die Rolle immer kleingeschrieben für den Vergleich
+            sessionStorage.setItem("userRole", userData.role.toLowerCase()); 
+            window.location.href = "index.html";
         } else {
-            alert("Benutzer existiert nicht!");
+            alert("Falsches Passwort!");
         }
-    }, {
-        onlyOnce: true // Ganz wichtig, damit der Check nicht jedes Mal feuert
-    });
+    } else {
+        alert("Benutzer existiert nicht im System!");
+    }
 }
 
-// Prüfen ob jemand eingeloggt ist (auf jeder Seite oben aufzurufen)
 function requireLogin() {
     if (!sessionStorage.getItem("loggedInUser")) {
         window.location.href = "login.html";
     }
 }
 
-// Hilfsfunktion für Management-Rechte
 function isAdmin() {
-    const role = sessionStorage.getItem("userRole");
-    return role === "manager" || role === "cheffe";
+    const role = (sessionStorage.getItem("userRole") || "").toLowerCase();
+    return role === "cheffe" || role === "management";
 }
 
 function logout() {
@@ -522,14 +513,10 @@ function renderNewsFull() {
 }
 
 /* ================= ACCOUNT & STORAGE HELPER ==================== */
-
-// Lädt Accounts. Falls leer, wird ein Admin-Account erstellt.
 function getAccounts() {
     let accs = JSON.parse(localStorage.getItem("bs_accounts"));
     if (!accs) {
-        accs = {
-            "Admin": { password: "1234", role: "cheffe", isFirstLogin: false }
-        };
+        accs = { "Admin": { password: "1234", role: "cheffe" } };
         localStorage.setItem("bs_accounts", JSON.stringify(accs));
     }
     return accs;
