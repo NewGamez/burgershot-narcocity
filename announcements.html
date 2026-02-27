@@ -85,21 +85,19 @@
 
         list.reverse().forEach(a => {
             const div = document.createElement("div");
-            div.className = "panel";
-            div.style.display = "flex";
-            div.style.flexDirection = "column";
-            div.style.minHeight = "250px";
-
+            // Hier die Klasse 'announce-card' hinzufügen
+            div.className = "panel announce-card"; 
+    
             // Sauberes Escaping für Zeilenumbrüche
             const cleanText = a.text.replace(/`/g, "\\`").replace(/\n/g, "\\n");
 
             div.innerHTML = `
-                <div style="flex-grow: 1; font-size: 0.95rem; line-height: 1.6; white-space: pre-line; opacity: 0.9;">
+                <div style="flex-grow: 1; font-size: 0.95rem; line-height: 1.6; white-space: pre-line; opacity: 0.9; margin-bottom: 15px;">
                     ${a.text}
                 </div>
-                <div style="display: flex; gap: 10px; margin-top: 20px;">
-                    <button onclick="copyText(\`${cleanText}\`)" style="flex: 2;">Text kopieren</button>
-                    ${admin ? `<button onclick="deleteAnnouncementPage(${a.id})" style="background: rgba(231, 76, 60, 0.2); border: 1px solid #e74c3c; color: #e74c3c; flex: 1;">Löschen</button>` : ''}
+                <div style="display: flex; gap: 10px; margin-top: auto;">
+                    <button onclick="copyText(\`${cleanText}\`)" style="flex: 2; padding: 10px;">Text kopieren</button>
+                    ${admin ? `<button onclick="deleteAnnouncementPage(${a.id})" style="background: rgba(231, 76, 60, 0.2); border: 1px solid #e74c3c; color: #e74c3c; flex: 1; padding: 10px;">Löschen</button>` : ''}
                 </div>
             `;
             container.appendChild(div);
