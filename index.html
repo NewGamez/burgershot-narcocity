@@ -10,99 +10,96 @@
 <header>
     <a href="index.html" class="brand-link">🍔 Burgershot Intern</a>
     <div>
-        <span id="welcomeUser"></span>
+        <span id="welcomeUser" style="margin-right: 15px; opacity: 0.8;"></span>
         <button onclick="logout()">Logout</button>
     </div>
 </header>
 
-<section class="dashboard">
-    <div class="panel full-width" style="display: flex; justify-content: space-between; align-items: center; padding: 30px; margin-bottom: 30px; cursor: default;">
+<section class="dashboard-wrapper" style="padding: 20px; max-width: 1400px; margin: 0 auto;">
+    
+    <div class="panel hero-panel" style="display: flex; justify-content: space-between; align-items: center; padding: 30px; margin-bottom: 25px; cursor: default; background: linear-gradient(135deg, rgba(20, 20, 25, 0.9) 0%, rgba(250, 172, 21, 0.1) 100%);">
         <div style="display: flex; align-items: center; gap: 20px;">
-            <img src="assets/logo.png" alt="Logo" style="width: 60px;">
+            <img src="assets/logo.png" alt="Logo" style="width: 50px;">
             <div>
-                <h1 style="color: var(--primary); font-size: 1.5rem;">Willkommen bei Burgershot Intern</h1>
-                <p style="opacity: 0.7;">Teamverwaltung & Organisation auf einen Blick.</p>
+                <h1 style="color: var(--primary); font-size: 1.6rem; margin: 0;">Willkommen bei Burgershot Intern</h1>
+                <p style="opacity: 0.7; margin: 5px 0 0 0;">Teamverwaltung & Organisation auf einen Blick.</p>
             </div>
         </div>
         <div style="display: flex; gap: 40px; text-align: center;">
             <div>
-                <div id="accCount" style="font-size: 1.8rem; font-weight: bold; color: var(--primary);">0</div>
-                <div style="font-size: 0.7rem; opacity: 0.6; text-transform: uppercase;">Accounts</div>
+                <div id="accCount" style="font-size: 2rem; font-weight: 800; color: var(--primary);">30</div>
+                <div style="font-size: 0.65rem; opacity: 0.6; text-transform: uppercase; letter-spacing: 1px;">Accounts</div>
             </div>
             <div>
-                <div id="heroAbmCount" style="font-size: 1.8rem; font-weight: bold; color: var(--primary);">0</div>
-                <div style="font-size: 0.7rem; opacity: 0.6; text-transform: uppercase;">Offene Abmeldungen</div>
+                <div id="heroAbmCount" style="font-size: 2rem; font-weight: 800; color: var(--primary);">0</div>
+                <div style="font-size: 0.65rem; opacity: 0.6; text-transform: uppercase; letter-spacing: 1px;">Offene Abmeldungen</div>
             </div>
         </div>
     </div>
 
-<div class="grid-top">
-        <div class="panel big" onclick="location.href='news.html'" style="cursor: pointer;">
-            <div class="panel-top" style="display: flex; justify-content: space-between; align-items: flex-start;">
-                <span class="panel-header">📢 NEWS & INFOS</span>
-                <span id="newsCounter" class="badge">0</span>
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 25px;">
+        
+        <div class="panel" onclick="location.href='news.html'" style="cursor: pointer; min-height: 140px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <span class="panel-header" style="color: var(--primary); font-weight: bold; font-size: 0.9rem;">📢 NEWS & INFOS</span>
+                <span id="newsCounter" class="badge" style="background: var(--primary); color: black; padding: 2px 8px; border-radius: 10px; font-size: 0.7rem; font-weight: bold;">0</span>
             </div>
-            <p>Klicke hier, um alle Ankündigungen zu sehen.</p>
+            <p style="font-size: 0.85rem; opacity: 0.8;">Wichtige Ankündigungen für das Team.</p>
         </div>
 
-        <div class="panel big" onclick="openAbmModal()" style="cursor: pointer;">
-            <div class="panel-top">
-                <span class="panel-header">📅 ABMELDUNGEN</span>
-                <span id="abmCounter" class="badge">0 offen</span>
+        <div class="panel" onclick="openAbmModal()" style="cursor: pointer; min-height: 140px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <span class="panel-header" style="color: var(--primary); font-weight: bold; font-size: 0.9rem;">📅 ABMELDUNGEN</span>
+                <span id="abmCounter" class="badge" style="background: var(--primary); color: black; padding: 2px 8px; border-radius: 10px; font-size: 0.7rem; font-weight: bold;">0 offen</span>
             </div>
-            <p>Klicke hier, um eine neue Abmeldung einzureichen.</p>
+            <p style="font-size: 0.85rem; opacity: 0.8;">Klicke hier, um eine neue Abmeldung einzureichen.</p>
         </div>
 
-        <div class="panel">
-            <div class="panel-header">📝 Neuen Bewerber eintragen</div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px;">
-                <input type="text" id="bewName" placeholder="Vollständiger Name">
-                <input type="text" id="bewGeb" placeholder="Geburtsdatum (z.B. 01.01.1990)">
-                <input type="text" id="bewTel" placeholder="Telefonnummer">
-                <input type="text" id="bewVisum" placeholder="Visumstufe">
-        
-                <input type="text" id="bewZivi" placeholder="Zivi? (Falls nein: Fraktion)">
-        
-                <select id="bewersch">
-                    <option value="">Erscheinungsbild (1-10)</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                    <option value="9">9</option>
-                    <option value="10">10</option>
+        <div class="panel" style="min-height: 140px; grid-column: span 1;">
+            <span class="panel-header" style="color: var(--primary); font-weight: bold; font-size: 0.9rem;">📝 Neuen Bewerber eintragen</span>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px;">
+                <input type="text" id="bewName" placeholder="Name" style="padding: 6px; font-size: 0.8rem;">
+                <input type="text" id="bewGeb" placeholder="Geburtsdatum" style="padding: 6px; font-size: 0.8rem;">
+                <input type="text" id="bewTel" placeholder="Telefon" style="padding: 6px; font-size: 0.8rem;">
+                <input type="text" id="bewVisum" placeholder="Visum" style="padding: 6px; font-size: 0.8rem;">
+                <input type="text" id="bewZivi" placeholder="Zivi/Frak" style="padding: 6px; font-size: 0.8rem;">
+                <select id="bewersch" style="padding: 6px; font-size: 0.8rem; background: rgba(0,0,0,0.3); color: white; border: 1px solid rgba(255,255,255,0.1); border-radius: 4px;">
+                    <option value="">Ersch. (1-10)</option>
+                    <option value="10">10</option><option value="5">5</option><option value="1">1</option>
                 </select>
             </div>
-            <button onclick="submitBewerbung()" style="width: 100%; margin-top: 15px;">Bewerber speichern</button>
+            <button onclick="submitBewerbung()" style="width: 100%; margin-top: 10px; padding: 6px; font-size: 0.8rem;">Bewerber speichern</button>
         </div>
 
-        <div class="panel big announcement-card" onclick="location.href='announcements.html'">
-            <div class="panel-header">📢 BUSINESS ANNOUNCEMENTS</div>
-            <p>Vorlagen für Werbetexte ansehen & hinzufügen.</p>
-            <small class="hover-hint">Vollbildansicht öffnen</small>
+        <div class="panel" onclick="location.href='announcements.html'" style="cursor: pointer; min-height: 140px;">
+            <span class="panel-header" style="color: var(--primary); font-weight: bold; font-size: 0.9rem;">📢 BUSINESS ANNOUNCEMENTS</span>
+            <p style="font-size: 0.85rem; opacity: 0.8; margin-top: 10px;">Vorlagen für Werbetexte ansehen & hinzufügen.</p>
+            <small style="opacity: 0.4; font-size: 0.7rem; display: block; margin-top: 10px;">Vollbildansicht öffnen</small>
         </div>
-    
-    </div> <div class="grid-bottom" style="margin-top: 25px;">
-        <div class="panel small">📦 Orders</div>
-        <div class="panel small">🏭 Lager</div>
-        <div class="panel small">🎵 Musik</div>
-        <div class="panel small">👕 Kleidung</div>
     </div>
 
-    <div class="panel full-width" style="margin-top: 30px; cursor: default;">
-        <div class="panel-header">🕒 MEINE AKTUELLEN ANTRÄGE</div>
-        <div id="meineAbmeldungenList" style="margin-top: 15px;"></div>
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 25px;">
+        <div class="panel" style="padding: 15px; text-align: center; cursor: pointer;" onclick="location.href='bestellungen.html'">📦 Orders</div>
+        <div class="panel" style="padding: 15px; text-align: center; cursor: pointer;" onclick="location.href='lager.html'">🏭 Lager</div>
+        <div class="panel" style="padding: 15px; text-align: center; cursor: pointer;" onclick="location.href='musik.html'">🎵 Musik</div>
+        <div class="panel" style="padding: 15px; text-align: center; cursor: pointer;" onclick="location.href='kleidung.html'">👕 Kleidung</div>
     </div>
 
-    <div id="adminPanel" class="management-bar" onclick="location.href='management.html'" style="margin-top: 30px;">
-        <div style="display: flex; align-items: center; gap: 10px;">
-            <span>⭐</span>
+    <div class="panel" style="cursor: default;">
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+            <span style="opacity: 0.5;">🔘</span>
+            <span class="panel-header" style="font-weight: bold;">MEINE AKTUELLEN ANTRÄGE</span>
+        </div>
+        <div id="meineAbmeldungenList">
+            <p style="opacity: 0.5; font-size: 0.9rem;">Du hast aktuell keine Abmeldungen eingereicht.</p>
+        </div>
+    </div>
+
+    <div id="adminPanel" class="management-bar" onclick="location.href='management.html'" style="margin-top: 25px; display: none; background: rgba(250, 172, 21, 0.1); border: 1px solid var(--primary); padding: 15px; border-radius: 12px; justify-content: space-between; align-items: center; cursor: pointer;">
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <span style="font-size: 1.2rem;">⭐</span>
             <div>
-                <div style="font-weight: bold;">Management Center</div>
+                <div style="font-weight: bold; color: var(--primary);">Management Center</div>
                 <div style="font-size: 0.75rem; opacity: 0.7;">Personalverwaltung & Systemsteuerung</div>
             </div>
         </div>
@@ -113,90 +110,29 @@
 <div class="modal-backdrop" id="abmModal">
     <div class="modal">
         <h2>📅 Abmeldung schreiben</h2>
-        
-        <div class="modal-grid">
-            <input type="text" id="abmVon" class="modal-input" placeholder="Von (z.B. 24.02.)">
-            <input type="text" id="abmBis" class="modal-input" placeholder="Bis (z.B. 01.03.)">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px;">
+            <input type="text" id="abmVon" placeholder="Von (z.B. 24.02.)">
+            <input type="text" id="abmBis" placeholder="Bis (z.B. 01.03.)">
         </div>
-
-        <textarea id="abmGrund" class="modal-textarea" placeholder="Grund für die Abwesenheit..."></textarea>
-
-        <div class="modal-actions">
-            <button class="submit-btn" onclick="submitAbmeldungUI()">Absenden</button>
-            <button class="cancel-btn" onclick="closeAbmModal()">Abbrechen</button>
+        <textarea id="abmGrund" placeholder="Grund für die Abwesenheit..." style="width: 100%; height: 100px; margin-top: 10px;"></textarea>
+        <div style="display: flex; gap: 10px; margin-top: 20px;">
+            <button onclick="submitAbmeldungUI()" style="flex: 2;">Absenden</button>
+            <button onclick="closeAbmModal()" style="flex: 1; background: #444;">Abbrechen</button>
         </div>
     </div>
 </div>
 
-<div class="modal-backdrop" id="firstLoginModal" style="display: none; z-index: 100000;">
-        <div class="modal">
-            <h2>🔒 Sicherheitshinweis</h2>
-            <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 20px;">
-                Dies ist dein erster Login. Bitte ändere dein Passwort von "0000" auf ein persönliches Passwort.
-            </p>
-            
-            <input type="password" id="newInitialPassword" placeholder="Neues Passwort">
-            <input type="password" id="confirmInitialPassword" placeholder="Passwort wiederholen">
-            
-            <div style="margin-top: 20px;">
-                <button onclick="changeFirstPassword()" style="width: 100%;">Passwort speichern & starten</button>
-            </div>
-        </div>
-    </div>
+<script src="script.js"></script>
+<script>
+    requireLogin();
+    document.addEventListener("DOMContentLoaded", () => {
+        const user = sessionStorage.getItem("loggedInUser");
+        if(document.getElementById("welcomeUser")) document.getElementById("welcomeUser").innerText = "Willkommen, " + user;
+        if (isAdmin()) { document.getElementById("adminPanel").style.display = "flex"; }
+        updateDashboardStats();
+        renderMeineAbmeldungen();
+    });
+</script>
 
-    <div class="modal-backdrop" id="announceDetailsModal">
-    <div class="modal" style="width: 80%; max-width: 900px; max-height: 80vh; overflow-y: auto;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <h2 style="margin: 0;">📢 Business Announcements</h2>
-            <button onclick="document.getElementById('announceDetailsModal').style.display='none'" style="background: #444;">Schließen</button>
-        </div>
-
-        <div class="panel" style="background: rgba(255,255,255,0.05); margin-bottom: 20px;">
-            <textarea id="newAnnounceText" placeholder="Neuen Text hinzufügen..." style="width: 100%; height: 80px; margin-bottom: 10px;"></textarea>
-            <button onclick="addAnnouncement()" style="width: 100%;">Vorlage hinzufügen</button>
-        </div>
-
-        <div id="announceGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px;">
-            </div>
-    </div>
-</div>
-
-    <script src="script.js"></script>
-    <script>
-        // 1. Login-Check direkt beim Laden
-        requireLogin();
-        
-        document.addEventListener("DOMContentLoaded", () => {
-            const user = sessionStorage.getItem("loggedInUser");
-            
-            // 2. Willkommens-Text setzen
-            const welcomeElem = document.getElementById("welcomeUser");
-            if(welcomeElem) welcomeElem.innerText = "Eingeloggt als: " + user;
-
-            // 3. Admin-Bereich einblenden falls berechtigt
-            if (isAdmin()) {
-                const adminPanel = document.getElementById("adminPanel");
-                if(adminPanel) adminPanel.style.display = "flex";
-            }
-
-            // 4. Daten laden
-            updateDashboardStats();
-            renderMeineAbmeldungen();
-
-            // 5. ZWANGS-CHECK: Muss das Passwort geändert werden?
-            checkFirstLogin();
-        });
-
-        function openNewsModal() {
-    document.getElementById('newsFullModal').style.display = 'flex';
-    
-    // Prüfen, ob der User Manager/Cheffe ist, um das Schreib-Feld zu zeigen
-    if (isAdmin()) {
-        document.getElementById('newsCreatorArea').style.display = 'block';
-    }
-    
-    renderNewsFull();
-}
-    </script>
 </body>
 </html>
