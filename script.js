@@ -15,13 +15,11 @@ function login() {
 
         if (userData) {
             // User gefunden -> Passwort prüfen
-            if (userData.password === passIn) {
-                // Erfolg! Daten im SessionStorage speichern (bleibt bis Browser zu ist)
-                sessionStorage.setItem("loggedInUser", userIn);
-                sessionStorage.setItem("userRole", userData.role); // z.B. "mitarbeiter", "manager", "cheffe"
-                
+           if (passwordInput === userData.password) {
+                sessionStorage.setItem("loggedInUser", username);
+                sessionStorage.setItem("userRole", userData.role); // DAS HIER IST ENTSCHEIDEND
                 window.location.href = "index.html";
-            } else {
+            }
                 alert("Falsches Passwort!");
             }
         } else {
