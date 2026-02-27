@@ -114,7 +114,7 @@ function copyText(text) {
     });
 }
 
-function renderAnnounceDetails() {
+function renderAnnouncementsPage() {
     const container = document.getElementById("announceGrid");
     if (!container) return;
     container.innerHTML = "";
@@ -122,18 +122,24 @@ function renderAnnounceDetails() {
     const list = getAnnouncements();
     const admin = isAdmin();
 
-    list.forEach(a => {
+    list.reverse().forEach(a => {
         const div = document.createElement("div");
-        div.className = "panel"; 
-        
-        // Wir escapen den Text für den Button-Klick sauber
+        div.className = "announce-card"; // Nutzt die neue CSS-Klasse
+
+        // Sauberes Escaping für Zeilenumbrüche
         const cleanText = a.text.replace(/`/g, "\\`").replace(/\n/g, "\\n");
 
         div.innerHTML = `
-            <p style="font-size: 0.85rem; white-space: pre-line; margin-bottom: 15px; opacity: 0.9; line-height: 1.5;">${a.text}</p>
-            <div style="display: flex; gap: 8px; margin-top: auto;">
-                <button onclick="copyText(\`${cleanText}\`)" style="flex: 2; font-size: 0.75rem;">Text kopieren</button>
-                ${admin ? `<button onclick="deleteAnnouncement(${a.id})" style="background: rgba(231, 76, 60, 0.2); border: 1px solid #e74c3c; color: #e74c3c; flex: 1; font-size: 0.75rem;">Löschen</button>` : ''}
+            <div style="font-size: 0.95rem; line-height: 1.6; white-space: pre-line; opacity: 0.9; word-break: break-word; flex-grow: 1; margin-bottom: 20px;">
+                ${a.text}
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <button onclick="copyText(\`${cleanText}\`)" style="flex: 2; padding: 10px; font-weight: bold;">Text kopieren</button>
+                ${admin ? `
+                    <button onclick="deleteAnnouncementPage(${a.id})" 
+                            style="background: rgba(231, 76, 60, 0.2); border: 1px solid #e74c3c; color: #e74c3c; flex: 1; padding: 10px;">
+                        Löschen
+                    </button>` : ''}
             </div>
         `;
         container.appendChild(div);
