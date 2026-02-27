@@ -127,11 +127,21 @@
     requireLogin();
     document.addEventListener("DOMContentLoaded", () => {
         const user = sessionStorage.getItem("loggedInUser");
-        if(document.getElementById("welcomeUser")) document.getElementById("welcomeUser").innerText = "Willkommen, " + user;
-        if (isAdmin()) { document.getElementById("adminPanel").style.display = "flex"; }
-        updateDashboardStats();
-        renderMeineAbmeldungen();
-    });
+        const role = sessionStorage.getItem("userRole"); // Wir holen die Rolle aus dem Speicher
+
+        if(document.getElementById("welcomeUser")) {
+            document.getElementById("welcomeUser").innerText = "Willkommen, " + user;
+        }
+
+        // Präziser Check für das Management Panel
+        if (role === "cheffe" || role === "management") {
+            const adminBar = document.getElementById("adminPanel");
+            if(adminBar) adminBar.style.display = "flex";
+        }
+
+    updateDashboardStats();
+    renderMeineAbmeldungen();
+});
 </script>
 
 </body>
