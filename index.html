@@ -126,22 +126,29 @@
 <script>
     requireLogin();
     document.addEventListener("DOMContentLoaded", () => {
+        // Wir holen User und Rolle aus dem sessionStorage
         const user = sessionStorage.getItem("loggedInUser");
-        const role = sessionStorage.getItem("userRole"); // Wir holen die Rolle aus dem Speicher
+        const role = sessionStorage.getItem("userRole"); 
 
+        // Willkommens-Text
         if(document.getElementById("welcomeUser")) {
-            document.getElementById("welcomeUser").innerText = "Willkommen, " + user;
+            document.getElementById("welcomeUser").innerText = "Willkommen, " + (user || "Gast");
         }
 
-        // Präziser Check für das Management Panel
-        if (role === "cheffe" || role === "management") {
-            const adminBar = document.getElementById("adminPanel");
-            if(adminBar) adminBar.style.display = "flex";
+        // MANAGEMENT BAR LOGIK
+        const adminPanel = document.getElementById("adminPanel");
+        if (adminPanel) {
+            // Prüfen, ob die Rolle "cheffe" oder "management" ist
+            if (role === "cheffe" || role === "management") {
+                adminPanel.style.display = "flex"; // Macht die Bar sichtbar
+            } else {
+                adminPanel.style.display = "none"; // Sicherstellen, dass sie für andere weg bleibt
+            }
         }
 
-    updateDashboardStats();
-    renderMeineAbmeldungen();
-});
+        updateDashboardStats();
+        renderMeineAbmeldungen();
+    });
 </script>
 
 </body>
