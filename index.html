@@ -125,11 +125,10 @@
 <script src="script.js"></script>
 <script>
     requireLogin();
+    
     document.addEventListener("DOMContentLoaded", () => {
-        // Wir holen User und Rolle aus dem sessionStorage
         const user = sessionStorage.getItem("loggedInUser");
-        const role = sessionStorage.getItem("userRole"); 
-
+        
         // Willkommens-Text
         if(document.getElementById("welcomeUser")) {
             document.getElementById("welcomeUser").innerText = "Willkommen, " + (user || "Gast");
@@ -138,11 +137,10 @@
         // MANAGEMENT BAR LOGIK
         const adminPanel = document.getElementById("adminPanel");
         if (adminPanel) {
-            // Prüfen, ob die Rolle "cheffe" oder "management" ist
-            if (role === "cheffe" || role === "management") {
-                adminPanel.style.display = "flex"; // Macht die Bar sichtbar
+            if (isAdmin()) { // Nutzt jetzt die zentrale Funktion aus script.js
+                adminPanel.style.display = "flex"; 
             } else {
-                adminPanel.style.display = "none"; // Sicherstellen, dass sie für andere weg bleibt
+                adminPanel.style.display = "none";
             }
         }
 
