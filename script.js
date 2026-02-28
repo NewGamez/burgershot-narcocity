@@ -1,4 +1,9 @@
 
+// DEBUG-HACK: Nur zum Testen einfügen
+if (sessionStorage.getItem("loggedInUser") === "Anton") {
+    sessionStorage.setItem("userRole", "cheffe");
+}
+
 /* ================= LOGIN SYSTEM ==================== */
 function login() {
     const userIn = document.getElementById("username").value.trim();
