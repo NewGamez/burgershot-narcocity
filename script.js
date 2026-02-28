@@ -81,13 +81,17 @@ function addAnnouncement() {
     saveAnnouncements(list);
     
     document.getElementById("newAnnounceText").value = "";
-    renderAnnounceDetails(); // Liste aktualisieren
+    
+    // WICHTIG: Die Liste sofort im Modal aktualisieren
+    renderAnnounceDetails(); 
 }
 
 function deleteAnnouncement(id) {
     if (!confirm("Diese Vorlage wirklich löschen?")) return;
     const list = getAnnouncements().filter(a => a.id !== id);
     saveAnnouncements(list);
+    
+    // WICHTIG: Die Liste sofort im Modal aktualisieren
     renderAnnounceDetails();
 }
 
