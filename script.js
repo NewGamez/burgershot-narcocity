@@ -9,7 +9,7 @@ function saveAccounts(accs) {
 }
 
 function isAdmin() {
-    const role = (sessionStorage.getItem("userRole") || "").toLowerCase();
+    const role = sessionStorage.getItem("userRole");
     return role === "cheffe" || role === "management";
 }
 
