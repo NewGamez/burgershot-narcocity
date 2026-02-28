@@ -36,7 +36,7 @@ function requireLogin() {
 }
 
 function isAdmin() {
-    const role = (sessionStorage.getItem("userRole") || "").toLowerCase();
+    const role = (sessionStorage.getItem("userRole") || "").toLowerCase().trim();
     return role === "cheffe" || role === "management";
 }
 
