@@ -14,15 +14,16 @@
     </div>
 </header>
 
-<section class="dashboard">
-    <div id="newsCreatorArea" class="panel full-width" style="display: none; margin-bottom: 30px;">
+<section class="dashboard" style="display: grid; grid-template-columns: 400px 1fr; align-items: start; gap: 30px; padding: 30px; max-width: 1600px; margin: 0 auto;">
+    
+    <div id="newsCreatorArea" class="panel" style="display: none; position: sticky; top: 30px;">
         <div class="panel-header">📢 Neue Nachricht verfassen</div>
-        <textarea id="newNewsText" placeholder="Was gibt es Neues? (Emojis erlaubt ✨)" style="width: 100%; height: 120px; margin: 15px 0; background: rgba(0,0,0,0.2); color: white; border: 1px solid var(--glass-border); padding: 15px; border-radius: 10px;"></textarea>
-        <input type="text" id="newNewsImg" placeholder="Bild-URL (Optional, z.B. von Discord oder Imgur)" style="width: 100%; margin-bottom: 15px;">
+        <textarea id="newNewsText" placeholder="Was gibt es Neues? (Emojis erlaubt ✨)" style="width: 100%; height: 150px; margin: 15px 0; background: rgba(0,0,0,0.2); color: white; border: 1px solid var(--glass-border); padding: 15px; border-radius: 10px;"></textarea>
+        <input type="text" id="newNewsImg" placeholder="Bild-URL (Optional)" style="width: 100%; margin-bottom: 15px;">
         <button onclick="addNews()" style="width: 100%;" class="submit-btn">Nachricht veröffentlichen</button>
     </div>
 
-    <div id="newsFullGrid">
+    <div id="newsFullGrid" style="display: flex; flex-direction: column; gap: 20px;">
         </div>
 </section>
 
