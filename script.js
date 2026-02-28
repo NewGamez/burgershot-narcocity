@@ -546,3 +546,20 @@ function getAccounts() {
 function saveAccounts(accs) {
     localStorage.setItem("bs_accounts", JSON.stringify(accs));
 }
+
+// Diese Funktion prüft die Sichtbarkeit
+function updateUIVisibility() {
+    const mgmtBar = document.querySelector('.management-bar');
+    if (mgmtBar) {
+        if (isAdmin()) {
+            mgmtBar.style.display = 'flex'; // Oder 'block'
+            console.log("Admin erkannt: Bar eingeblendet");
+        } else {
+            mgmtBar.style.display = 'none';
+            console.log("Kein Admin: Bar versteckt");
+        }
+    }
+}
+
+// Führt den Check aus, sobald die Seite fertig geladen ist
+document.addEventListener("DOMContentLoaded", updateUIVisibility);
