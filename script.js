@@ -516,13 +516,19 @@ function saveAccounts(accs) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    // Falls wir auf dem Dashboard sind, prüfe ob die Management-Bar gezeigt werden soll
     const mgmtBar = document.querySelector('.management-bar');
-    if (mgmtBar && isAdmin()) {
-        mgmtBar.style.display = 'flex';
+    
+    if (mgmtBar) {
+        if (isAdmin()) {
+            console.log("Admin erkannt: Zeige Bar"); // Debug-Info für die Konsole (F12)
+            mgmtBar.style.setProperty('display', 'flex', 'important');
+        } else {
+            console.log("Kein Admin: Bar bleibt versteckt");
+            mgmtBar.style.display = 'none';
+        }
     }
     
-    // Falls du die Statistiken im Hero-Banner hast, hier direkt mit updaten
+    // Stats im Hero-Banner ebenfalls laden
     if (typeof updateDashboardStats === "function") {
         updateDashboardStats();
     }
