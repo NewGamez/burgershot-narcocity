@@ -215,18 +215,18 @@ button:hover {
 
 /* MANAGEMENT BAR */
 .management-bar {
-    display: none; /* Standardmäßig aus */
-    padding: 20px 30px;
-    margin: 20px; /* Damit sie nicht am Rand klebt */
-    border-radius: 22px;
-    border: 1px solid var(--primary);
-    background: var(--glass-bg);
-    backdrop-filter: var(--glass-blur);
+    display: none; /* Wichtig: Standardmäßig versteckt */
+    background: #faac15; /* Deine Burgershot Farbe */
+    color: #1a1a1a;
+    padding: 10px 20px;
     justify-content: space-between;
     align-items: center;
-    cursor: pointer;
-    transition: 0.3s;
-    z-index: 100; /* Sicherstellen, dass sie oben liegt */
+    font-weight: bold;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
 }
 
 .management-bar:hover {
