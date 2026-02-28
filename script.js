@@ -9,20 +9,19 @@ function login() {
     const accs = getAccounts();
     const userData = accs[userIn];
 
-    if (userData) {
-        if (passIn === userData.password) {
-            sessionStorage.setItem("loggedInUser", userIn);
-            // WICHTIG: Wir speichern die Rolle für den Vergleich immer in Kleinschreibung
-            const cleanRole = userData.role.toLowerCase().trim();
-            sessionStorage.setItem("userRole", cleanRole); 
-            
-            console.log("Login Erfolg! Rolle gespeichert als:", cleanRole);
-            window.location.href = "index.html";
-        } else {
-            alert("Falsches Passwort!");
-        }
+    if (userData && passIn === userData.password) {
+        sessionStorage.setItem("loggedInUser", userIn);
+        
+        // DAS HIER IST DER FIX:
+        // Egal ob in der Datenbank "Cheffe", "CHEFFE" oder "cheffe" steht,
+        // wir machen es hier klein, damit isAdmin() es erkennt.
+        const roleForSession = userData.role.toLowerCase().trim();
+        sessionStorage.setItem("userRole", roleForSession);
+        
+        console.log("Login erfolgreich! Rolle in Session:", roleForSession);
+        window.location.href = "index.html";
     } else {
-        alert("Benutzer existiert nicht im System!");
+        alert("Nutzername oder Passwort falsch!");
     }
 }
 
