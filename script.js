@@ -520,16 +520,28 @@ function saveAccounts(accs) {
     localStorage.setItem("bs_accounts", JSON.stringify(accs));
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+function checkManagementBar() {
     const mgmtBar = document.querySelector('.management-bar');
-    
+    const role = (sessionStorage.getItem("userRole") || "").toLowerCase().trim();
+    const user = sessionStorage.getItem("loggedInUser");
+
+    console.log("Check läuft für User:", user, "| Rolle:", role);
+
     if (mgmtBar) {
-        if (isAdmin()) {
-            mgmtBar.style.display = 'flex'; // Zeigen, wenn Admin
-            console.log("Management-Bar wurde aktiviert.");
+        if (role === "cheffe" || role === "management") {
+            mgmtBar.style.setProperty('display', 'flex', 'important');
+            console.log("Management-Bar sichtbar gemacht!");
         } else {
-            mgmtBar.style.display = 'none'; // Verstecken, wenn kein Admin
-            console.log("Management-Bar bleibt versteckt (keine Rechte).");
+            mgmtBar.style.display = 'none';
+            console.log("Management-Bar versteckt (Kein Admin).");
         }
+    } else {
+        console.error("FEHLER: Element '.management-bar' wurde im HTML nicht gefunden!");
     }
+}
+
+/* Wir rufen es beim Laden auf und zur Sicherheit 100ms später noch mal */
+document.addEventListener("DOMContentLoaded", () => {
+    checkManagementBar();
+    setTimeout(checkManagementBar, 100); 
 });
