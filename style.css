@@ -606,3 +606,17 @@ textarea::placeholder {
     border-color: var(--primary);
     color: black;
 }
+
+/* In die style.css einfügen */
+.grid-top-align {
+    display: grid !important;
+    grid-template-columns: 400px 1fr;
+    align-items: start !important; /* Verhindert das Mitziehen */
+    gap: 30px;
+}
+
+@media (max-width: 900px) {
+    .grid-top-align {
+        grid-template-columns: 1fr; /* Stapelt es auf dem Handy untereinander */
+    }
+}
