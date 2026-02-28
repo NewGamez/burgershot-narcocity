@@ -11,9 +11,10 @@ function login() {
 
     if (userData) {
         if (passIn === userData.password) {
+            // WICHTIG: Hier speichern wir jetzt beides!
             sessionStorage.setItem("loggedInUser", userIn);
-            // Wir speichern die Rolle immer kleingeschrieben für den Vergleich
             sessionStorage.setItem("userRole", userData.role.toLowerCase()); 
+            
             window.location.href = "index.html";
         } else {
             alert("Falsches Passwort!");
