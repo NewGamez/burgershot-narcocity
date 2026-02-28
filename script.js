@@ -39,23 +39,6 @@ function logout() {
     window.location.href = "login.html";
 }
 
-function showTab(tabId) {
-    // Alle Tabs verstecken
-    document.querySelectorAll('.mgmt-tab').forEach(tab => {
-        tab.style.display = 'none';
-    });
-    
-    // Gewünschten Tab zeigen
-    document.getElementById(tabId).style.display = 'block';
-
-    // Button-Styling anpassen
-    document.querySelectorAll('.nav-btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    // Findet den Button, der die Funktion aufgerufen hat und markiert ihn
-    event.currentTarget.classList.add('active');
-}
-
 function addUser() {
     const name = document.getElementById("newName").value.trim();
     const role = document.getElementById("newRole").value;
