@@ -531,3 +531,16 @@ function getAccounts() {
 function saveAccounts(accs) {
     localStorage.setItem("bs_accounts", JSON.stringify(accs));
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+    // Falls wir auf dem Dashboard sind, prüfe ob die Management-Bar gezeigt werden soll
+    const mgmtBar = document.querySelector('.management-bar');
+    if (mgmtBar && isAdmin()) {
+        mgmtBar.style.display = 'flex';
+    }
+    
+    // Falls du die Statistiken im Hero-Banner hast, hier direkt mit updaten
+    if (typeof updateDashboardStats === "function") {
+        updateDashboardStats();
+    }
+});
