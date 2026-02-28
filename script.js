@@ -31,6 +31,7 @@ function requireLogin() {
 
 function isAdmin() {
     const role = (sessionStorage.getItem("userRole") || "").toLowerCase().trim();
+    console.log("Aktuelle Rolle im Speicher:", role); // Das hilft uns beim Fehlersuchen
     return role === "cheffe" || role === "management";
 }
 
@@ -524,16 +525,11 @@ document.addEventListener("DOMContentLoaded", () => {
     
     if (mgmtBar) {
         if (isAdmin()) {
-            console.log("Admin erkannt: Zeige Bar"); // Debug-Info für die Konsole (F12)
-            mgmtBar.style.setProperty('display', 'flex', 'important');
+            mgmtBar.style.display = 'flex'; // Zeigen, wenn Admin
+            console.log("Management-Bar wurde aktiviert.");
         } else {
-            console.log("Kein Admin: Bar bleibt versteckt");
-            mgmtBar.style.display = 'none';
+            mgmtBar.style.display = 'none'; // Verstecken, wenn kein Admin
+            console.log("Management-Bar bleibt versteckt (keine Rechte).");
         }
-    }
-    
-    // Stats im Hero-Banner ebenfalls laden
-    if (typeof updateDashboardStats === "function") {
-        updateDashboardStats();
     }
 });
