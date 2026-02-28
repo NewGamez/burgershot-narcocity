@@ -135,27 +135,38 @@
 <script>
     requireLogin();
     
-    document.addEventListener("DOMContentLoaded", () => {
-        const user = sessionStorage.getItem("loggedInUser");
-        
-        // Willkommens-Text
-        if(document.getElementById("welcomeUser")) {
-            document.getElementById("welcomeUser").innerText = "Willkommen, " + (user || "Gast");
-        }
+   document.addEventListener("DOMContentLoaded", () => {
+    // 1. Variablen holen
+    const adminPanel = document.getElementById("adminPanel");
+    const user = sessionStorage.getItem("loggedInUser");
+    const role = sessionStorage.getItem("userRole");
 
-        // MANAGEMENT BAR LOGIK
-        const adminPanel = document.getElementById("adminPanel");
-        if (adminPanel) {
-            if (isAdmin()) { // Nutzt jetzt die zentrale Funktion aus script.js
-                adminPanel.style.display = "flex"; 
-            } else {
-                adminPanel.style.display = "none";
-            }
-        }
+    // 2. Debugging-Infos (nur für dich in F12 sichtbar)
+    console.log("--- Dashboard Check ---");
+    console.log("User:", user);
+    console.log("Rolle:", role);
 
-        updateDashboardStats();
-        renderMeineAbmeldungen();
-    });
+    // 3. Willkommens-Text setzen
+    const welcomeElem = document.getElementById("welcomeUser");
+    if (welcomeElem) {
+        welcomeElem.innerText = "Willkommen, " + (user || "Gast");
+    }
+
+    // 4. Management Bar Logik
+    if (adminPanel) {
+        if (isAdmin()) { 
+            console.log("Ergebnis isAdmin(): TRUE -> Zeige Panel");
+            adminPanel.style.display = "flex"; 
+        } else {
+            console.log("Ergebnis isAdmin(): FALSE -> Verstecke Panel");
+            adminPanel.style.display = "none";
+        }
+    }
+
+    // 5. Statistiken und Listen laden (falls vorhanden)
+    if (typeof updateDashboardStats === "function") updateDashboardStats();
+    if (typeof renderMeineAbmeldungen === "function") renderMeineAbmeldungen();
+});
 </script>
 
 </body>
