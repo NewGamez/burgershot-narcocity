@@ -124,7 +124,7 @@ function renderAnnouncementsPage() {
             <div style="display: flex; gap: 10px;">
                 <button onclick="copyText(\`${cleanText}\`)" style="flex: 2; padding: 10px; font-weight: bold;">Text kopieren</button>
                 ${admin ? `
-                    <button onclick="deleteAnnouncementPage(${a.id})" 
+                    <button onclick="deleteAnnouncement(${a.id})"
                             style="background: rgba(231, 76, 60, 0.2); border: 1px solid #e74c3c; color: #e74c3c; flex: 1; padding: 10px;">
                         Löschen
                     </button>` : ''}
