@@ -9,23 +9,22 @@ function login() {
     const accs = getAccounts();
     const userData = accs[userIn];
 
+    // Prüfen ob Nutzer existiert und Passwort stimmt
     if (userData && passIn === userData.password) {
         sessionStorage.setItem("loggedInUser", userIn);
         
-        // DAS HIER IST DER FIX:
-        // Egal ob in der Datenbank "Cheffe", "CHEFFE" oder "cheffe" steht,
-        // wir machen es hier klein, damit isAdmin() es erkennt.
-        const roleForSession = userData.role.toLowerCase().trim();
+        // WICHTIG: Rolle klein schreiben für isAdmin()
+        const roleForSession = userData.role.toLowerCase().trim(); 
         sessionStorage.setItem("userRole", roleForSession);
         
-        console.log("Login erfolgreich! Rolle in Session:", roleForSession);
+        console.log("Login erfolgreich! Rolle:", roleForSession);
         window.location.href = "index.html";
     } else {
         alert("Nutzername oder Passwort falsch!");
     }
 }
 
-// Prüft, ob jemand Admin-Rechte hat (Management oder Cheffe)
+// Prüft, ob jemand Admin-Rechte hat
 function isAdmin() {
     const role = (sessionStorage.getItem("userRole") || "").toLowerCase().trim();
     return role === "cheffe" || role === "management";
@@ -43,84 +42,36 @@ function logout() {
 }
 
 /* ================= MANAGEMENT UI ==================== */
-function checkManagementBar() {
-    const mgmtBar = document.querySelector('.management-bar');
-    if (!mgmtBar) return;
-
-    if (isAdmin()) {
-        mgmtBar.style.display = 'flex';
-        console.log("Management Bar eingeblendet.");
-    } else {
-        mgmtBar.style.display = 'none';
-        console.log("Zugriff verweigert: Keine Admin-Rolle.");
+function updateUIVisibility() {
+    // Sucht nach der ID 'adminPanel' aus deiner index.html
+    const mgmtBar = document.getElementById('adminPanel'); 
+    
+    if (mgmtBar) {
+        if (isAdmin()) {
+            mgmtBar.style.display = 'flex'; 
+            console.log("Admin-Leiste eingeblendet");
+        } else {
+            mgmtBar.style.display = 'none';
+            console.log("Kein Admin - Leiste bleibt versteckt");
+        }
     }
 }
 
-// Diese Funktion sorgt dafür, dass die Bar beim Laden direkt geprüft wird
+// Beim Laden der Seite ausführen
 document.addEventListener("DOMContentLoaded", () => {
-    checkManagementBar();
-    // Falls du auf der Dashboard-Seite bist, Stats laden
+    updateUIVisibility();
     if(document.getElementById("accCount")) updateDashboardStats();
 });
-
-function showTab(tabId, btn) {
-    // Alle Tabs verstecken
-    document.querySelectorAll(".mgmt-tab").forEach(t => {
-        t.style.display = "none";
-        t.classList.remove("active");
-    });
-
-    // Gewählten Tab zeigen
-    const activeTab = document.getElementById(tabId);
-    if(activeTab) {
-        activeTab.style.display = "block";
-        activeTab.classList.add("active");
-    }
-
-    // Buttons stylen
-    if (btn) {
-        document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-    }
-
-    // Daten laden
-    if(tabId === 'tab-accounts') renderUsers();
-    if(tabId === 'tab-bewerber') renderBewerberManagement();
-    if(tabId === 'tab-abmeldungen') if(typeof renderAbmeldungen === "function") renderAbmeldungen();
-}
-
-/* ================= ACCOUNT MANAGEMENT ================= */
-function addUser() {
-    const name = document.getElementById("newName").value.trim();
-    const role = document.getElementById("newRole").value; // z.B. "Cheffe"
-    const accs = getAccounts();
-    
-    if (!name) return alert("Bitte einen Namen eingeben!");
-    if (accs[name]) return alert("Dieser Account existiert bereits!");
-
-    accs[name] = { 
-        password: "0000", 
-        role: role, // Wird so gespeichert wie im Dropdown
-        isFirstLogin: true 
-    };
-    
-    saveAccounts(accs);
-    
-    if (typeof renderUsers === "function") renderUsers();
-
-    document.getElementById("newName").value = "";
-    alert(`Account für ${name} erstellt. Rolle: ${role}`);
-}
 
 /* ================= STORAGE HELPER ==================== */
 function getAccounts() {
     let accs = JSON.parse(localStorage.getItem("bs_accounts"));
     if (!accs) {
-        // Wir legen einen sauberen Standard-Account an
+        // Falls leer: Erstelle den Master-Admin
         accs = { 
             "Cheffe": { 
                 password: "1234", 
-                role: "Cheffe"  // Wichtig: Groß geschrieben für die Anzeige
+                role: "Cheffe" 
             } 
         };
         localStorage.setItem("bs_accounts", JSON.stringify(accs));
@@ -132,58 +83,13 @@ function saveAccounts(accs) {
     localStorage.setItem("bs_accounts", JSON.stringify(accs));
 }
 
-/* ================= WEITERE LOGIK (Kopiert aus deinem Script) ==================== */
-const getAnnouncements = () => JSON.parse(localStorage.getItem("bs_announcements")) || [{ id: 1, text: "Burgershot Announcement Standard..." }];
-const saveAnnouncements = (data) => localStorage.setItem("bs_announcements", JSON.stringify(data));
-
-function copyText(text) {
-    navigator.clipboard.writeText(text).then(() => alert("Kopiert!"));
-}
-
-function renderAnnounceDetails() {
-    const container = document.getElementById("announceGrid");
-    if (!container) return;
-    container.innerHTML = "";
-    
-    const list = getAnnouncements();
-    const admin = isAdmin();
-
-    list.forEach(a => {
-        const div = document.createElement("div");
-        div.className = "panel"; 
-        
-        // Wir escapen den Text für den Button-Klick sauber
-        const cleanText = a.text.replace(/`/g, "\\`").replace(/\n/g, "\\n");
-
-        div.innerHTML = `
-            <p style="font-size: 0.85rem; white-space: pre-line; margin-bottom: 15px; opacity: 0.9; line-height: 1.5;">${a.text}</p>
-            <div style="display: flex; gap: 8px; margin-top: auto;">
-                <button onclick="copyText(\`${cleanText}\`)" style="flex: 2; font-size: 0.75rem;">Text kopieren</button>
-                ${admin ? `<button onclick="deleteAnnouncement(${a.id})" style="background: rgba(231, 76, 60, 0.2); border: 1px solid #e74c3c; color: #e74c3c; flex: 1; font-size: 0.75rem;">Löschen</button>` : ''}
-            </div>
-        `;
-        container.appendChild(div);
-    });
-}
-
-// Funktion zum Öffnen des Panels vom Dashboard aus
-function openAnnouncePanel() {
-    document.getElementById('announceDetailsModal').style.display = 'flex';
-    renderAnnounceDetails();
-}
-
-/* ================= ABMELDUNGEN LOGIK ================= */
-const getAbmeldungen = () => JSON.parse(localStorage.getItem("bs_abmeldungen")) || [];
-const saveAbmeldungen = data => localStorage.setItem("bs_abmeldungen", JSON.stringify(data));
-
-function getOffeneAbmeldungenCount() {
-    return getAbmeldungen().filter(a => a.status === "offen").length;
-}
-
-// Stats auf dem Dashboard aktualisieren
+/* ================= ABMELDUNGEN STATS ================= */
 function updateDashboardStats() {
-    const accCount = Object.keys(getAccounts()).length;
-    const offeneCount = getOffeneAbmeldungenCount();
+    const accs = getAccounts();
+    const accCount = Object.keys(accs).length;
+    
+    const abmeldungen = JSON.parse(localStorage.getItem("bs_abmeldungen")) || [];
+    const offeneCount = abmeldungen.filter(a => a.status === "offen").length;
 
     if(document.getElementById("accCount")) document.getElementById("accCount").innerText = accCount;
     if(document.getElementById("heroAbmCount")) document.getElementById("heroAbmCount").innerText = offeneCount;
