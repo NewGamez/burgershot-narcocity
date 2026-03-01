@@ -116,8 +116,13 @@ function addUser() {
 function getAccounts() {
     let accs = JSON.parse(localStorage.getItem("bs_accounts"));
     if (!accs) {
-        // Standard-Admin falls nichts existiert
-        accs = { "Admin": { password: "1234", role: "cheffe" } };
+        // Wir legen einen sauberen Standard-Account an
+        accs = { 
+            "Cheffe": { 
+                password: "1234", 
+                role: "Cheffe"  // Wichtig: Groß geschrieben für die Anzeige
+            } 
+        };
         localStorage.setItem("bs_accounts", JSON.stringify(accs));
     }
     return accs;
