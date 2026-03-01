@@ -6,32 +6,30 @@ function login() {
     if (!userIn || !passIn) return alert("Bitte alles ausfüllen!");
 
     const accs = getAccounts();
+    // Wir suchen den User (z.B. "Admin")
     const userData = accs[userIn];
 
     if (userData && passIn === userData.password) {
-        // 1. Username speichern
         sessionStorage.setItem("loggedInUser", userIn);
         
-        // 2. Rolle speichern und DIREKT in Kleinschreibung umwandeln
-        const rawRole = userData.role || "mitarbeiter";
-        const cleanRole = rawRole.toLowerCase().trim();
+        // WICHTIG: Wir speichern die Rolle IMMER kleingeschrieben in die Session
+        const roleForSession = userData.role.toLowerCase().trim(); 
+        sessionStorage.setItem("userRole", roleForSession);
         
-        sessionStorage.setItem("userRole", cleanRole);
-        
-        console.log("Login erfolgreich für:", userIn, "Rolle gespeichert als:", cleanRole);
+        console.log("Erfolgreich als " + userIn + " angemeldet. Rolle: " + roleForSession);
         window.location.href = "index.html";
     } else {
         alert("Nutzername oder Passwort falsch!");
     }
 }
 
-/* ================= ADMIN CHECK (KORRIGIERT) ==================== */
+/* ================= ADMIN CHECK ==================== */
 function isAdmin() {
+    // Wir holen die Rolle aus der Session und machen sie zur Sicherheit nochmal klein
     const role = (sessionStorage.getItem("userRole") || "").toLowerCase().trim();
-    console.log("Aktuelle Rolle im Check:", role); // Zeigt dir in der Konsole, was er prüft
     
-    // Prüft auf alle gängigen Schreibweisen
-    return role === "cheffe" || role === "management" || role === "admin";
+    // Jetzt prüfen wir gegen den kleingeschriebenen Wert
+    return role === "cheffe" || role === "management";
 }
 
 function requireLogin() {
