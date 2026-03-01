@@ -202,3 +202,44 @@ const getAnnouncements = () => JSON.parse(localStorage.getItem("bs_announcements
 function copyText(text) {
     navigator.clipboard.writeText(text).then(() => alert("In Zwischenablage kopiert!"));
 }
+
+/* ============================================================
+   6. ACCOUNT MANAGEMENT (LISTE RENDERN)
+   ============================================================ */
+
+function renderUsers() {
+    const container = document.getElementById("userTableBody");
+    if (!container) return; // Falls wir nicht auf der Management-Seite sind
+
+    container.innerHTML = "";
+    const accs = getAccounts();
+
+    Object.keys(accs).forEach(name => {
+        const user = accs[name];
+        const tr = document.createElement("tr");
+
+        tr.innerHTML = `
+            <td>${name}</td>
+            <td><span class="badge">${user.role}</span></td>
+            <td>
+                <button onclick="uprank('${name}')" class="btn-small">↑</button>
+                <button onclick="derank('${name}')" class="btn-small">↓</button>
+                <button onclick="removeUser('${name}')" class="btn-small btn-danger">🗑</button>
+            </td>
+        `;
+        container.appendChild(tr);
+    });
+}
+
+// FORCE CHECK: Tippe das in die Browser-Konsole (F12), wenn du eingeloggt bist!
+function forceShow() {
+    const panel = document.getElementById('adminPanel');
+    if (panel) {
+        panel.style.display = 'flex';
+        panel.style.visibility = 'visible';
+        panel.style.opacity = '1';
+        console.log("Panel wurde manuell erzwungen!");
+    } else {
+        console.error("ID 'adminPanel' wurde im HTML nicht gefunden!");
+    }
+}
