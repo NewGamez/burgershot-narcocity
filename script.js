@@ -8,25 +8,30 @@ function login() {
     const accs = getAccounts();
     const userData = accs[userIn];
 
-    // Prüfen ob Nutzer existiert und Passwort stimmt
     if (userData && passIn === userData.password) {
+        // 1. Username speichern
         sessionStorage.setItem("loggedInUser", userIn);
         
-        // WICHTIG: Rolle klein schreiben für isAdmin()
-        const roleForSession = userData.role.toLowerCase().trim(); 
-        sessionStorage.setItem("userRole", roleForSession);
+        // 2. Rolle speichern und DIREKT in Kleinschreibung umwandeln
+        const rawRole = userData.role || "mitarbeiter";
+        const cleanRole = rawRole.toLowerCase().trim();
         
-        console.log("Login erfolgreich! Rolle:", roleForSession);
+        sessionStorage.setItem("userRole", cleanRole);
+        
+        console.log("Login erfolgreich für:", userIn, "Rolle gespeichert als:", cleanRole);
         window.location.href = "index.html";
     } else {
         alert("Nutzername oder Passwort falsch!");
     }
 }
 
-// Prüft, ob jemand Admin-Rechte hat
+/* ================= ADMIN CHECK (KORRIGIERT) ==================== */
 function isAdmin() {
     const role = (sessionStorage.getItem("userRole") || "").toLowerCase().trim();
-    return role === "cheffe" || role === "management";
+    console.log("Aktuelle Rolle im Check:", role); // Zeigt dir in der Konsole, was er prüft
+    
+    // Prüft auf alle gängigen Schreibweisen
+    return role === "cheffe" || role === "management" || role === "admin";
 }
 
 function requireLogin() {
