@@ -1,122 +1,12 @@
-/* ================= LOGIN SYSTEM ==================== */
-function login() {
-    const userIn = document.getElementById("username").value.trim();
-    const passIn = document.getElementById("password").value.trim();
+/* ============================================================
+   1. KERN-SYSTEM (STORAGE, AUTH & NAVIGATION)
+   ============================================================ */
 
-    if (!userIn || !passIn) return alert("Bitte alles ausfüllen!");
-
-    const accs = getAccounts();
-    const userData = accs[userIn];
-
-    console.log("Login-Versuch für:", userIn);
-    console.log("Gefundene Daten:", userData);
-
-    if (userData && passIn === userData.password) {
-        // Daten in Session speichern
-        sessionStorage.setItem("loggedInUser", userIn);
-        
-        // WICHTIG: Sicherstellen, dass die Rolle existiert und klein ist
-        const userRole = (userData.role || "mitarbeiter").toLowerCase().trim();
-        sessionStorage.setItem("userRole", userRole);
-        
-        console.log("Erfolg! Rolle gespeichert:", userRole);
-        window.location.href = "index.html";
-    } else {
-        console.error("Login fehlgeschlagen: Passwort falsch oder User nicht gefunden.");
-        alert("Nutzername oder Passwort falsch!");
-    }
-}
-
-/* ================= ADMIN CHECK ==================== */
-function isAdmin() {
-    const role = sessionStorage.getItem("userRole");
-    console.log("isAdmin Check - Aktuelle Rolle in Session:", role);
-    
-    if (!role) return false;
-    
-    const cleanRole = role.toLowerCase().trim();
-    return cleanRole === "cheffe" || cleanRole === "management";
-}
-
-/* ================= SICHTBARKEIT ==================== */
-function updateUIVisibility() {
-    const mgmtBar = document.getElementById('adminPanel'); 
-    
-    if (mgmtBar) {
-        const adminStatus = isAdmin();
-        console.log("Soll Panel angezeigt werden?", adminStatus);
-        
-        if (adminStatus) {
-            mgmtBar.style.display = 'flex';
-        } else {
-            mgmtBar.style.display = 'none';
-        }
-    }
-}
-
-document.addEventListener("DOMContentLoaded", updateUIVisibility);
-/* ================= MANAGEMENT UI ==================== */
-function updateUIVisibility() {
-    // Sucht nach der ID 'adminPanel' aus deiner index.html
-    const mgmtBar = document.getElementById('adminPanel'); 
-    
-    if (mgmtBar) {
-        if (isAdmin()) {
-            mgmtBar.style.display = 'flex'; 
-            console.log("Admin-Leiste eingeblendet");
-        } else {
-            mgmtBar.style.display = 'none';
-            console.log("Kein Admin - Leiste bleibt versteckt");
-        }
-    }
-}
-
-// Beim Laden der Seite ausführen
-document.addEventListener("DOMContentLoaded", () => {
-    updateUIVisibility();
-    // Falls Stats-Container vorhanden, Stats laden
-    if(document.getElementById("accCount")) updateDashboardStats();
-    // Falls wir auf der Management-Seite sind, User rendern
-    if(document.getElementById("userTableBody")) renderUsers();
-});
-
-function showTab(tabId, btn) {
-    // Alle Tabs verstecken
-    document.querySelectorAll(".mgmt-tab").forEach(t => {
-        t.style.display = "none";
-        t.classList.remove("active");
-    });
-
-    // Gewählten Tab zeigen
-    const activeTab = document.getElementById(tabId);
-    if(activeTab) {
-        activeTab.style.display = "block";
-        activeTab.classList.add("active");
-    }
-
-    // Buttons stylen
-    if (btn) {
-        document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-    }
-
-    // Daten laden je nach Tab
-    if(tabId === 'tab-accounts') renderUsers();
-    if(tabId === 'tab-bewerber') renderBewerberManagement();
-    if(tabId === 'tab-abmeldungen') renderAbmeldungen();
-}
-
-/* ================= STORAGE & ACCOUNTS ================= */
 function getAccounts() {
     let accs = JSON.parse(localStorage.getItem("bs_accounts"));
-    if (!accs) {
-        // Notfall-Admin falls leer
-        accs = { 
-            "Cheffe": { 
-                password: "1234", 
-                role: "Cheffe" 
-            } 
-        };
+    if (!accs || Object.keys(accs).length === 0) {
+        // Falls leer: Erstelle den Master-Admin
+        accs = { "Admin": { password: "1234", role: "cheffe" } };
         localStorage.setItem("bs_accounts", JSON.stringify(accs));
     }
     return accs;
@@ -126,62 +16,79 @@ function saveAccounts(accs) {
     localStorage.setItem("bs_accounts", JSON.stringify(accs));
 }
 
-function addUser() {
-    const name = document.getElementById("newName").value.trim();
-    const role = document.getElementById("newRole").value;
-    const accs = getAccounts();
-    
-    if (!name) return alert("Bitte einen Namen eingeben!");
-    if (accs[name]) return alert("Dieser Account existiert bereits!");
+function login() {
+    const userIn = document.getElementById("username").value.trim();
+    const passIn = document.getElementById("password").value.trim();
 
-    accs[name] = { 
-        password: "0000", 
-        role: role,
-        isFirstLogin: true 
-    };
-    
-    saveAccounts(accs);
-    renderUsers();
-    document.getElementById("newName").value = "";
-    alert(`Account für ${name} erstellt.`);
-}
-
-function removeUser(name) {
-    if (name === sessionStorage.getItem("loggedInUser")) return alert("Selbst löschen nicht möglich!");
-    if (!confirm(`Account von ${name} wirklich löschen?`)) return;
+    if (!userIn || !passIn) return alert("Bitte alles ausfüllen!");
 
     const accs = getAccounts();
-    delete accs[name];
-    saveAccounts(accs);
-    renderUsers();
-    updateDashboardStats();
-}
+    const userData = accs[userIn];
 
-function uprank(name) {
-    const accs = getAccounts();
-    const roles = ["Mitarbeiter", "Management", "Cheffe"];
-    let currentIdx = roles.indexOf(accs[name].role);
-    if (currentIdx < roles.length - 1) {
-        accs[name].role = roles[currentIdx + 1];
-        saveAccounts(accs);
-        renderUsers();
+    if (userData && passIn === userData.password) {
+        sessionStorage.setItem("loggedInUser", userIn);
+        // Rolle für stabilen Vergleich immer kleingeschrieben speichern
+        sessionStorage.setItem("userRole", userData.role.toLowerCase().trim());
+        window.location.href = "index.html";
+    } else {
+        alert("Nutzername oder Passwort falsch!");
     }
 }
 
-function derank(name) {
-    const accs = getAccounts();
-    const roles = ["Mitarbeiter", "Management", "Cheffe"];
-    let currentIdx = roles.indexOf(accs[name].role);
-    if (currentIdx > 0) {
-        accs[name].role = roles[currentIdx - 1];
-        saveAccounts(accs);
-        renderUsers();
+function isAdmin() {
+    const role = (sessionStorage.getItem("userRole") || "").toLowerCase().trim();
+    return role === "cheffe" || role === "management";
+}
+
+function logout() {
+    sessionStorage.clear();
+    window.location.href = "login.html";
+}
+
+function updateUIVisibility() {
+    const panel = document.getElementById('adminPanel');
+    if (panel) {
+        panel.style.display = isAdmin() ? 'flex' : 'none';
     }
 }
 
-/* ================= ABMELDUNGEN ================= */
+function showTab(tabId, btn) {
+    document.querySelectorAll(".mgmt-tab").forEach(t => t.style.display = "none");
+    const activeTab = document.getElementById(tabId);
+    if(activeTab) activeTab.style.display = "block";
+
+    if(btn) {
+        document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+    }
+
+    // Daten je nach Tab laden
+    if(tabId === 'tab-accounts' && typeof renderUsers === "function") renderUsers();
+    if(tabId === 'tab-abmeldungen' && typeof renderAbmeldungen === "function") renderAbmeldungen();
+    if(tabId === 'tab-bewerber' && typeof renderBewerberManagement === "function") renderBewerberManagement();
+}
+
+// Initialisierung beim Laden der Seite
+document.addEventListener("DOMContentLoaded", () => {
+    updateUIVisibility();
+    if(document.getElementById("accCount")) updateDashboardStats();
+    if(document.getElementById("meineAbmeldungenList")) renderMeineAbmeldungen();
+    if(document.getElementById("newsFullGrid")) renderNewsFull();
+});
+
+/* ============================================================
+   2. ABMELDUNGEN LOGIK
+   ============================================================ */
 const getAbmeldungen = () => JSON.parse(localStorage.getItem("bs_abmeldungen")) || [];
 const saveAbmeldungen = data => localStorage.setItem("bs_abmeldungen", JSON.stringify(data));
+
+function updateDashboardStats() {
+    const accCount = Object.keys(getAccounts()).length;
+    const offeneCount = getAbmeldungen().filter(a => a.status === "offen").length;
+
+    if(document.getElementById("accCount")) document.getElementById("accCount").innerText = accCount;
+    if(document.getElementById("heroAbmCount")) document.getElementById("heroAbmCount").innerText = offeneCount;
+}
 
 function submitAbmeldungUI() {
     const von = document.getElementById("abmVon").value;
@@ -189,7 +96,7 @@ function submitAbmeldungUI() {
     const grund = document.getElementById("abmGrund").value;
     const user = sessionStorage.getItem("loggedInUser");
 
-    if(!von || !bis || !grund) return alert("Bitte alles ausfüllen!");
+    if(!von || !bis || !grund) return alert("Bitte alle Felder ausfüllen!");
 
     const list = getAbmeldungen();
     list.push({ user, von, bis, grund, status: "offen", id: Date.now() });
@@ -197,100 +104,101 @@ function submitAbmeldungUI() {
 
     if(typeof closeAbmModal === "function") closeAbmModal();
     updateDashboardStats();
-    if(document.getElementById("meineAbmeldungenList")) renderMeineAbmeldungen();
+    renderMeineAbmeldungen();
 }
 
-function approveAbm(id) {
-    const list = getAbmeldungen();
-    const index = list.findIndex(a => a.id === id);
-    if(index !== -1) list[index].status = "genehmigt";
-    saveAbmeldungen(list);
-    renderAbmeldungen();
-}
+function renderMeineAbmeldungen() {
+    const container = document.getElementById("meineAbmeldungenList");
+    if(!container) return;
+    container.innerHTML = "";
+    const user = sessionStorage.getItem("loggedInUser");
+    const meine = getAbmeldungen().filter(a => a.user === user);
 
-function rejectAbm(id) {
-    const list = getAbmeldungen();
-    const index = list.findIndex(a => a.id === id);
-    if(index !== -1) list[index].status = "abgelehnt";
-    saveAbmeldungen(list);
-    renderAbmeldungen();
-}
-
-/* ================= BEWERBER ================= */
-const getBewerber = () => JSON.parse(localStorage.getItem("bs_bewerber")) || [];
-const saveBewerber = data => localStorage.setItem("bs_bewerber", JSON.stringify(data));
-
-function submitBewerbung() {
-    const name = document.getElementById("bewName").value.trim();
-    const geb = document.getElementById("bewGeb").value;
-    const tel = document.getElementById("bewTel").value.trim();
-    const zivi = document.getElementById("bewZivi").value;
-    const visum = document.getElementById("bewVisum").value;
-    const ersch = document.getElementById("bewersch").value;
-
-    if(!name || !geb || !tel || !visum) return alert("Felder ausfüllen!");
-
-    const bewerber = getBewerber();
-    bewerber.push({
-        id: Date.now(),
-        name, geb, tel, zivi, visum, ersch,
-        status: "offen",
-        erstelltAm: new Date().toLocaleDateString('de-DE')
+    meine.reverse().forEach(a => {
+        let color = a.status === "genehmigt" ? "#2ecc71" : (a.status === "abgelehnt" ? "#e74c3c" : "#faac15");
+        const div = document.createElement("div");
+        div.style.cssText = `background: rgba(255,255,255,0.05); padding: 12px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid ${color}`;
+        div.innerHTML = `<div><b>${a.von} - ${a.bis}</b><br><small>${a.grund}</small></div><span style="color:${color}; font-weight:bold;">${a.status.toUpperCase()}</span>`;
+        container.appendChild(div);
     });
-
-    saveBewerber(bewerber);
-    alert("Bewerbung abgeschickt!");
 }
 
-/* ================= NEWS ================= */
+/* ============================================================
+   3. NEWS & INFOS LOGIK
+   ============================================================ */
 const getNews = () => JSON.parse(localStorage.getItem("bs_news")) || [];
 const saveNews = data => localStorage.setItem("bs_news", JSON.stringify(data));
 
 function addNews() {
     const text = document.getElementById("newNewsText").value.trim();
-    if(!text) return alert("Text fehlt!");
+    const imgUrl = document.getElementById("newNewsImg").value.trim();
+    if(!text) return alert("Text eingeben!");
 
     const news = getNews();
     news.push({
         id: Date.now(),
         ersteller: sessionStorage.getItem("loggedInUser"),
         datum: new Date().toLocaleString('de-DE'),
-        text: text,
-        votesUp: [],
-        votesDown: []
+        text: text, bild: imgUrl || null,
+        votesUp: [], votesDown: []
     });
-
     saveNews(news);
     renderNewsFull();
 }
 
-/* ================= DASHBOARD STATS ================= */
-function updateDashboardStats() {
-    const accs = getAccounts();
-    const accCount = Object.keys(accs).length;
-    const offeneCount = getAbmeldungen().filter(a => a.status === "offen").length;
+function renderNewsFull() {
+    const container = document.getElementById("newsFullGrid");
+    if(!container) return;
+    container.innerHTML = "";
+    const admin = isAdmin();
 
-    if(document.getElementById("accCount")) document.getElementById("accCount").innerText = accCount;
-    if(document.getElementById("heroAbmCount")) document.getElementById("heroAbmCount").innerText = offeneCount;
+    getNews().reverse().forEach(n => {
+        const div = document.createElement("div");
+        div.className = "panel";
+        div.style.marginBottom = "20px";
+        div.innerHTML = `
+            <small style="opacity:0.5;">${n.datum} - Von: ${n.ersteller}</small>
+            <p style="white-space:pre-line; margin: 10px 0;">${n.text}</p>
+            ${n.bild ? `<img src="${n.bild}" style="max-width:100%; border-radius:10px; margin-bottom:10px;">` : ''}
+            <div style="display:flex; justify-content:space-between;">
+                <div><button onclick="reactToNews(${n.id}, 'up')">✅ ${n.votesUp.length}</button> <button onclick="reactToNews(${n.id}, 'down')">❌ ${n.votesDown.length}</button></div>
+                ${admin ? `<button onclick="deleteNews(${n.id})" style="color:#e74c3c; background:none; border:none;">Löschen</button>` : ''}
+            </div>`;
+        container.appendChild(div);
+    });
 }
 
-// Hilfsfunktion zum Kopieren
+/* ============================================================
+   4. BEWERBER LOGIK
+   ============================================================ */
+const getBewerber = () => JSON.parse(localStorage.getItem("bs_bewerber")) || [];
+const saveBewerber = data => localStorage.setItem("bs_bewerber", JSON.stringify(data));
+
+function submitBewerbung() {
+    const name = document.getElementById("bewName").value.trim();
+    const bewerber = getBewerber();
+    bewerber.push({
+        id: Date.now(),
+        name,
+        geb: document.getElementById("bewGeb").value,
+        tel: document.getElementById("bewTel").value,
+        zivi: document.getElementById("bewZivi").value,
+        visum: document.getElementById("bewVisum").value,
+        ersch: document.getElementById("bewersch").value,
+        status: "offen",
+        erstelltAm: new Date().toLocaleDateString('de-DE')
+    });
+    saveBewerber(bewerber);
+    alert("Bewerbung gespeichert!");
+}
+
+/* ============================================================
+   5. ANNOUNCEMENTS (VORLAGEN)
+   ============================================================ */
+const getAnnouncements = () => JSON.parse(localStorage.getItem("bs_announcements")) || [
+    { id: 1, text: "/businessannounce BURGERSHOT – Wo Geschmack über den Dächern von Los Santos lebt..." }
+];
+
 function copyText(text) {
-    navigator.clipboard.writeText(text).then(() => alert("Kopiert!"));
+    navigator.clipboard.writeText(text).then(() => alert("In Zwischenablage kopiert!"));
 }
-
-function updateUIVisibility() {
-    const mgmtBar = document.getElementById('adminPanel'); 
-    if (mgmtBar) {
-        if (isAdmin()) {
-            mgmtBar.style.display = 'flex'; // Oder 'block'
-            console.log("Panel angezeigt!");
-        } else {
-            mgmtBar.style.display = 'none';
-            console.log("Panel versteckt, da kein Admin.");
-        }
-    }
-}
-
-// Das sorgt dafür, dass die Prüfung beim Laden jeder Seite passiert
-document.addEventListener("DOMContentLoaded", updateUIVisibility);
