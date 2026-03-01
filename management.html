@@ -165,41 +165,67 @@
 
 <script src="script.js"></script>
 <script>
-    requireLogin();
-    if(!isAdmin()) window.location.href = "index.html";
+    /* ============================================================
+       1. INITIALISIERUNG & SICHERHEIT
+       ============================================================ */
+    document.addEventListener("DOMContentLoaded", () => {
+        // Falls nicht eingeloggt -> Weg
+        if (!sessionStorage.getItem("loggedInUser")) {
+            window.location.href = "login.html";
+            return;
+        }
+        
+        // Falls kein Admin -> Zurück zur Index
+        if (!isAdmin()) {
+            alert("Zugriff verweigert: Nur Management-Ebene.");
+            window.location.href = "index.html";
+            return;
+        }
 
+        // Wenn alles okay ist: Standard-Tab laden
+        renderUsers(); 
+    });
+
+    /* ============================================================
+       2. NAVIGATION (TABS)
+       ============================================================ */
     function showTab(tabId, btn) {
+        // Alle Tabs verstecken
         document.querySelectorAll(".mgmt-tab").forEach(t => t.classList.remove("active"));
+        // Gewählten Tab zeigen
         document.getElementById(tabId).classList.add("active");
+        
+        // Buttons stylen
         document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
         btn.classList.add("active");
 
+        // Daten je nach Tab laden
         if(tabId === 'tab-accounts') renderUsers();
         if(tabId === 'tab-mitarbeiter') renderMitarbeiter();
         if(tabId === 'tab-abmeldungen') renderAbmeldungen();
     }
 
-    // Fix für Suche: Nutzt "grid" beim Einblenden
-    function filterGrid(containerId, val) {
-        const query = val.toLowerCase();
-        const rows = document.getElementById(containerId).children;
-        for (let row of rows) {
-            row.style.display = row.innerText.toLowerCase().includes(query) ? "grid" : "none";
-        }
-    }
-
+    /* ============================================================
+       3. ACCOUNT-VERWALTUNG (WEB-LOGINS)
+       ============================================================ */
     function renderUsers() {
         const list = document.getElementById("userList");
+        if (!list) return;
         list.innerHTML = "";
+        
         const accs = getAccounts();
         const order = ["Cheffe", "Management", "Mitarbeiter"];
 
-        Object.keys(accs).sort((a,b) => order.indexOf(accs[a].role) - order.indexOf(accs[b].role)).forEach(name => {
+        Object.keys(accs).sort((a,b) => {
+            return order.indexOf(accs[a].role) - order.indexOf(accs[b].role);
+        }).forEach(name => {
             const div = document.createElement("div");
             div.className = "grid-row";
+            const roleClass = accs[name].role.toLowerCase();
+            
             div.innerHTML = `
                 <span style="font-weight:bold;">${name}</span>
-                <div><span class="role-badge ${accs[name].role.toLowerCase()}">${accs[name].role}</span></div>
+                <div><span class="role-badge ${roleClass}">${accs[name].role}</span></div>
                 <span style="opacity:0.5; font-size:0.8rem;">Aktiv</span>
                 <div class="action-btns">
                     <button class="rank-btn" onclick="uprank('${name}');renderUsers()">⬆</button>
@@ -210,24 +236,31 @@
         });
     }
 
+    /* ============================================================
+       4. MITARBEITER-LISTE (IC-DATEN)
+       ============================================================ */
     function uiAddMitarbeiter() {
         const name = document.getElementById("maName").value.trim();
         const tel = document.getElementById("maTel").value.trim();
         const gehalt = document.getElementById("maGehalt").value.trim();
+        
         if(!name) return;
 
         let list = JSON.parse(localStorage.getItem("bs_ma_list") || "[]");
-        list.push({name, tel, gehalt});
+        list.push({ name, tel, gehalt });
         localStorage.setItem("bs_ma_list", JSON.stringify(list));
         
+        // Felder leeren
         document.getElementById("maName").value = "";
         document.getElementById("maTel").value = "";
         document.getElementById("maGehalt").value = "";
+        
         renderMitarbeiter();
     }
 
     function renderMitarbeiter() {
         const list = document.getElementById("mitarbeiterList");
+        if (!list) return;
         list.innerHTML = "";
         const data = JSON.parse(localStorage.getItem("bs_ma_list") || "[]");
 
@@ -252,13 +285,22 @@
         renderMitarbeiter();
     }
 
+    /* ============================================================
+       5. ABMELDUNGEN VERWALTEN
+       ============================================================ */
     function renderAbmeldungen() {
         const list = document.getElementById("abmList");
+        if (!list) return;
         list.innerHTML = "";
-        getAbmeldungen().reverse().forEach(a => {
+        
+        // getAbmeldungen() muss in script.js definiert sein
+        const abms = typeof getAbmeldungen === "function" ? getAbmeldungen() : [];
+        
+        abms.reverse().forEach(a => {
             const div = document.createElement("div");
             div.className = "grid-row";
             let sClass = a.status === "genehmigt" ? "status-badge-genehmigt" : (a.status === "abgelehnt" ? "status-badge-abgelehnt" : "status-badge-offen");
+            
             div.innerHTML = `
                 <span style="font-weight:bold;">${a.user}</span>
                 <span style="font-size:0.85rem;">${a.von} - ${a.bis}</span>
@@ -274,7 +316,19 @@
         });
     }
 
-    document.addEventListener("DOMContentLoaded", renderUsers);
+    /* ============================================================
+       6. HILFSFUNKTIONEN (SUCHE)
+       ============================================================ */
+    function filterGrid(containerId, val) {
+        const query = val.toLowerCase();
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        
+        const rows = container.children;
+        for (let row of rows) {
+            row.style.display = row.innerText.toLowerCase().includes(query) ? "grid" : "none";
+        }
+    }
 </script>
 </body>
 </html>
