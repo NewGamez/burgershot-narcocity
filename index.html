@@ -133,42 +133,23 @@
 
 <script src="script.js"></script>
 <script>
-    requireLogin();
-    
-   document.addEventListener("DOMContentLoaded", () => {
-    // 1. Variablen holen
-    const adminPanel = document.getElementById("adminPanel");
-    const user = sessionStorage.getItem("loggedInUser");
-    const role = sessionStorage.getItem("userRole");
+    // Wir warten, bis das Dokument bereit ist
+    document.addEventListener("DOMContentLoaded", () => {
+        requireLogin(); // Sicherstellen, dass man eingeloggt ist
 
-    // 2. Debugging-Infos (nur für dich in F12 sichtbar)
-    console.log("--- Dashboard Check ---");
-    console.log("User:", user);
-    console.log("Rolle:", role);
+        const user = sessionStorage.getItem("loggedInUser");
+        const welcomeElem = document.getElementById("welcomeUser");
+        if (welcomeElem) welcomeElem.innerText = "Willkommen, " + user;
 
-    // 3. Willkommens-Text setzen
-    const welcomeElem = document.getElementById("welcomeUser");
-    if (welcomeElem) {
-        welcomeElem.innerText = "Willkommen, " + (user || "Gast");
-    }
-
-    // 4. Management Bar Logik
-    if (adminPanel) {
-        if (isAdmin()) { 
-            console.log("Ergebnis isAdmin(): TRUE -> Zeige Panel");
-            adminPanel.style.display = "flex"; 
-        } else {
-            console.log("Ergebnis isAdmin(): FALSE -> Verstecke Panel");
-            adminPanel.style.display = "none";
+        // Wir rufen nur die zentrale Funktion aus der script.js auf
+        if (typeof updateUIVisibility === "function") {
+            updateUIVisibility();
         }
-    }
-
-    // 5. Statistiken und Listen laden (falls vorhanden)
-    if (typeof updateDashboardStats === "function") updateDashboardStats();
-    if (typeof renderMeineAbmeldungen === "function") renderMeineAbmeldungen();
-});
+        
+        // Stats laden
+        if (typeof updateDashboardStats === "function") updateDashboardStats();
+        if (typeof renderMeineAbmeldungen === "function") renderMeineAbmeldungen();
+    });
 </script>
-    
-    <script src="script.js"></script>
 </body>
 </html>
