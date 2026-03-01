@@ -547,16 +547,17 @@ function saveAccounts(accs) {
     localStorage.setItem("bs_accounts", JSON.stringify(accs));
 }
 
-// Diese Funktion prüft die Sichtbarkeit
 function updateUIVisibility() {
-    const mgmtBar = document.querySelector('.management-bar');
+    // FIX: Wir suchen nach der ID 'adminPanel'
+    const mgmtBar = document.getElementById('adminPanel'); 
+    
     if (mgmtBar) {
         if (isAdmin()) {
-            mgmtBar.style.display = 'flex'; // Oder 'block'
-            console.log("Admin erkannt: Bar eingeblendet");
+            // Wir nutzen flex, damit die Inhalte nebeneinander stehen
+            mgmtBar.style.display = 'flex'; 
+            console.log("Admin-Leiste eingeblendet");
         } else {
             mgmtBar.style.display = 'none';
-            console.log("Kein Admin: Bar versteckt");
         }
     }
 }
