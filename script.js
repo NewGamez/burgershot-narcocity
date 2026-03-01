@@ -6,43 +6,55 @@ function login() {
     if (!userIn || !passIn) return alert("Bitte alles ausfüllen!");
 
     const accs = getAccounts();
-    // Wir suchen den User (z.B. "Admin")
     const userData = accs[userIn];
 
+    console.log("Login-Versuch für:", userIn);
+    console.log("Gefundene Daten:", userData);
+
     if (userData && passIn === userData.password) {
+        // Daten in Session speichern
         sessionStorage.setItem("loggedInUser", userIn);
         
-        // WICHTIG: Wir speichern die Rolle IMMER kleingeschrieben in die Session
-        const roleForSession = userData.role.toLowerCase().trim(); 
-        sessionStorage.setItem("userRole", roleForSession);
+        // WICHTIG: Sicherstellen, dass die Rolle existiert und klein ist
+        const userRole = (userData.role || "mitarbeiter").toLowerCase().trim();
+        sessionStorage.setItem("userRole", userRole);
         
-        console.log("Erfolgreich als " + userIn + " angemeldet. Rolle: " + roleForSession);
+        console.log("Erfolg! Rolle gespeichert:", userRole);
         window.location.href = "index.html";
     } else {
+        console.error("Login fehlgeschlagen: Passwort falsch oder User nicht gefunden.");
         alert("Nutzername oder Passwort falsch!");
     }
 }
 
 /* ================= ADMIN CHECK ==================== */
 function isAdmin() {
-    // Wir holen die Rolle aus der Session und machen sie zur Sicherheit nochmal klein
-    const role = (sessionStorage.getItem("userRole") || "").toLowerCase().trim();
+    const role = sessionStorage.getItem("userRole");
+    console.log("isAdmin Check - Aktuelle Rolle in Session:", role);
     
-    // Jetzt prüfen wir gegen den kleingeschriebenen Wert
-    return role === "cheffe" || role === "management";
+    if (!role) return false;
+    
+    const cleanRole = role.toLowerCase().trim();
+    return cleanRole === "cheffe" || cleanRole === "management";
 }
 
-function requireLogin() {
-    if (!sessionStorage.getItem("loggedInUser")) {
-        window.location.href = "login.html";
+/* ================= SICHTBARKEIT ==================== */
+function updateUIVisibility() {
+    const mgmtBar = document.getElementById('adminPanel'); 
+    
+    if (mgmtBar) {
+        const adminStatus = isAdmin();
+        console.log("Soll Panel angezeigt werden?", adminStatus);
+        
+        if (adminStatus) {
+            mgmtBar.style.display = 'flex';
+        } else {
+            mgmtBar.style.display = 'none';
+        }
     }
 }
 
-function logout() {
-    sessionStorage.clear();
-    window.location.href = "login.html";
-}
-
+document.addEventListener("DOMContentLoaded", updateUIVisibility);
 /* ================= MANAGEMENT UI ==================== */
 function updateUIVisibility() {
     // Sucht nach der ID 'adminPanel' aus deiner index.html
