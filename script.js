@@ -266,3 +266,19 @@ function updateDashboardStats() {
 function copyText(text) {
     navigator.clipboard.writeText(text).then(() => alert("Kopiert!"));
 }
+
+function updateUIVisibility() {
+    const mgmtBar = document.getElementById('adminPanel'); 
+    if (mgmtBar) {
+        if (isAdmin()) {
+            mgmtBar.style.display = 'flex'; // Oder 'block'
+            console.log("Panel angezeigt!");
+        } else {
+            mgmtBar.style.display = 'none';
+            console.log("Panel versteckt, da kein Admin.");
+        }
+    }
+}
+
+// Das sorgt dafür, dass die Prüfung beim Laden jeder Seite passiert
+document.addEventListener("DOMContentLoaded", updateUIVisibility);
