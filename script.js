@@ -1,4 +1,3 @@
-
 /* ================= LOGIN SYSTEM ==================== */
 function login() {
     const userIn = document.getElementById("username").value.trim();
@@ -60,14 +59,43 @@ function updateUIVisibility() {
 // Beim Laden der Seite ausführen
 document.addEventListener("DOMContentLoaded", () => {
     updateUIVisibility();
+    // Falls Stats-Container vorhanden, Stats laden
     if(document.getElementById("accCount")) updateDashboardStats();
+    // Falls wir auf der Management-Seite sind, User rendern
+    if(document.getElementById("userTableBody")) renderUsers();
 });
 
-/* ================= STORAGE HELPER ==================== */
+function showTab(tabId, btn) {
+    // Alle Tabs verstecken
+    document.querySelectorAll(".mgmt-tab").forEach(t => {
+        t.style.display = "none";
+        t.classList.remove("active");
+    });
+
+    // Gewählten Tab zeigen
+    const activeTab = document.getElementById(tabId);
+    if(activeTab) {
+        activeTab.style.display = "block";
+        activeTab.classList.add("active");
+    }
+
+    // Buttons stylen
+    if (btn) {
+        document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+    }
+
+    // Daten laden je nach Tab
+    if(tabId === 'tab-accounts') renderUsers();
+    if(tabId === 'tab-bewerber') renderBewerberManagement();
+    if(tabId === 'tab-abmeldungen') renderAbmeldungen();
+}
+
+/* ================= STORAGE & ACCOUNTS ================= */
 function getAccounts() {
     let accs = JSON.parse(localStorage.getItem("bs_accounts"));
     if (!accs) {
-        // Falls leer: Erstelle den Master-Admin
+        // Notfall-Admin falls leer
         accs = { 
             "Cheffe": { 
                 password: "1234", 
@@ -83,133 +111,41 @@ function saveAccounts(accs) {
     localStorage.setItem("bs_accounts", JSON.stringify(accs));
 }
 
-/* ================= ABMELDUNGEN STATS ================= */
-function updateDashboardStats() {
+function addUser() {
+    const name = document.getElementById("newName").value.trim();
+    const role = document.getElementById("newRole").value;
     const accs = getAccounts();
-    const accCount = Object.keys(accs).length;
     
-    const abmeldungen = JSON.parse(localStorage.getItem("bs_abmeldungen")) || [];
-    const offeneCount = abmeldungen.filter(a => a.status === "offen").length;
+    if (!name) return alert("Bitte einen Namen eingeben!");
+    if (accs[name]) return alert("Dieser Account existiert bereits!");
 
-    if(document.getElementById("accCount")) document.getElementById("accCount").innerText = accCount;
-    if(document.getElementById("heroAbmCount")) document.getElementById("heroAbmCount").innerText = offeneCount;
-    if(document.getElementById("abmCounter")) document.getElementById("abmCounter").innerText = offeneCount + " offen";
-}
-
-function deleteAbm(id) {
-    if (confirm("Möchtest du diese Abmeldung wirklich dauerhaft aus dem System löschen?")) {
-        const list = getAbmeldungen();
-        // Wir behalten alle außer die ID, die gelöscht werden soll
-        const newList = list.filter(a => a.id !== id);
-        saveAbmeldungen(newList);
-        
-        // UI aktualisieren falls wir auf der Management Seite sind
-        if (typeof renderAbmeldungen === "function") {
-            renderAbmeldungen();
-        }
-        // Stats auf dem Dashboard (Hero-Banner) aktualisieren
-        if (typeof updateDashboardStats === "function") {
-            updateDashboardStats();
-        }
-    }
-}
-
-/* ================= UI FUNKTIONEN ===================== */
-function openAbmModal() { document.getElementById("abmModal").classList.add("active"); }
-function closeAbmModal() { document.getElementById("abmModal").classList.remove("active"); }
-
-function submitAbmeldungUI() {
-    const von = document.getElementById("abmVon").value;
-    const bis = document.getElementById("abmBis").value;
-    const grund = document.getElementById("abmGrund").value;
-    const user = sessionStorage.getItem("loggedInUser");
-
-    if(!von || !bis || !grund) return alert("Bitte alle Felder ausfüllen!");
-
-    const list = getAbmeldungen();
-    list.push({ user, von, bis, grund, status: "offen", id: Date.now() });
-    saveAbmeldungen(list);
-
-    closeAbmModal();
-    updateDashboardStats();
-    renderMeineAbmeldungen();
+    accs[name] = { 
+        password: "0000", 
+        role: role,
+        isFirstLogin: true 
+    };
     
-    // Felder leeren
-    document.getElementById("abmVon").value = "";
-    document.getElementById("abmBis").value = "";
-    document.getElementById("abmGrund").value = "";
-}
-
-// Zeigt dem User seine eigenen Anträge und deren Status
-function renderMeineAbmeldungen() {
-    const container = document.getElementById("meineAbmeldungenList");
-    if(!container) return;
-
-    container.innerHTML = "";
-    const user = sessionStorage.getItem("loggedInUser");
-    const meine = getAbmeldungen().filter(a => a.user === user);
-
-    if(meine.length === 0) {
-        container.innerHTML = "<p style='opacity:0.5;'>Du hast aktuell keine Abmeldungen eingereicht.</p>";
-        return;
-    }
-
-    meine.reverse().forEach(a => {
-        let color = "#faac15"; // offen
-        if(a.status === "genehmigt") color = "#2ecc71";
-        if(a.status === "abgelehnt") color = "#e74c3c";
-
-        const div = document.createElement("div");
-        div.style.cssText = "background: rgba(255,255,255,0.05); padding: 12px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid " + color;
-        div.innerHTML = `
-            <div>
-                <span style="font-weight:bold;">${a.von} - ${a.bis}</span>
-                <br><small style="opacity:0.7;">Grund: ${a.grund}</small>
-            </div>
-            <span style="color:${color}; font-weight:bold; text-transform:uppercase; font-size:0.8rem;">${a.status}</span>
-        `;
-        container.appendChild(div);
-    });
-}
-
-/* ================= ADMIN MANAGEMENT ================= */
-// Diese Funktionen werden in der management.html genutzt
-function approveAbm(id) {
-    const list = getAbmeldungen();
-    const index = list.findIndex(a => a.id === id);
-    if(index !== -1) list[index].status = "genehmigt";
-    saveAbmeldungen(list);
-}
-
-function rejectAbm(id) {
-    const list = getAbmeldungen();
-    const index = list.findIndex(a => a.id === id);
-    if(index !== -1) list[index].status = "abgelehnt";
-    saveAbmeldungen(list);
-}
-
-/* Account aus dem System entfernen */
-function removeUser(name) {
-    if (name === sessionStorage.getItem("loggedInUser")) {
-        return alert("Du kannst dich nicht selbst löschen!");
-    }
-    
-    if (!confirm(`Möchtest du den Account von ${name} wirklich löschen?`)) return;
-
-    const accs = getAccounts();
-    delete accs[name]; // Entfernt den Key aus dem Objekt
     saveAccounts(accs);
-    
-    renderUsers(); // Liste neu zeichnen
-    if (typeof updateDashboardStats === "function") updateDashboardStats();
+    renderUsers();
+    document.getElementById("newName").value = "";
+    alert(`Account für ${name} erstellt.`);
 }
 
-/* Ränge anpassen */
+function removeUser(name) {
+    if (name === sessionStorage.getItem("loggedInUser")) return alert("Selbst löschen nicht möglich!");
+    if (!confirm(`Account von ${name} wirklich löschen?`)) return;
+
+    const accs = getAccounts();
+    delete accs[name];
+    saveAccounts(accs);
+    renderUsers();
+    updateDashboardStats();
+}
+
 function uprank(name) {
     const accs = getAccounts();
     const roles = ["Mitarbeiter", "Management", "Cheffe"];
     let currentIdx = roles.indexOf(accs[name].role);
-    
     if (currentIdx < roles.length - 1) {
         accs[name].role = roles[currentIdx + 1];
         saveAccounts(accs);
@@ -221,7 +157,6 @@ function derank(name) {
     const accs = getAccounts();
     const roles = ["Mitarbeiter", "Management", "Cheffe"];
     let currentIdx = roles.indexOf(accs[name].role);
-    
     if (currentIdx > 0) {
         accs[name].role = roles[currentIdx - 1];
         saveAccounts(accs);
@@ -229,7 +164,44 @@ function derank(name) {
     }
 }
 
-/* ================= BEWERBER LOGIK ==================== */
+/* ================= ABMELDUNGEN ================= */
+const getAbmeldungen = () => JSON.parse(localStorage.getItem("bs_abmeldungen")) || [];
+const saveAbmeldungen = data => localStorage.setItem("bs_abmeldungen", JSON.stringify(data));
+
+function submitAbmeldungUI() {
+    const von = document.getElementById("abmVon").value;
+    const bis = document.getElementById("abmBis").value;
+    const grund = document.getElementById("abmGrund").value;
+    const user = sessionStorage.getItem("loggedInUser");
+
+    if(!von || !bis || !grund) return alert("Bitte alles ausfüllen!");
+
+    const list = getAbmeldungen();
+    list.push({ user, von, bis, grund, status: "offen", id: Date.now() });
+    saveAbmeldungen(list);
+
+    if(typeof closeAbmModal === "function") closeAbmModal();
+    updateDashboardStats();
+    if(document.getElementById("meineAbmeldungenList")) renderMeineAbmeldungen();
+}
+
+function approveAbm(id) {
+    const list = getAbmeldungen();
+    const index = list.findIndex(a => a.id === id);
+    if(index !== -1) list[index].status = "genehmigt";
+    saveAbmeldungen(list);
+    renderAbmeldungen();
+}
+
+function rejectAbm(id) {
+    const list = getAbmeldungen();
+    const index = list.findIndex(a => a.id === id);
+    if(index !== -1) list[index].status = "abgelehnt";
+    saveAbmeldungen(list);
+    renderAbmeldungen();
+}
+
+/* ================= BEWERBER ================= */
 const getBewerber = () => JSON.parse(localStorage.getItem("bs_bewerber")) || [];
 const saveBewerber = data => localStorage.setItem("bs_bewerber", JSON.stringify(data));
 
@@ -237,11 +209,11 @@ function submitBewerbung() {
     const name = document.getElementById("bewName").value.trim();
     const geb = document.getElementById("bewGeb").value;
     const tel = document.getElementById("bewTel").value.trim();
-    const zivi = document.getElementById("bewZivi").value; // "Ja" oder Fraktionsname
+    const zivi = document.getElementById("bewZivi").value;
     const visum = document.getElementById("bewVisum").value;
     const ersch = document.getElementById("bewersch").value;
 
-    if(!name || !geb || !tel || !visum) return alert("Bitte die wichtigsten Felder ausfüllen!");
+    if(!name || !geb || !tel || !visum) return alert("Felder ausfüllen!");
 
     const bewerber = getBewerber();
     bewerber.push({
@@ -252,226 +224,42 @@ function submitBewerbung() {
     });
 
     saveBewerber(bewerber);
-    alert("Bewerber erfolgreich eingetragen!");
-    
-    // Felder leeren
-    ["bewName", "bewGeb", "bewTel", "bewZivi", "bewVisum", "bewersch"].forEach(id => {
-        document.getElementById(id).value = "";
-    });
+    alert("Bewerbung abgeschickt!");
 }
 
-function updateBewerberStatus(id, neuerStatus) {
-    let bewerber = getBewerber();
-    const index = bewerber.findIndex(b => b.id === id);
-    if(index !== -1) {
-        bewerber[index].status = neuerStatus;
-        saveBewerber(bewerber);
-        renderBewerberManagement(); // Liste aktualisieren
-    }
-}
-
-function deleteBewerber(id) {
-    if(!confirm("Bewerber endgültig löschen?")) return;
-    const bewerber = getBewerber().filter(b => b.id !== id);
-    saveBewerber(bewerber);
-    renderBewerberManagement();
-}
-
-function renderBewerberManagement() {
-    const container = document.getElementById("bewerberManagementList");
-    if(!container) return;
-    
-    const bewerber = getBewerber();
-    container.innerHTML = "";
-
-    if(bewerber.length === 0) {
-        container.innerHTML = "<p style='padding:20px; opacity:0.5; text-align:center;'>Keine Bewerber in der Datenbank.</p>";
-        return;
-    }
-
-    bewerber.reverse().forEach(b => {
-        const div = document.createElement("div");
-        div.className = "grid-row"; 
-        
-        // Wir setzen das Grid auf 4 Spalten für die Management-Ansicht
-        div.style.gridTemplateColumns = "1.5fr 2.5fr 1fr 1fr"; 
-        
-        const statusColor = b.status === 'angenommen' ? '#2ecc71' : (b.status === 'abgelehnt' ? '#e74c3c' : '#faac15');
-
-        div.innerHTML = `
-            <div>
-                <strong style="color:var(--primary); font-size:1.1rem;">${b.name}</strong><br>
-                <small style="opacity:0.6;">Eingetragen: ${b.erstelltAm}</small>
-            </div>
-            <div style="font-size: 0.85rem; display: grid; grid-template-columns: 1fr 1fr; gap: 5px;">
-                <span>📅 <b>Geb:</b> ${b.geb}</span>
-                <span>📞 <b>Tel:</b> ${b.tel}</span>
-                <span>⭐ <b>Visum:</b> ${b.visum}</span>
-                <span>👔 <b>Erscheinungsbild:</b> ${b.ersch}/10</span>
-                <span style="grid-column: span 2;">🏢 <b>Zivi/Fraktion:</b> ${b.zivi}</span>
-            </div>
-            <div style="text-align:center;">
-                <span class="status-badge" style="border:1px solid ${statusColor}; color:${statusColor}; padding: 4px 8px; border-radius: 4px; font-size: 0.7rem;">
-                    ${b.status.toUpperCase()}
-                </span>
-            </div>
-            <div class="action-btns" style="display:flex; gap:5px; justify-content: flex-end;">
-                <button onclick="updateBewerberStatus(${b.id}, 'angenommen')" style="background:#2ecc71; color:white; border:none; padding:5px 10px; border-radius:5px; cursor:pointer;">✔</button>
-                <button onclick="updateBewerberStatus(${b.id}, 'abgelehnt')" style="background:#e74c3c; color:white; border:none; padding:5px 10px; border-radius:5px; cursor:pointer;">✖</button>
-                <button onclick="deleteBewerber(${b.id})" style="background:rgba(255,255,255,0.1); color:#ff4d4d; border:1px solid #ff4d4d; padding:5px 10px; border-radius:5px; cursor:pointer;">🗑</button>
-            </div>
-        `;
-        container.appendChild(div);
-    });
-}
-
-function showTab(tabId, btn) {
-    // Alle Tabs verstecken
-    document.querySelectorAll(".mgmt-tab").forEach(t => t.classList.remove("active"));
-    document.querySelectorAll(".mgmt-tab").forEach(t => t.style.display = "none");
-
-    // Gewählten Tab zeigen
-    const activeTab = document.getElementById(tabId);
-    activeTab.classList.add("active");
-    activeTab.style.display = "block";
-
-    // Buttons stylen
-    document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
-
-    // Daten laden je nach Tab
-    if(tabId === 'tab-accounts') renderUsers();
-    if(tabId === 'tab-mitarbeiter') renderMitarbeiter();
-    if(tabId === 'tab-abmeldungen') renderAbmeldungen();
-    if(tabId === 'tab-bewerber') renderBewerberManagement(); // WICHTIG!
-}
-
-/* ================= NEWS & INFOS LOGIK ==================== */
+/* ================= NEWS ================= */
 const getNews = () => JSON.parse(localStorage.getItem("bs_news")) || [];
 const saveNews = data => localStorage.setItem("bs_news", JSON.stringify(data));
 
 function addNews() {
     const text = document.getElementById("newNewsText").value.trim();
-    const imgUrl = document.getElementById("newNewsImg").value.trim();
-    
-    if(!text) return alert("Bitte einen Text eingeben!");
+    if(!text) return alert("Text fehlt!");
 
     const news = getNews();
     news.push({
         id: Date.now(),
         ersteller: sessionStorage.getItem("loggedInUser"),
-        datum: new Date().toLocaleString('de-DE', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }),
+        datum: new Date().toLocaleString('de-DE'),
         text: text,
-        bild: imgUrl || null,
-        votesUp: [], // Speichert Usernames, die ✅ geklickt haben
-        votesDown: [] // Speichert Usernames, die ❌ geklickt haben
+        votesUp: [],
+        votesDown: []
     });
 
-    saveNews(news);
-    document.getElementById("newNewsText").value = "";
-    document.getElementById("newNewsImg").value = "";
-    renderNewsFull();
-}
-
-function reactToNews(id, type) {
-    const user = sessionStorage.getItem("loggedInUser");
-    let news = getNews();
-    const index = news.findIndex(n => n.id === id);
-    
-    if(index !== -1) {
-        // Alte Reaktionen des Users entfernen (damit man nicht beides gleichzeitig kann)
-        news[index].votesUp = news[index].votesUp.filter(u => u !== user);
-        news[index].votesDown = news[index].votesDown.filter(u => u !== user);
-
-        // Neue Reaktion hinzufügen
-        if(type === 'up') news[index].votesUp.push(user);
-        if(type === 'down') news[index].votesDown.push(user);
-
-        saveNews(news);
-        renderNewsFull();
-    }
-}
-
-function deleteNews(id) {
-    if(!confirm("Diese Nachricht wirklich löschen?")) return;
-    const news = getNews().filter(n => n.id !== id);
     saveNews(news);
     renderNewsFull();
 }
 
-function renderNewsFull() {
-    const container = document.getElementById("newsFullGrid");
-    if(!container) return;
-    
-    const news = getNews();
-    const currentUser = sessionStorage.getItem("loggedInUser");
-    const admin = isAdmin();
-    
-    container.innerHTML = "";
+/* ================= DASHBOARD STATS ================= */
+function updateDashboardStats() {
+    const accs = getAccounts();
+    const accCount = Object.keys(accs).length;
+    const offeneCount = getAbmeldungen().filter(a => a.status === "offen").length;
 
-    news.reverse().forEach(n => {
-        const hasVotedUp = n.votesUp.includes(currentUser);
-        const hasVotedDown = n.votesDown.includes(currentUser);
-
-        const div = document.createElement("div");
-        div.className = "panel";
-        div.style.marginBottom = "20px";
-        div.style.padding = "20px";
-
-        div.innerHTML = `
-            <div style="display:flex; justify-content:space-between; margin-bottom:10px; opacity:0.6; font-size:0.8rem;">
-                <span>Von: <b>${n.ersteller}</b></span>
-                <span>${n.datum} Uhr</span>
-            </div>
-            
-            <p style="white-space:pre-line; line-height:1.5; margin-bottom:15px;">${n.text}</p>
-            
-            ${n.bild ? `<img src="${n.bild}" style="max-width:100%; border-radius:10px; margin-bottom:15px; border:1px solid rgba(255,255,255,0.1);">` : ''}
-            
-            <div style="display:flex; justify-content:space-between; align-items:center; border-top: 1px solid rgba(255,255,255,0.05); pt-15px; margin-top:10px; padding-top:15px;">
-                <div style="display:flex; gap:15px;">
-                    <button onclick="reactToNews(${n.id}, 'up')" class="react-btn ${hasVotedUp ? 'active' : ''}">
-                        ✅ <span style="margin-left:5px;">${n.votesUp.length}</span>
-                    </button>
-                    <button onclick="reactToNews(${n.id}, 'down')" class="react-btn ${hasVotedDown ? 'active' : ''}">
-                        ❌ <span style="margin-left:5px;">${n.votesDown.length}</span>
-                    </button>
-                </div>
-                ${admin ? `<button onclick="deleteNews(${n.id})" style="background:none; border:none; color:#e74c3c; cursor:pointer; font-size:0.8rem;">Nachricht löschen</button>` : ''}
-            </div>
-        `;
-        container.appendChild(div);
-    });
+    if(document.getElementById("accCount")) document.getElementById("accCount").innerText = accCount;
+    if(document.getElementById("heroAbmCount")) document.getElementById("heroAbmCount").innerText = offeneCount;
 }
 
-/* ================= ACCOUNT & STORAGE HELPER ==================== */
-function getAccounts() {
-    let accs = JSON.parse(localStorage.getItem("bs_accounts"));
-    if (!accs) {
-        accs = { "Admin": { password: "1234", role: "cheffe" } };
-        localStorage.setItem("bs_accounts", JSON.stringify(accs));
-    }
-    return accs;
+// Hilfsfunktion zum Kopieren
+function copyText(text) {
+    navigator.clipboard.writeText(text).then(() => alert("Kopiert!"));
 }
-
-function saveAccounts(accs) {
-    localStorage.setItem("bs_accounts", JSON.stringify(accs));
-}
-
-function updateUIVisibility() {
-    // FIX: Wir suchen nach der ID 'adminPanel'
-    const mgmtBar = document.getElementById('adminPanel'); 
-    
-    if (mgmtBar) {
-        if (isAdmin()) {
-            // Wir nutzen flex, damit die Inhalte nebeneinander stehen
-            mgmtBar.style.display = 'flex'; 
-            console.log("Admin-Leiste eingeblendet");
-        } else {
-            mgmtBar.style.display = 'none';
-        }
-    }
-}
-
-// Führt den Check aus, sobald die Seite fertig geladen ist
-document.addEventListener("DOMContentLoaded", updateUIVisibility);
